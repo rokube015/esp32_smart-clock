@@ -784,6 +784,13 @@
 /home/rokube/workspace/CO2_Sensor/esp32/build/esp-idf/perfmon/CMakeFiles/install.dir
 /home/rokube/workspace/CO2_Sensor/esp32/build/esp-idf/perfmon/CMakeFiles/install/local.dir
 /home/rokube/workspace/CO2_Sensor/esp32/build/esp-idf/perfmon/CMakeFiles/install/strip.dir
+/home/rokube/workspace/CO2_Sensor/esp32/build/esp-idf/rt/CMakeFiles/__idf_rt.dir
+/home/rokube/workspace/CO2_Sensor/esp32/build/esp-idf/rt/CMakeFiles/edit_cache.dir
+/home/rokube/workspace/CO2_Sensor/esp32/build/esp-idf/rt/CMakeFiles/rebuild_cache.dir
+/home/rokube/workspace/CO2_Sensor/esp32/build/esp-idf/rt/CMakeFiles/list_install_components.dir
+/home/rokube/workspace/CO2_Sensor/esp32/build/esp-idf/rt/CMakeFiles/install.dir
+/home/rokube/workspace/CO2_Sensor/esp32/build/esp-idf/rt/CMakeFiles/install/local.dir
+/home/rokube/workspace/CO2_Sensor/esp32/build/esp-idf/rt/CMakeFiles/install/strip.dir
 /home/rokube/workspace/CO2_Sensor/esp32/build/esp-idf/spiffs/CMakeFiles/__idf_spiffs.dir
 /home/rokube/workspace/CO2_Sensor/esp32/build/esp-idf/spiffs/CMakeFiles/edit_cache.dir
 /home/rokube/workspace/CO2_Sensor/esp32/build/esp-idf/spiffs/CMakeFiles/rebuild_cache.dir

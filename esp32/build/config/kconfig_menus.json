@@ -893,6 +893,16 @@
         "children": [],
         "depends_on": null,
         "help": null,
+        "id": "SOC_GPIO_SUPPORT_HOLD_IO_IN_DSLP",
+        "name": "SOC_GPIO_SUPPORT_HOLD_IO_IN_DSLP",
+        "range": null,
+        "title": null,
+        "type": "bool"
+    },
+    {
+        "children": [],
+        "depends_on": null,
+        "help": null,
         "id": "SOC_I2C_NUM",
         "name": "SOC_I2C_NUM",
         "range": null,
@@ -2493,16 +2503,6 @@
         "children": [],
         "depends_on": null,
         "help": null,
-        "id": "IDF_TARGET_LINUX",
-        "name": "IDF_TARGET_LINUX",
-        "range": null,
-        "title": null,
-        "type": "bool"
-    },
-    {
-        "children": [],
-        "depends_on": null,
-        "help": null,
         "id": "IDF_TARGET_ESP32",
         "name": "IDF_TARGET_ESP32",
         "range": null,
@@ -2938,7 +2938,7 @@
                                 "children": [
                                     {
                                         "children": [],
-                                        "depends_on": "No && <choice BOOTLOADER_LOG_TIMESTAMP_SOURCE>",
+                                        "depends_on": "NO_SYMBOL && <choice BOOTLOADER_LOG_TIMESTAMP_SOURCE>",
                                         "help": null,
                                         "id": "BOOTLOADER_LOG_TIMESTAMP_SOURCE_NONE",
                                         "name": "BOOTLOADER_LOG_TIMESTAMP_SOURCE_NONE",
@@ -4474,7 +4474,7 @@
                     },
                     {
                         "children": [],
-                        "depends_on": "SOC_MEMSPI_SRC_FREQ_80M_SUPPORTED && <choice ESPTOOLPY_FLASHFREQ>",
+                        "depends_on": "SOC_MEMSPI_SRC_FREQ_80M_SUPPORTED && !ESP32P4_REV_MIN_0 && <choice ESPTOOLPY_FLASHFREQ>",
                         "help": null,
                         "id": "ESPTOOLPY_FLASHFREQ_80M",
                         "name": "ESPTOOLPY_FLASHFREQ_80M",
@@ -4863,6 +4863,16 @@
                     {
                         "children": [],
                         "depends_on": "<choice PARTITION_TABLE_TYPE>",
+                        "help": "This is a basic OTA-enabled partition table with\ntwo OTA app partitions. Both app partition sizes are 1700K,\nso this partition table requires 4MB or larger flash size.\n\nThe corresponding CSV file in the IDF directory is\ncomponents/partition_table/partitions_two_ota_large.csv",
+                        "id": "PARTITION_TABLE_TWO_OTA_LARGE",
+                        "name": "PARTITION_TABLE_TWO_OTA_LARGE",
+                        "range": null,
+                        "title": "Two large size OTA partitions",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": "<choice PARTITION_TABLE_TYPE>",
                         "help": "Specify the path to the partition table CSV to use for your project.\n\nConsult the Partition Table section in the ESP-IDF Programmers Guide\nfor more information.",
                         "id": "PARTITION_TABLE_CUSTOM",
                         "name": "PARTITION_TABLE_CUSTOM",
@@ -5201,6 +5211,16 @@
             },
             {
                 "children": [],
+                "depends_on": "IDF_TOOLCHAIN_GCC",
+                "help": "Disable merging identical constants (string/floating-point) across compilation units.\nThis helps in better size analysis of the application binary as the rodata section\ndistribution is more uniform across libraries. On downside, it may increase\nthe binary size and hence should be used during development phase only.",
+                "id": "COMPILER_NO_MERGE_CONSTANTS",
+                "name": "COMPILER_NO_MERGE_CONSTANTS",
+                "range": null,
+                "title": "Disable merging const sections",
+                "type": "bool"
+            },
+            {
+                "children": [],
                 "depends_on": null,
                 "help": "Adds -Wwrite-strings flag for the C/C++ compilers.\n\nFor C, this gives string constants the type ``const char[]`` so that\ncopying the address of one into a non-const ``char *`` pointer\nproduces a warning. This warning helps to find at compile time code\nthat tries to write into a string constant.\n\nFor C++, this warns about the deprecated conversion from string\nliterals to ``char *``.",
                 "id": "COMPILER_WARN_WRITE_STRINGS",
@@ -5476,7 +5496,7 @@
                         "id": "APPTRACE_UART_TX_GPIO",
                         "name": "APPTRACE_UART_TX_GPIO",
                         "range": null,
-                        "title": "UART TX on GPIO#",
+                        "title": "UART TX on GPIO<num>",
                         "type": "int"
                     },
                     {
@@ -5486,7 +5506,7 @@
                         "id": "APPTRACE_UART_RX_GPIO",
                         "name": "APPTRACE_UART_RX_GPIO",
                         "range": null,
-                        "title": "UART RX on GPIO#",
+                        "title": "UART RX on GPIO<num>",
                         "type": "int"
                     },
                     {
@@ -5650,7 +5670,7 @@
                                             }
                                         ],
                                         "depends_on": "APPTRACE_SV_ENABLE && APPTRACE_ENABLE",
-                                        "help": "SystemView witt transfer data trough defined interface.",
+                                        "help": "SystemView will transfer data through the defined interface.",
                                         "id": "component-config-application-level-tracing-freertos-systemview-tracing-systemview-tracing-enable-systemview-destination",
                                         "name": "APPTRACE_SV_DEST",
                                         "title": "SystemView destination",
@@ -8579,6 +8599,16 @@
                                 "range": null,
                                 "title": "Enable BLE high duty advertising interval feature",
                                 "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "BT_BLUEDROID_ENABLED && BT_BLUEDROID_ENABLED",
+                                "help": "This enables abort when memory allocation fails",
+                                "id": "BT_ABORT_WHEN_ALLOCATION_FAILS",
+                                "name": "BT_ABORT_WHEN_ALLOCATION_FAILS",
+                                "range": null,
+                                "title": "Abort when memory allocation fails in BT/BLE stack",
+                                "type": "bool"
                             }
                         ],
                         "depends_on": "BT_BLUEDROID_ENABLED",
@@ -8846,6 +8876,16 @@
                                 "name": "BT_NIMBLE_NVS_PERSIST",
                                 "range": null,
                                 "title": "Persist the BLE Bonding keys in NVS",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "BT_NIMBLE_ENABLED",
+                                "help": "There are tracking risks associated with using a fixed or static IRK.\nIf enabled this option, Bluedroid will assign a new randomly-generated IRK\nwhen all pairing and bonding records are deleted. This would decrease the ability\nof a previously paired peer to be used to determine whether a device\nwith which it previously shared an IRK is within range.",
+                                "id": "BT_NIMBLE_SMP_ID_RESET",
+                                "name": "BT_NIMBLE_SMP_ID_RESET",
+                                "range": null,
+                                "title": "Reset device identity when all bonding records are deleted",
                                 "type": "bool"
                             },
                             {
@@ -9439,6 +9479,16 @@
                                         "type": "bool"
                                     },
                                     {
+                                        "children": [],
+                                        "depends_on": "BT_NIMBLE_50_FEATURE_SUPPORT && SOC_BLE_CTE_SUPPORTED && BT_NIMBLE_ENABLED",
+                                        "help": "Enable support for Connectionless and Connection Oriented Direction Finding",
+                                        "id": "BT_NIMBLE_AOA_AOD",
+                                        "name": "BT_NIMBLE_AOA_AOD",
+                                        "range": null,
+                                        "title": "Direction Finding",
+                                        "type": "bool"
+                                    },
+                                    {
                                         "children": [
                                             {
                                                 "children": [],
@@ -9929,6 +9979,16 @@
                             },
                             {
                                 "children": [],
+                                "depends_on": "BT_NIMBLE_ENABLED && (IDF_TARGET_ESP32C3 || IDF_TARGET_ESP32S3) && BT_NIMBLE_ENABLED",
+                                "help": "This enables support for user to initiate a new connection with scan in progress",
+                                "id": "BT_NIMBLE_HOST_ALLOW_CONNECT_WITH_SCAN",
+                                "name": "BT_NIMBLE_HOST_ALLOW_CONNECT_WITH_SCAN",
+                                "range": null,
+                                "title": "Allow Connections with scanning in progress",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
                                 "depends_on": "BT_NIMBLE_ENABLED && BT_NIMBLE_ENABLED",
                                 "help": "When scanning and scan duplicate is not enabled, if there are a lot of adv packets around\nor application layer handling adv packets is slow, it will cause the controller memory\nto run out. if enabled, adv packets will be lost when host queue is congested.",
                                 "id": "BT_NIMBLE_HOST_QUEUE_CONG_CHECK",
@@ -10321,7 +10381,7 @@
                                         ],
                                         "depends_on": "BTDM_CTRL_PCM_ROLE_EDGE_CONFIG && BT_CONTROLLER_ENABLED",
                                         "help": "PCM role can be configured as PCM master or PCM slave",
-                                        "id": "component-config-bluetooth-controller-options-pcm-signal-config-role-and-polar--pcm-role",
+                                        "id": "component-config-bluetooth-controller-options-pcm-signal-configurations-role-polar-and-channel-mode-stereo-mono--pcm-role",
                                         "name": "BTDM_CTRL_PCM_ROLE",
                                         "title": "PCM Role",
                                         "type": "choice"
@@ -10351,9 +10411,49 @@
                                         ],
                                         "depends_on": "BTDM_CTRL_PCM_ROLE_EDGE_CONFIG && BT_CONTROLLER_ENABLED",
                                         "help": "PCM polarity can be configured as Falling Edge or Rising Edge",
-                                        "id": "component-config-bluetooth-controller-options-pcm-signal-config-role-and-polar--pcm-polar",
+                                        "id": "component-config-bluetooth-controller-options-pcm-signal-configurations-role-polar-and-channel-mode-stereo-mono--pcm-polar",
                                         "name": "BTDM_CTRL_PCM_POLAR",
                                         "title": "PCM Polar",
+                                        "type": "choice"
+                                    },
+                                    {
+                                        "children": [
+                                            {
+                                                "children": [],
+                                                "depends_on": "<choice BTDM_CTRL_PCM_FSYNCSHP>",
+                                                "help": "Stereo Mode(Dual channel): FSYNC and DOUT signals both change simultaneously on the edge of CLK.\nThe FSYNC signal continues until the end of the current channel-data transmission.\n(There is a waveform graph under the path examples/bluetooth/bluedroid/classic_bt/hfp_ag/image)",
+                                                "id": "BTDM_CTRL_PCM_FSYNCSHP_STEREO_MODE",
+                                                "name": "BTDM_CTRL_PCM_FSYNCSHP_STEREO_MODE",
+                                                "range": null,
+                                                "title": "Stereo Mode",
+                                                "type": "bool"
+                                            },
+                                            {
+                                                "children": [],
+                                                "depends_on": "<choice BTDM_CTRL_PCM_FSYNCSHP>",
+                                                "help": "Mono Mode 1(Single channel): FSYNC signal starts to change a CLK clock cycle earlier than the DOUT signal.\nThe FSYNC signal continues for one extra CLK clock cycle.\n(There is a waveform graph under the path examples/bluetooth/bluedroid/classic_bt/hfp_ag/image)",
+                                                "id": "BTDM_CTRL_PCM_FSYNCSHP_MONO_MODE_LF",
+                                                "name": "BTDM_CTRL_PCM_FSYNCSHP_MONO_MODE_LF",
+                                                "range": null,
+                                                "title": "Mono Mode 1",
+                                                "type": "bool"
+                                            },
+                                            {
+                                                "children": [],
+                                                "depends_on": "<choice BTDM_CTRL_PCM_FSYNCSHP>",
+                                                "help": "Mono Mode 2(Single channel): FSYNC and DOUT signals both change simultaneously on the edge of CLK.\nThe FSYNC signal continues for one extra CLK clock cycle.\n(There is a waveform graph under the path examples/bluetooth/bluedroid/classic_bt/hfp_ag/image)",
+                                                "id": "BTDM_CTRL_PCM_FSYNCSHP_MONO_MODE_FF",
+                                                "name": "BTDM_CTRL_PCM_FSYNCSHP_MONO_MODE_FF",
+                                                "range": null,
+                                                "title": "Mono Mode 2",
+                                                "type": "bool"
+                                            }
+                                        ],
+                                        "depends_on": "BTDM_CTRL_PCM_ROLE_EDGE_CONFIG && BT_CONTROLLER_ENABLED",
+                                        "help": "PCM frame synchronization signal shape can be configured as Stereo Mode or Mono Mode.\n(There are detailed instructions under the path examples/bluetooth/bluedroid/classic_bt/hfp_ag/README.md)",
+                                        "id": "component-config-bluetooth-controller-options-pcm-signal-configurations-role-polar-and-channel-mode-stereo-mono--channel-mode-stereo-mono-",
+                                        "name": "BTDM_CTRL_PCM_FSYNCSHP",
+                                        "title": "Channel Mode(Stereo/Mono)",
                                         "type": "choice"
                                     }
                                 ],
@@ -10363,7 +10463,7 @@
                                 "is_menuconfig": true,
                                 "name": "BTDM_CTRL_PCM_ROLE_EDGE_CONFIG",
                                 "range": null,
-                                "title": "PCM Signal Config (Role and Polar)",
+                                "title": "PCM Signal Configurations: Role, Polar and Channel Mode(Stereo/Mono)",
                                 "type": "menu"
                             },
                             {
@@ -10382,6 +10482,16 @@
                                 "help": null,
                                 "id": "BTDM_CTRL_PCM_POLAR_EFF",
                                 "name": "BTDM_CTRL_PCM_POLAR_EFF",
+                                "range": null,
+                                "title": null,
+                                "type": "int"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "BT_CONTROLLER_ENABLED",
+                                "help": null,
+                                "id": "BTDM_CTRL_PCM_FSYNCSHP_EFF",
+                                "name": "BTDM_CTRL_PCM_FSYNCSHP_EFF",
                                 "range": null,
                                 "title": null,
                                 "type": "int"
@@ -13977,6 +14087,16 @@
                         "range": null,
                         "title": "ISP driver ISR IRAM-Safe",
                         "type": "bool"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": "SOC_ISP_SUPPORTED",
+                        "help": "Place ISP control functions into IRAM,\nso that these functions can be IRAM-safe and able to be called in the other IRAM interrupt context.\nEnabling this option can improve driver performance as well.\n\nFunction list:\n- `esp_isp_sharpen_configure`",
+                        "id": "ISP_CTRL_FUNC_IN_IRAM",
+                        "name": "ISP_CTRL_FUNC_IN_IRAM",
+                        "range": null,
+                        "title": "Place ISP control functions into IRAM",
+                        "type": "bool"
                     }
                 ],
                 "depends_on": "SOC_ISP_SUPPORTED",
@@ -15859,6 +15979,35 @@
             {
                 "children": [
                     {
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": "ESP_MM_CACHE_MSYNC_C2M_CHUNKED_OPS",
+                                "help": "Max len in bytes per C2M chunk, operations with size over the max len will be\nsliced into multiple chunks.",
+                                "id": "ESP_MM_CACHE_MSYNC_C2M_CHUNKED_OPS_MAX_LEN",
+                                "name": "ESP_MM_CACHE_MSYNC_C2M_CHUNKED_OPS_MAX_LEN",
+                                "range": null,
+                                "title": "Max len in bytes per C2M chunk",
+                                "type": "hex"
+                            }
+                        ],
+                        "depends_on": "SOC_CACHE_WRITEBACK_SUPPORTED",
+                        "help": "`esp_cache_msync` C2M direction takes critical sections, which means during\nthe operation, the interrupts are disabled. Whereas Cache writebacks for\nlarge buffers could be especially time intensive, and might cause interrupts\nto be disabled for a significant amount of time.\n\nSometimes you want other ISRs to be responded during this C2M process.\nThis option is to slice one C2M operation into multiple chunks,\nwith CONFIG_ESP_MM_CACHE_MSYNC_C2M_CHUNKED_OPS_MAX_LEN max len. This will give you\na breath during the C2M process as sometimes the C2M process is quite long.\n\nNote if the buffer processed by the `esp_cache_msync` (C2M sliced) is interrupted by an ISR,\nand this ISR also accesses this buffer, this may lead to data coherence issue.",
+                        "id": "ESP_MM_CACHE_MSYNC_C2M_CHUNKED_OPS",
+                        "name": "ESP_MM_CACHE_MSYNC_C2M_CHUNKED_OPS",
+                        "range": null,
+                        "title": "Enable esp_cache_msync C2M chunked operation",
+                        "type": "bool"
+                    }
+                ],
+                "depends_on": null,
+                "id": "component-config-esp-mm-memory-management-configurations",
+                "title": "ESP-MM: Memory Management Configurations",
+                "type": "menu"
+            },
+            {
+                "children": [
+                    {
                         "children": [],
                         "depends_on": null,
                         "help": "The value of 0 indicates the IP lost timer is disabled, otherwise the timer is enabled.\n\nThe IP address may be lost because of some reasons, e.g. when the station disconnects\nfrom soft-AP, or when DHCP IP renew fails etc. If the IP lost timer is enabled, it will\nbe started every time the IP is lost. Event SYSTEM_EVENT_STA_LOST_IP will be raised if\nthe timer expires. The IP lost timer is stopped if the station get the IP again before\nthe timer expires.",
@@ -15970,6 +16119,16 @@
                         "name": "ESP_NETIF_BRIDGE_EN",
                         "range": null,
                         "title": "Enable LwIP IEEE 802.1D bridge",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": "Enable this option to use the DNS server which belongs to the selected default network interface.\nThis feature collects DNS server and netif information from LWIP core modules.\nWhenever a new default netif is selected, global DNS servers in LWIP are updated with the netif\nrelated servers.",
+                        "id": "ESP_NETIF_SET_DNS_PER_DEFAULT_NETIF",
+                        "name": "ESP_NETIF_SET_DNS_PER_DEFAULT_NETIF",
+                        "range": null,
+                        "title": "Enable DNS server per interface",
                         "type": "bool"
                     }
                 ],
@@ -16826,7 +16985,7 @@
                                     },
                                     {
                                         "children": [],
-                                        "depends_on": "SPIRAM_USE_MALLOC && SPIRAM && !APP_BUILD_TYPE_PURE_RAM_APP",
+                                        "depends_on": "(SPIRAM_USE_CAPS_ALLOC || SPIRAM_USE_MALLOC) && SPIRAM && !APP_BUILD_TYPE_PURE_RAM_APP",
                                         "help": "Because some bits of the ESP32 code environment cannot be recompiled with the cache workaround,\nnormally tasks cannot be safely run with their stack residing in external memory; for this reason\nxTaskCreate (and related task creaton functions) always allocate stack in internal memory and\nxTaskCreateStatic will check if the memory passed to it is in internal memory. If you have a task that\nneeds a large amount of stack and does not call on ROM code in any way (no direct calls, but also no\nBluetooth/WiFi), you can try enable this to cause xTaskCreateStatic to allow tasks stack in external\nmemory.",
                                         "id": "SPIRAM_ALLOW_STACK_EXTERNAL_MEMORY",
                                         "name": "SPIRAM_ALLOW_STACK_EXTERNAL_MEMORY",
@@ -17645,7 +17804,7 @@
                         "id": "ESP_CONSOLE_UART_TX_GPIO",
                         "name": "ESP_CONSOLE_UART_TX_GPIO",
                         "range": null,
-                        "title": "UART TX on GPIO#",
+                        "title": "UART TX on GPIO<num>",
                         "type": "int"
                     },
                     {
@@ -17655,7 +17814,7 @@
                         "id": "ESP_CONSOLE_UART_RX_GPIO",
                         "name": "ESP_CONSOLE_UART_RX_GPIO",
                         "range": null,
-                        "title": "UART RX on GPIO#",
+                        "title": "UART RX on GPIO<num>",
                         "type": "int"
                     },
                     {
@@ -20450,103 +20609,114 @@
                                 "type": "bool"
                             },
                             {
-                                "children": [],
-                                "depends_on": null,
-                                "help": "Sets the timer task's name (see configTIMER_SERVICE_TASK_NAME documentation for more details).",
-                                "id": "FREERTOS_TIMER_SERVICE_TASK_NAME",
-                                "name": "FREERTOS_TIMER_SERVICE_TASK_NAME",
-                                "range": null,
-                                "title": "configTIMER_SERVICE_TASK_NAME",
-                                "type": "string"
-                            },
-                            {
                                 "children": [
                                     {
                                         "children": [],
-                                        "depends_on": "<choice FREERTOS_TIMER_SERVICE_TASK_CORE_AFFINITY>",
-                                        "help": null,
-                                        "id": "FREERTOS_TIMER_TASK_AFFINITY_CPU0",
-                                        "name": "FREERTOS_TIMER_TASK_AFFINITY_CPU0",
+                                        "depends_on": "FREERTOS_USE_TIMERS",
+                                        "help": "Sets the timer task's name (see configTIMER_SERVICE_TASK_NAME documentation for more details).",
+                                        "id": "FREERTOS_TIMER_SERVICE_TASK_NAME",
+                                        "name": "FREERTOS_TIMER_SERVICE_TASK_NAME",
                                         "range": null,
-                                        "title": "CPU0",
-                                        "type": "bool"
+                                        "title": "configTIMER_SERVICE_TASK_NAME",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "children": [
+                                            {
+                                                "children": [],
+                                                "depends_on": "<choice FREERTOS_TIMER_SERVICE_TASK_CORE_AFFINITY>",
+                                                "help": null,
+                                                "id": "FREERTOS_TIMER_TASK_AFFINITY_CPU0",
+                                                "name": "FREERTOS_TIMER_TASK_AFFINITY_CPU0",
+                                                "range": null,
+                                                "title": "CPU0",
+                                                "type": "bool"
+                                            },
+                                            {
+                                                "children": [],
+                                                "depends_on": "!FREERTOS_UNICORE && <choice FREERTOS_TIMER_SERVICE_TASK_CORE_AFFINITY>",
+                                                "help": null,
+                                                "id": "FREERTOS_TIMER_TASK_AFFINITY_CPU1",
+                                                "name": "FREERTOS_TIMER_TASK_AFFINITY_CPU1",
+                                                "range": null,
+                                                "title": "CPU1",
+                                                "type": "bool"
+                                            },
+                                            {
+                                                "children": [],
+                                                "depends_on": "<choice FREERTOS_TIMER_SERVICE_TASK_CORE_AFFINITY>",
+                                                "help": null,
+                                                "id": "FREERTOS_TIMER_TASK_NO_AFFINITY",
+                                                "name": "FREERTOS_TIMER_TASK_NO_AFFINITY",
+                                                "range": null,
+                                                "title": "No affinity",
+                                                "type": "bool"
+                                            }
+                                        ],
+                                        "depends_on": "FREERTOS_USE_TIMERS",
+                                        "help": "Sets the timer task's core affinity\n(see configTIMER_SERVICE_TASK_CORE_AFFINITY documentation for more details).",
+                                        "id": "component-config-freertos-kernel-configuse_timers-configtimer_service_task_core_affinity",
+                                        "name": "FREERTOS_TIMER_SERVICE_TASK_CORE_AFFINITY",
+                                        "title": "configTIMER_SERVICE_TASK_CORE_AFFINITY",
+                                        "type": "choice"
                                     },
                                     {
                                         "children": [],
-                                        "depends_on": "!FREERTOS_UNICORE && <choice FREERTOS_TIMER_SERVICE_TASK_CORE_AFFINITY>",
+                                        "depends_on": "FREERTOS_USE_TIMERS",
                                         "help": null,
-                                        "id": "FREERTOS_TIMER_TASK_AFFINITY_CPU1",
-                                        "name": "FREERTOS_TIMER_TASK_AFFINITY_CPU1",
+                                        "id": "FREERTOS_TIMER_SERVICE_TASK_CORE_AFFINITY",
+                                        "name": "FREERTOS_TIMER_SERVICE_TASK_CORE_AFFINITY",
                                         "range": null,
-                                        "title": "CPU1",
-                                        "type": "bool"
+                                        "title": null,
+                                        "type": "hex"
                                     },
                                     {
                                         "children": [],
-                                        "depends_on": "<choice FREERTOS_TIMER_SERVICE_TASK_CORE_AFFINITY>",
-                                        "help": null,
-                                        "id": "FREERTOS_TIMER_TASK_NO_AFFINITY",
-                                        "name": "FREERTOS_TIMER_TASK_NO_AFFINITY",
-                                        "range": null,
-                                        "title": "No affinity",
-                                        "type": "bool"
+                                        "depends_on": "FREERTOS_USE_TIMERS",
+                                        "help": "Sets the timer task's priority (see configTIMER_TASK_PRIORITY documentation for more details).",
+                                        "id": "FREERTOS_TIMER_TASK_PRIORITY",
+                                        "name": "FREERTOS_TIMER_TASK_PRIORITY",
+                                        "range": [
+                                            1,
+                                            25
+                                        ],
+                                        "title": "configTIMER_TASK_PRIORITY",
+                                        "type": "int"
+                                    },
+                                    {
+                                        "children": [],
+                                        "depends_on": "FREERTOS_USE_TIMERS",
+                                        "help": "Set the timer task's stack size (see configTIMER_TASK_STACK_DEPTH documentation for more details).",
+                                        "id": "FREERTOS_TIMER_TASK_STACK_DEPTH",
+                                        "name": "FREERTOS_TIMER_TASK_STACK_DEPTH",
+                                        "range": [
+                                            1536,
+                                            32768
+                                        ],
+                                        "title": "configTIMER_TASK_STACK_DEPTH",
+                                        "type": "int"
+                                    },
+                                    {
+                                        "children": [],
+                                        "depends_on": "FREERTOS_USE_TIMERS",
+                                        "help": "Set the timer task's command queue length (see configTIMER_QUEUE_LENGTH documentation for more\ndetails).",
+                                        "id": "FREERTOS_TIMER_QUEUE_LENGTH",
+                                        "name": "FREERTOS_TIMER_QUEUE_LENGTH",
+                                        "range": [
+                                            5,
+                                            20
+                                        ],
+                                        "title": "configTIMER_QUEUE_LENGTH",
+                                        "type": "int"
                                     }
                                 ],
                                 "depends_on": null,
-                                "help": "Sets the timer task's core affinity\n(see configTIMER_SERVICE_TASK_CORE_AFFINITY documentation for more details).",
-                                "id": "component-config-freertos-kernel-configtimer_service_task_core_affinity",
-                                "name": "FREERTOS_TIMER_SERVICE_TASK_CORE_AFFINITY",
-                                "title": "configTIMER_SERVICE_TASK_CORE_AFFINITY",
-                                "type": "choice"
-                            },
-                            {
-                                "children": [],
-                                "depends_on": null,
-                                "help": null,
-                                "id": "FREERTOS_TIMER_SERVICE_TASK_CORE_AFFINITY",
-                                "name": "FREERTOS_TIMER_SERVICE_TASK_CORE_AFFINITY",
+                                "help": "Enable FreeRTOS Software Timers. Normally the timer task will only get pulled into the build\nand created if any software timer related functions are used. This is achieved through IDF\ndefining a weak empty function for xTimerCreateTimerTask, which should take effect if timers.c\nis not pulled into the build.\n\nIn certain special cases (if you use configUSE_TRACE_FACILITY=y and event groups) the linker will\nstill pull in the xTimerCreateTimerTask from timers.c even if the function that utilized it gets\ndiscarded due to not being used.\n\nIn these cases you can use this option to force the timer task to be disabled.",
+                                "id": "FREERTOS_USE_TIMERS",
+                                "name": "FREERTOS_USE_TIMERS",
                                 "range": null,
-                                "title": null,
-                                "type": "hex"
-                            },
-                            {
-                                "children": [],
-                                "depends_on": null,
-                                "help": "Sets the timer task's priority (see configTIMER_TASK_PRIORITY documentation for more details).",
-                                "id": "FREERTOS_TIMER_TASK_PRIORITY",
-                                "name": "FREERTOS_TIMER_TASK_PRIORITY",
-                                "range": [
-                                    1,
-                                    25
-                                ],
-                                "title": "configTIMER_TASK_PRIORITY",
-                                "type": "int"
-                            },
-                            {
-                                "children": [],
-                                "depends_on": null,
-                                "help": "Set the timer task's stack size (see configTIMER_TASK_STACK_DEPTH documentation for more details).",
-                                "id": "FREERTOS_TIMER_TASK_STACK_DEPTH",
-                                "name": "FREERTOS_TIMER_TASK_STACK_DEPTH",
-                                "range": [
-                                    1536,
-                                    32768
-                                ],
-                                "title": "configTIMER_TASK_STACK_DEPTH",
-                                "type": "int"
-                            },
-                            {
-                                "children": [],
-                                "depends_on": null,
-                                "help": "Set the timer task's command queue length (see configTIMER_QUEUE_LENGTH documentation for more\ndetails).",
-                                "id": "FREERTOS_TIMER_QUEUE_LENGTH",
-                                "name": "FREERTOS_TIMER_QUEUE_LENGTH",
-                                "range": [
-                                    5,
-                                    20
-                                ],
-                                "title": "configTIMER_QUEUE_LENGTH",
-                                "type": "int"
+                                "title": "configUSE_TIMERS",
+                                "type": "bool"
                             },
                             {
                                 "children": [],
@@ -21939,7 +22109,7 @@
                                 "children": [
                                     {
                                         "children": [],
-                                        "depends_on": "No && <choice LOG_TIMESTAMP_SOURCE>",
+                                        "depends_on": "NO_SYMBOL && <choice LOG_TIMESTAMP_SOURCE>",
                                         "help": null,
                                         "id": "LOG_TIMESTAMP_SOURCE_NONE",
                                         "name": "LOG_TIMESTAMP_SOURCE_NONE",
@@ -21969,7 +22139,7 @@
                                     },
                                     {
                                         "children": [],
-                                        "depends_on": "No && <choice LOG_TIMESTAMP_SOURCE>",
+                                        "depends_on": "NO_SYMBOL && <choice LOG_TIMESTAMP_SOURCE>",
                                         "help": null,
                                         "id": "LOG_TIMESTAMP_SOURCE_SYSTEM_FULL",
                                         "name": "LOG_TIMESTAMP_SOURCE_SYSTEM_FULL",
@@ -22147,12 +22317,12 @@
                     {
                         "children": [],
                         "depends_on": null,
-                        "help": "Sockets take up a certain amount of memory, and allowing fewer\nsockets to be open at the same time conserves memory. Specify\nthe maximum amount of sockets here. The valid value is from 1\nto 16.",
+                        "help": "The practical maximum limit is\ndetermined by available heap memory at runtime.\n\nSockets take up a certain amount of memory, and allowing fewer\nsockets to be open at the same time conserves memory. Specify\nthe maximum amount of sockets here. The valid value is from 1\nto 253. If using value above 61, update CMakeLists defining\nFD_SETSIZE to the number of sockets used plus the\nexpected open files (minimum of +3 for stdout, stderr and stdin).",
                         "id": "LWIP_MAX_SOCKETS",
                         "name": "LWIP_MAX_SOCKETS",
                         "range": [
                             1,
-                            16
+                            253
                         ],
                         "title": "Max number of open sockets",
                         "type": "int"
@@ -23082,28 +23252,6 @@
                         "type": "hex"
                     },
                     {
-                        "children": [
-                            {
-                                "children": [],
-                                "depends_on": "LWIP_PPP_SUPPORT && LWIP_IPV6",
-                                "help": "Enable IPV6 support in PPP for the local link between the DTE (processor) and DCE (modem).\nThere are some modems which do not support the IPV6 addressing in the local link.\nIf they are requested for IPV6CP negotiation, they may time out.\nThis would in turn fail the configuration for the whole link.\nIf your modem is not responding correctly to PPP Phase Network, try to disable IPV6 support.",
-                                "id": "LWIP_PPP_ENABLE_IPV6",
-                                "name": "LWIP_PPP_ENABLE_IPV6",
-                                "range": null,
-                                "title": "Enable IPV6 support for PPP connections (IPV6CP)",
-                                "type": "bool"
-                            }
-                        ],
-                        "depends_on": null,
-                        "help": "Enable PPP stack. Now only PPP over serial is possible.",
-                        "id": "LWIP_PPP_SUPPORT",
-                        "is_menuconfig": true,
-                        "name": "LWIP_PPP_SUPPORT",
-                        "range": null,
-                        "title": "Enable PPP support",
-                        "type": "menu"
-                    },
-                    {
                         "children": [],
                         "depends_on": "LWIP_IPV6",
                         "help": "Config max number of IPv6 packets to queue during MAC resolution.",
@@ -23130,115 +23278,157 @@
                         "type": "int"
                     },
                     {
-                        "children": [],
-                        "depends_on": "LWIP_PPP_SUPPORT",
-                        "help": "Enable to set a callback which is called on change of the internal PPP state machine.",
-                        "id": "LWIP_PPP_NOTIFY_PHASE_SUPPORT",
-                        "name": "LWIP_PPP_NOTIFY_PHASE_SUPPORT",
-                        "range": null,
-                        "title": "Enable Notify Phase Callback",
-                        "type": "bool"
-                    },
-                    {
-                        "children": [],
-                        "depends_on": "LWIP_PPP_SUPPORT",
-                        "help": "Enable Password Authentication Protocol (PAP) support",
-                        "id": "LWIP_PPP_PAP_SUPPORT",
-                        "name": "LWIP_PPP_PAP_SUPPORT",
-                        "range": null,
-                        "title": "Enable PAP support",
-                        "type": "bool"
-                    },
-                    {
-                        "children": [],
-                        "depends_on": "LWIP_PPP_SUPPORT",
-                        "help": "Enable Challenge Handshake Authentication Protocol (CHAP) support",
-                        "id": "LWIP_PPP_CHAP_SUPPORT",
-                        "name": "LWIP_PPP_CHAP_SUPPORT",
-                        "range": null,
-                        "title": "Enable CHAP support",
-                        "type": "bool"
-                    },
-                    {
-                        "children": [],
-                        "depends_on": "LWIP_PPP_SUPPORT",
-                        "help": "Enable Microsoft version of the Challenge-Handshake Authentication Protocol (MSCHAP) support",
-                        "id": "LWIP_PPP_MSCHAP_SUPPORT",
-                        "name": "LWIP_PPP_MSCHAP_SUPPORT",
-                        "range": null,
-                        "title": "Enable MSCHAP support",
-                        "type": "bool"
-                    },
-                    {
-                        "children": [],
-                        "depends_on": "LWIP_PPP_SUPPORT",
-                        "help": "Enable Microsoft Point-to-Point Encryption (MPPE) support",
-                        "id": "LWIP_PPP_MPPE_SUPPORT",
-                        "name": "LWIP_PPP_MPPE_SUPPORT",
-                        "range": null,
-                        "title": "Enable MPPE support",
-                        "type": "bool"
-                    },
-                    {
-                        "children": [],
-                        "depends_on": "LWIP_PPP_SUPPORT",
-                        "help": "Enable to use PPP server",
-                        "id": "LWIP_PPP_SERVER_SUPPORT",
-                        "name": "LWIP_PPP_SERVER_SUPPORT",
-                        "range": null,
-                        "title": "Enable PPP server support",
-                        "type": "bool"
-                    },
-                    {
-                        "children": [],
-                        "depends_on": "LWIP_PPP_SUPPORT",
-                        "help": "Enable support for VJ header compression.\nPlease disable this if you're using NAPT on PPP interface,\nsince the compressed IP header might not be correctly interpreted\nin NAT causing the compressed packet to be dropped.",
-                        "id": "LWIP_PPP_VJ_HEADER_COMPRESSION",
-                        "name": "LWIP_PPP_VJ_HEADER_COMPRESSION",
-                        "range": null,
-                        "title": "Enable VJ IP Header compression",
-                        "type": "bool"
-                    },
-                    {
                         "children": [
                             {
                                 "children": [],
-                                "depends_on": "LWIP_ENABLE_LCP_ECHO",
-                                "help": "Interval in seconds between keepalive LCP echo requests, 0 to disable.",
-                                "id": "LWIP_LCP_ECHOINTERVAL",
-                                "name": "LWIP_LCP_ECHOINTERVAL",
+                                "depends_on": "LWIP_PPP_SUPPORT && LWIP_IPV4",
+                                "help": "Enable IPCP protocol in PPP negotiations, which assigns IPv4 addresses to the PPP client,\nas well as IPv4 DNS servers.\nYou can disable this if your modem supports IPv6 only.",
+                                "id": "LWIP_PPP_ENABLE_IPV4",
+                                "name": "LWIP_PPP_ENABLE_IPV4",
                                 "range": null,
-                                "title": "Echo interval (s)",
-                                "type": "int"
+                                "title": "Enable IPV4 support for PPP connections (IPCP)",
+                                "type": "bool"
                             },
                             {
                                 "children": [],
-                                "depends_on": "LWIP_ENABLE_LCP_ECHO",
-                                "help": "Number of consecutive unanswered echo requests before failure is indicated.",
-                                "id": "LWIP_LCP_MAXECHOFAILS",
-                                "name": "LWIP_LCP_MAXECHOFAILS",
+                                "depends_on": "LWIP_PPP_SUPPORT && LWIP_IPV6",
+                                "help": "Enable IPV6 support in PPP for the local link between the DTE (processor) and DCE (modem).\nThere are some modems which do not support the IPV6 addressing in the local link.\nIf they are requested for IPV6CP negotiation, they may time out.\nThis would in turn fail the configuration for the whole link.\nIf your modem is not responding correctly to PPP Phase Network, try to disable IPV6 support.",
+                                "id": "LWIP_PPP_ENABLE_IPV6",
+                                "name": "LWIP_PPP_ENABLE_IPV6",
                                 "range": null,
-                                "title": "Maximum echo failures",
-                                "type": "int"
+                                "title": "Enable IPV6 support for PPP connections (IPV6CP)",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "LWIP_PPP_SUPPORT",
+                                "help": "Enable to set a callback which is called on change of the internal PPP state machine.",
+                                "id": "LWIP_PPP_NOTIFY_PHASE_SUPPORT",
+                                "name": "LWIP_PPP_NOTIFY_PHASE_SUPPORT",
+                                "range": null,
+                                "title": "Enable Notify Phase Callback",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "LWIP_PPP_SUPPORT",
+                                "help": "Enable Password Authentication Protocol (PAP) support",
+                                "id": "LWIP_PPP_PAP_SUPPORT",
+                                "name": "LWIP_PPP_PAP_SUPPORT",
+                                "range": null,
+                                "title": "Enable PAP support",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "LWIP_PPP_SUPPORT",
+                                "help": "Enable Challenge Handshake Authentication Protocol (CHAP) support",
+                                "id": "LWIP_PPP_CHAP_SUPPORT",
+                                "name": "LWIP_PPP_CHAP_SUPPORT",
+                                "range": null,
+                                "title": "Enable CHAP support",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "LWIP_PPP_SUPPORT",
+                                "help": "Enable Microsoft version of the Challenge-Handshake Authentication Protocol (MSCHAP) support",
+                                "id": "LWIP_PPP_MSCHAP_SUPPORT",
+                                "name": "LWIP_PPP_MSCHAP_SUPPORT",
+                                "range": null,
+                                "title": "Enable MSCHAP support",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "LWIP_PPP_SUPPORT",
+                                "help": "Enable Microsoft Point-to-Point Encryption (MPPE) support",
+                                "id": "LWIP_PPP_MPPE_SUPPORT",
+                                "name": "LWIP_PPP_MPPE_SUPPORT",
+                                "range": null,
+                                "title": "Enable MPPE support",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "LWIP_PPP_SUPPORT",
+                                "help": "Enable to use PPP server",
+                                "id": "LWIP_PPP_SERVER_SUPPORT",
+                                "name": "LWIP_PPP_SERVER_SUPPORT",
+                                "range": null,
+                                "title": "Enable PPP server support",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "LWIP_PPP_SUPPORT",
+                                "help": "Enable support for VJ header compression.\nPlease disable this if you're using NAPT on PPP interface,\nsince the compressed IP header might not be correctly interpreted\nin NAT causing the compressed packet to be dropped.",
+                                "id": "LWIP_PPP_VJ_HEADER_COMPRESSION",
+                                "name": "LWIP_PPP_VJ_HEADER_COMPRESSION",
+                                "range": null,
+                                "title": "Enable VJ IP Header compression",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [
+                                    {
+                                        "children": [],
+                                        "depends_on": "LWIP_ENABLE_LCP_ECHO",
+                                        "help": "Interval in seconds between keepalive LCP echo requests, 0 to disable.",
+                                        "id": "LWIP_LCP_ECHOINTERVAL",
+                                        "name": "LWIP_LCP_ECHOINTERVAL",
+                                        "range": null,
+                                        "title": "Echo interval (s)",
+                                        "type": "int"
+                                    },
+                                    {
+                                        "children": [],
+                                        "depends_on": "LWIP_ENABLE_LCP_ECHO",
+                                        "help": "Number of consecutive unanswered echo requests before failure is indicated.",
+                                        "id": "LWIP_LCP_MAXECHOFAILS",
+                                        "name": "LWIP_LCP_MAXECHOFAILS",
+                                        "range": null,
+                                        "title": "Maximum echo failures",
+                                        "type": "int"
+                                    }
+                                ],
+                                "depends_on": "LWIP_PPP_SUPPORT",
+                                "help": "Enable LCP echo keepalive requests",
+                                "id": "LWIP_ENABLE_LCP_ECHO",
+                                "name": "LWIP_ENABLE_LCP_ECHO",
+                                "range": null,
+                                "title": "Enable LCP ECHO",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "LWIP_PPP_SUPPORT",
+                                "help": "Enable PPP debug log output",
+                                "id": "LWIP_PPP_DEBUG_ON",
+                                "name": "LWIP_PPP_DEBUG_ON",
+                                "range": null,
+                                "title": "Enable PPP debug log output",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "LWIP_PPP_SUPPORT && !LWIP_PPP_MPPE_SUPPORT && !LWIP_PPP_MSCHAP_SUPPORT",
+                                "help": "This option uses mbedTLS crypto functions (instead of internal PolarSSL\nimplementation) for PPP authentication modes (PAP, CHAP, etc.).\nYou can use this option to address symbol duplication issues, since\nthe internal functions are not namespaced (e.g. md5_init()).",
+                                "id": "LWIP_USE_EXTERNAL_MBEDTLS",
+                                "name": "LWIP_USE_EXTERNAL_MBEDTLS",
+                                "range": null,
+                                "title": "Use mbedTLS instead of internal polarSSL",
+                                "type": "bool"
                             }
                         ],
-                        "depends_on": "LWIP_PPP_SUPPORT",
-                        "help": "Enable LCP echo keepalive requests",
-                        "id": "LWIP_ENABLE_LCP_ECHO",
-                        "name": "LWIP_ENABLE_LCP_ECHO",
+                        "depends_on": null,
+                        "help": "Enable PPP stack. Now only PPP over serial is possible.",
+                        "id": "LWIP_PPP_SUPPORT",
+                        "is_menuconfig": true,
+                        "name": "LWIP_PPP_SUPPORT",
                         "range": null,
-                        "title": "Enable LCP ECHO",
-                        "type": "bool"
-                    },
-                    {
-                        "children": [],
-                        "depends_on": "LWIP_PPP_SUPPORT",
-                        "help": "Enable PPP debug log output",
-                        "id": "LWIP_PPP_DEBUG_ON",
-                        "name": "LWIP_PPP_DEBUG_ON",
-                        "range": null,
-                        "title": "Enable PPP debug log output",
-                        "type": "bool"
+                        "title": "Enable PPP support",
+                        "type": "menu"
                     },
                     {
                         "children": [
@@ -23444,6 +23634,16 @@
                                 "name": "LWIP_FALLBACK_DNS_SERVER_SUPPORT",
                                 "range": null,
                                 "title": "Enable DNS fallback server support",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": null,
+                                "help": "This option allows collecting DNS server settings per netif using\nconfigurable callback function.\nIt's typically used with CONFIG_ESP_NETIF_SET_DNS_PER_DEFAULT_NETIF\nwhich configures a callback to collect the DNS info on esp_netif layer.",
+                                "id": "LWIP_DNS_SETSERVER_WITH_NETIF",
+                                "name": "LWIP_DNS_SETSERVER_WITH_NETIF",
+                                "range": null,
+                                "title": "Enable DNS server settings with netif",
                                 "type": "bool"
                             }
                         ],
@@ -24267,11 +24467,11 @@
                             {
                                 "children": [],
                                 "depends_on": "MBEDTLS_X509_CRL_PARSE_C",
-                                "help": "Enable PKCS #7 core for using PKCS #7-formatted signatures.",
+                                "help": "Enable PKCS number 7 core for using PKCS number 7-formatted signatures.",
                                 "id": "MBEDTLS_PKCS7_C",
                                 "name": "MBEDTLS_PKCS7_C",
                                 "range": null,
-                                "title": "Enable PKCS #7",
+                                "title": "Enable PKCS number 7",
                                 "type": "bool"
                             },
                             {
@@ -24907,7 +25107,7 @@
                     },
                     {
                         "children": [],
-                        "depends_on": "MBEDTLS_TLS_ENABLED",
+                        "depends_on": "MBEDTLS_TLS_ENABLED && MBEDTLS_SSL_PROTO_TLS1_2",
                         "help": "The two main uses of renegotiation are (1) refresh keys on long-lived\nconnections and (2) client authentication after the initial handshake.\nIf you don't need renegotiation, disabling it will save code size and\nreduce the possibility of abuse/vulnerability.",
                         "id": "MBEDTLS_SSL_RENEGOTIATION",
                         "name": "MBEDTLS_SSL_RENEGOTIATION",
@@ -26274,6 +26474,34 @@
                         "type": "choice"
                     },
                     {
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": "OPENTHREAD_ENABLED",
+                                "help": "The OpenThread package name.",
+                                "id": "OPENTHREAD_PACKAGE_NAME",
+                                "name": "OPENTHREAD_PACKAGE_NAME",
+                                "range": null,
+                                "title": "OpenThread package name",
+                                "type": "string"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "OPENTHREAD_ENABLED",
+                                "help": "The OpenThread platform information.",
+                                "id": "OPENTHREAD_PLATFORM_INFO",
+                                "name": "OPENTHREAD_PLATFORM_INFO",
+                                "range": null,
+                                "title": "platform information",
+                                "type": "string"
+                            }
+                        ],
+                        "depends_on": "OPENTHREAD_ENABLED",
+                        "id": "component-config-openthread-openthread-version-message",
+                        "title": "OpenThread version message",
+                        "type": "menu"
+                    },
+                    {
                         "children": [],
                         "depends_on": "OPENTHREAD_RADIO",
                         "help": "Select this to enable OpenThread NCP vendor commands.",
@@ -26793,6 +27021,16 @@
                 "children": [
                     {
                         "children": [
+                            {
+                                "children": [],
+                                "depends_on": "SOC_MMU_PAGE_SIZE_8KB_SUPPORTED",
+                                "help": null,
+                                "id": "MMU_PAGE_SIZE_8KB",
+                                "name": "MMU_PAGE_SIZE_8KB",
+                                "range": null,
+                                "title": null,
+                                "type": "bool"
+                            },
                             {
                                 "children": [],
                                 "depends_on": null,
@@ -27799,6 +28037,16 @@
                                 "name": "ULP_PANIC_OUTPUT_ENABLE",
                                 "range": null,
                                 "title": "Enable panic handler which outputs over LP UART",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "ULP_COPROC_TYPE_LP_CORE && (SOC_ULP_SUPPORTED || SOC_RISCV_COPROC_SUPPORTED || SOC_LP_CORE_SUPPORTED)",
+                                "help": "Set this option to route lp_core_printf to the console HP-UART.\nThis allows you to easily view print outputs from the LP core, without\nhaving to connect to the LP-UART. This option comes with the following\nlimitations:\n\n1. There is no mutual exclusion between the HP-Core and the LP-Core accessing\nthe HP-UART, which means that if both cores are logging heavily the output\nstrings might get mangled together.\n2. The HP-UART can only work while the HP-Core is running, which means that\nif the HP-Core is in deep sleep, the LP-Core will not be able to print to the\nconsole HP-UART.\n\nDue to these limitations it is only recommended to use this option for easy debugging.\nFor more serious use-cases you should use the LP-UART.",
+                                "id": "ULP_HP_UART_CONSOLE_PRINT",
+                                "name": "ULP_HP_UART_CONSOLE_PRINT",
+                                "range": null,
+                                "title": "Route lp_core_printf to the console HP-UART",
                                 "type": "bool"
                             }
                         ],

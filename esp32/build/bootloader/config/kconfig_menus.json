@@ -893,6 +893,16 @@
         "children": [],
         "depends_on": null,
         "help": null,
+        "id": "SOC_GPIO_SUPPORT_HOLD_IO_IN_DSLP",
+        "name": "SOC_GPIO_SUPPORT_HOLD_IO_IN_DSLP",
+        "range": null,
+        "title": null,
+        "type": "bool"
+    },
+    {
+        "children": [],
+        "depends_on": null,
+        "help": null,
         "id": "SOC_I2C_NUM",
         "name": "SOC_I2C_NUM",
         "range": null,
@@ -2493,16 +2503,6 @@
         "children": [],
         "depends_on": null,
         "help": null,
-        "id": "IDF_TARGET_LINUX",
-        "name": "IDF_TARGET_LINUX",
-        "range": null,
-        "title": null,
-        "type": "bool"
-    },
-    {
-        "children": [],
-        "depends_on": null,
-        "help": null,
         "id": "IDF_TARGET_ESP32",
         "name": "IDF_TARGET_ESP32",
         "range": null,
@@ -2938,7 +2938,7 @@
                                 "children": [
                                     {
                                         "children": [],
-                                        "depends_on": "No && <choice BOOTLOADER_LOG_TIMESTAMP_SOURCE>",
+                                        "depends_on": "NO_SYMBOL && <choice BOOTLOADER_LOG_TIMESTAMP_SOURCE>",
                                         "help": null,
                                         "id": "BOOTLOADER_LOG_TIMESTAMP_SOURCE_NONE",
                                         "name": "BOOTLOADER_LOG_TIMESTAMP_SOURCE_NONE",
@@ -4474,7 +4474,7 @@
                     },
                     {
                         "children": [],
-                        "depends_on": "SOC_MEMSPI_SRC_FREQ_80M_SUPPORTED && <choice ESPTOOLPY_FLASHFREQ>",
+                        "depends_on": "SOC_MEMSPI_SRC_FREQ_80M_SUPPORTED && !ESP32P4_REV_MIN_0 && <choice ESPTOOLPY_FLASHFREQ>",
                         "help": null,
                         "id": "ESPTOOLPY_FLASHFREQ_80M",
                         "name": "ESPTOOLPY_FLASHFREQ_80M",
@@ -4863,6 +4863,16 @@
                     {
                         "children": [],
                         "depends_on": "<choice PARTITION_TABLE_TYPE>",
+                        "help": "This is a basic OTA-enabled partition table with\ntwo OTA app partitions. Both app partition sizes are 1700K,\nso this partition table requires 4MB or larger flash size.\n\nThe corresponding CSV file in the IDF directory is\ncomponents/partition_table/partitions_two_ota_large.csv",
+                        "id": "PARTITION_TABLE_TWO_OTA_LARGE",
+                        "name": "PARTITION_TABLE_TWO_OTA_LARGE",
+                        "range": null,
+                        "title": "Two large size OTA partitions",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": "<choice PARTITION_TABLE_TYPE>",
                         "help": "Specify the path to the partition table CSV to use for your project.\n\nConsult the Partition Table section in the ESP-IDF Programmers Guide\nfor more information.",
                         "id": "PARTITION_TABLE_CUSTOM",
                         "name": "PARTITION_TABLE_CUSTOM",
@@ -5197,6 +5207,16 @@
                 "name": "COMPILER_STACK_CHECK",
                 "range": null,
                 "title": null,
+                "type": "bool"
+            },
+            {
+                "children": [],
+                "depends_on": "IDF_TOOLCHAIN_GCC",
+                "help": "Disable merging identical constants (string/floating-point) across compilation units.\nThis helps in better size analysis of the application binary as the rodata section\ndistribution is more uniform across libraries. On downside, it may increase\nthe binary size and hence should be used during development phase only.",
+                "id": "COMPILER_NO_MERGE_CONSTANTS",
+                "name": "COMPILER_NO_MERGE_CONSTANTS",
+                "range": null,
+                "title": "Disable merging const sections",
                 "type": "bool"
             },
             {
@@ -6995,7 +7015,7 @@
                         "id": "ESP_CONSOLE_UART_TX_GPIO",
                         "name": "ESP_CONSOLE_UART_TX_GPIO",
                         "range": null,
-                        "title": "UART TX on GPIO#",
+                        "title": "UART TX on GPIO<num>",
                         "type": "int"
                     },
                     {
@@ -7005,7 +7025,7 @@
                         "id": "ESP_CONSOLE_UART_RX_GPIO",
                         "name": "ESP_CONSOLE_UART_RX_GPIO",
                         "range": null,
-                        "title": "UART RX on GPIO#",
+                        "title": "UART RX on GPIO<num>",
                         "type": "int"
                     },
                     {
@@ -7634,103 +7654,114 @@
                                 "type": "bool"
                             },
                             {
-                                "children": [],
-                                "depends_on": null,
-                                "help": "Sets the timer task's name (see configTIMER_SERVICE_TASK_NAME documentation for more details).",
-                                "id": "FREERTOS_TIMER_SERVICE_TASK_NAME",
-                                "name": "FREERTOS_TIMER_SERVICE_TASK_NAME",
-                                "range": null,
-                                "title": "configTIMER_SERVICE_TASK_NAME",
-                                "type": "string"
-                            },
-                            {
                                 "children": [
                                     {
                                         "children": [],
-                                        "depends_on": "<choice FREERTOS_TIMER_SERVICE_TASK_CORE_AFFINITY>",
-                                        "help": null,
-                                        "id": "FREERTOS_TIMER_TASK_AFFINITY_CPU0",
-                                        "name": "FREERTOS_TIMER_TASK_AFFINITY_CPU0",
+                                        "depends_on": "FREERTOS_USE_TIMERS",
+                                        "help": "Sets the timer task's name (see configTIMER_SERVICE_TASK_NAME documentation for more details).",
+                                        "id": "FREERTOS_TIMER_SERVICE_TASK_NAME",
+                                        "name": "FREERTOS_TIMER_SERVICE_TASK_NAME",
                                         "range": null,
-                                        "title": "CPU0",
-                                        "type": "bool"
+                                        "title": "configTIMER_SERVICE_TASK_NAME",
+                                        "type": "string"
+                                    },
+                                    {
+                                        "children": [
+                                            {
+                                                "children": [],
+                                                "depends_on": "<choice FREERTOS_TIMER_SERVICE_TASK_CORE_AFFINITY>",
+                                                "help": null,
+                                                "id": "FREERTOS_TIMER_TASK_AFFINITY_CPU0",
+                                                "name": "FREERTOS_TIMER_TASK_AFFINITY_CPU0",
+                                                "range": null,
+                                                "title": "CPU0",
+                                                "type": "bool"
+                                            },
+                                            {
+                                                "children": [],
+                                                "depends_on": "!FREERTOS_UNICORE && <choice FREERTOS_TIMER_SERVICE_TASK_CORE_AFFINITY>",
+                                                "help": null,
+                                                "id": "FREERTOS_TIMER_TASK_AFFINITY_CPU1",
+                                                "name": "FREERTOS_TIMER_TASK_AFFINITY_CPU1",
+                                                "range": null,
+                                                "title": "CPU1",
+                                                "type": "bool"
+                                            },
+                                            {
+                                                "children": [],
+                                                "depends_on": "<choice FREERTOS_TIMER_SERVICE_TASK_CORE_AFFINITY>",
+                                                "help": null,
+                                                "id": "FREERTOS_TIMER_TASK_NO_AFFINITY",
+                                                "name": "FREERTOS_TIMER_TASK_NO_AFFINITY",
+                                                "range": null,
+                                                "title": "No affinity",
+                                                "type": "bool"
+                                            }
+                                        ],
+                                        "depends_on": "FREERTOS_USE_TIMERS",
+                                        "help": "Sets the timer task's core affinity\n(see configTIMER_SERVICE_TASK_CORE_AFFINITY documentation for more details).",
+                                        "id": "component-config-freertos-kernel-configuse_timers-configtimer_service_task_core_affinity",
+                                        "name": "FREERTOS_TIMER_SERVICE_TASK_CORE_AFFINITY",
+                                        "title": "configTIMER_SERVICE_TASK_CORE_AFFINITY",
+                                        "type": "choice"
                                     },
                                     {
                                         "children": [],
-                                        "depends_on": "!FREERTOS_UNICORE && <choice FREERTOS_TIMER_SERVICE_TASK_CORE_AFFINITY>",
+                                        "depends_on": "FREERTOS_USE_TIMERS",
                                         "help": null,
-                                        "id": "FREERTOS_TIMER_TASK_AFFINITY_CPU1",
-                                        "name": "FREERTOS_TIMER_TASK_AFFINITY_CPU1",
+                                        "id": "FREERTOS_TIMER_SERVICE_TASK_CORE_AFFINITY",
+                                        "name": "FREERTOS_TIMER_SERVICE_TASK_CORE_AFFINITY",
                                         "range": null,
-                                        "title": "CPU1",
-                                        "type": "bool"
+                                        "title": null,
+                                        "type": "hex"
                                     },
                                     {
                                         "children": [],
-                                        "depends_on": "<choice FREERTOS_TIMER_SERVICE_TASK_CORE_AFFINITY>",
-                                        "help": null,
-                                        "id": "FREERTOS_TIMER_TASK_NO_AFFINITY",
-                                        "name": "FREERTOS_TIMER_TASK_NO_AFFINITY",
-                                        "range": null,
-                                        "title": "No affinity",
-                                        "type": "bool"
+                                        "depends_on": "FREERTOS_USE_TIMERS",
+                                        "help": "Sets the timer task's priority (see configTIMER_TASK_PRIORITY documentation for more details).",
+                                        "id": "FREERTOS_TIMER_TASK_PRIORITY",
+                                        "name": "FREERTOS_TIMER_TASK_PRIORITY",
+                                        "range": [
+                                            1,
+                                            25
+                                        ],
+                                        "title": "configTIMER_TASK_PRIORITY",
+                                        "type": "int"
+                                    },
+                                    {
+                                        "children": [],
+                                        "depends_on": "FREERTOS_USE_TIMERS",
+                                        "help": "Set the timer task's stack size (see configTIMER_TASK_STACK_DEPTH documentation for more details).",
+                                        "id": "FREERTOS_TIMER_TASK_STACK_DEPTH",
+                                        "name": "FREERTOS_TIMER_TASK_STACK_DEPTH",
+                                        "range": [
+                                            1536,
+                                            32768
+                                        ],
+                                        "title": "configTIMER_TASK_STACK_DEPTH",
+                                        "type": "int"
+                                    },
+                                    {
+                                        "children": [],
+                                        "depends_on": "FREERTOS_USE_TIMERS",
+                                        "help": "Set the timer task's command queue length (see configTIMER_QUEUE_LENGTH documentation for more\ndetails).",
+                                        "id": "FREERTOS_TIMER_QUEUE_LENGTH",
+                                        "name": "FREERTOS_TIMER_QUEUE_LENGTH",
+                                        "range": [
+                                            5,
+                                            20
+                                        ],
+                                        "title": "configTIMER_QUEUE_LENGTH",
+                                        "type": "int"
                                     }
                                 ],
                                 "depends_on": null,
-                                "help": "Sets the timer task's core affinity\n(see configTIMER_SERVICE_TASK_CORE_AFFINITY documentation for more details).",
-                                "id": "component-config-freertos-kernel-configtimer_service_task_core_affinity",
-                                "name": "FREERTOS_TIMER_SERVICE_TASK_CORE_AFFINITY",
-                                "title": "configTIMER_SERVICE_TASK_CORE_AFFINITY",
-                                "type": "choice"
-                            },
-                            {
-                                "children": [],
-                                "depends_on": null,
-                                "help": null,
-                                "id": "FREERTOS_TIMER_SERVICE_TASK_CORE_AFFINITY",
-                                "name": "FREERTOS_TIMER_SERVICE_TASK_CORE_AFFINITY",
+                                "help": "Enable FreeRTOS Software Timers. Normally the timer task will only get pulled into the build\nand created if any software timer related functions are used. This is achieved through IDF\ndefining a weak empty function for xTimerCreateTimerTask, which should take effect if timers.c\nis not pulled into the build.\n\nIn certain special cases (if you use configUSE_TRACE_FACILITY=y and event groups) the linker will\nstill pull in the xTimerCreateTimerTask from timers.c even if the function that utilized it gets\ndiscarded due to not being used.\n\nIn these cases you can use this option to force the timer task to be disabled.",
+                                "id": "FREERTOS_USE_TIMERS",
+                                "name": "FREERTOS_USE_TIMERS",
                                 "range": null,
-                                "title": null,
-                                "type": "hex"
-                            },
-                            {
-                                "children": [],
-                                "depends_on": null,
-                                "help": "Sets the timer task's priority (see configTIMER_TASK_PRIORITY documentation for more details).",
-                                "id": "FREERTOS_TIMER_TASK_PRIORITY",
-                                "name": "FREERTOS_TIMER_TASK_PRIORITY",
-                                "range": [
-                                    1,
-                                    25
-                                ],
-                                "title": "configTIMER_TASK_PRIORITY",
-                                "type": "int"
-                            },
-                            {
-                                "children": [],
-                                "depends_on": null,
-                                "help": "Set the timer task's stack size (see configTIMER_TASK_STACK_DEPTH documentation for more details).",
-                                "id": "FREERTOS_TIMER_TASK_STACK_DEPTH",
-                                "name": "FREERTOS_TIMER_TASK_STACK_DEPTH",
-                                "range": [
-                                    1536,
-                                    32768
-                                ],
-                                "title": "configTIMER_TASK_STACK_DEPTH",
-                                "type": "int"
-                            },
-                            {
-                                "children": [],
-                                "depends_on": null,
-                                "help": "Set the timer task's command queue length (see configTIMER_QUEUE_LENGTH documentation for more\ndetails).",
-                                "id": "FREERTOS_TIMER_QUEUE_LENGTH",
-                                "name": "FREERTOS_TIMER_QUEUE_LENGTH",
-                                "range": [
-                                    5,
-                                    20
-                                ],
-                                "title": "configTIMER_QUEUE_LENGTH",
-                                "type": "int"
+                                "title": "configUSE_TIMERS",
+                                "type": "bool"
                             },
                             {
                                 "children": [],
@@ -8679,7 +8710,7 @@
                                 "children": [
                                     {
                                         "children": [],
-                                        "depends_on": "No && <choice LOG_TIMESTAMP_SOURCE>",
+                                        "depends_on": "NO_SYMBOL && <choice LOG_TIMESTAMP_SOURCE>",
                                         "help": null,
                                         "id": "LOG_TIMESTAMP_SOURCE_NONE",
                                         "name": "LOG_TIMESTAMP_SOURCE_NONE",
@@ -8709,7 +8740,7 @@
                                     },
                                     {
                                         "children": [],
-                                        "depends_on": "No && <choice LOG_TIMESTAMP_SOURCE>",
+                                        "depends_on": "NO_SYMBOL && <choice LOG_TIMESTAMP_SOURCE>",
                                         "help": null,
                                         "id": "LOG_TIMESTAMP_SOURCE_SYSTEM_FULL",
                                         "name": "LOG_TIMESTAMP_SOURCE_SYSTEM_FULL",
@@ -8899,6 +8930,16 @@
                 "children": [
                     {
                         "children": [
+                            {
+                                "children": [],
+                                "depends_on": "SOC_MMU_PAGE_SIZE_8KB_SUPPORTED",
+                                "help": null,
+                                "id": "MMU_PAGE_SIZE_8KB",
+                                "name": "MMU_PAGE_SIZE_8KB",
+                                "range": null,
+                                "title": null,
+                                "type": "bool"
+                            },
                             {
                                 "children": [],
                                 "depends_on": null,

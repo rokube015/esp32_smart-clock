@@ -428,7 +428,7 @@ CMAKE_CACHE_MAJOR_VERSION:INTERNAL=3
 //Minor version of cmake used to create the current loaded cache
 CMAKE_CACHE_MINOR_VERSION:INTERNAL=30
 //Patch version of cmake used to create the current loaded cache
-CMAKE_CACHE_PATCH_VERSION:INTERNAL=2
+CMAKE_CACHE_PATCH_VERSION:INTERNAL=3
 //Path to CMake executable.
 CMAKE_COMMAND:INTERNAL=/usr/bin/cmake
 //Path to cpack program executable.
@@ -545,7 +545,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=115
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=116
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP
@@ -595,7 +595,7 @@ C_COMPILER_SUPPORTS_WFORMAT_SIGNEDNESS:INTERNAL=1
 //Details about finding Git
 FIND_PACKAGE_MESSAGE_DETAILS_Git:INTERNAL=[/usr/bin/git][v2.46.0()]
 //Details about finding Python3
-FIND_PACKAGE_MESSAGE_DETAILS_Python3:INTERNAL=[/home/rokube/.espressif/python_env/idf5.4_py3.12_env/bin/python][cfound components: Interpreter ][v3.12.4()]
+FIND_PACKAGE_MESSAGE_DETAILS_Python3:INTERNAL=[/home/rokube/.espressif/python_env/idf5.4_py3.12_env/bin/python][cfound components: Interpreter ][v3.12.5()]
 //Details about finding Threads
 FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
 //ADVANCED property for variable: GIT_EXECUTABLE
@@ -608,7 +608,7 @@ _Python3_Compiler_REASON_FAILURE:INTERNAL=
 _Python3_Development_REASON_FAILURE:INTERNAL=
 _Python3_EXECUTABLE:INTERNAL=/home/rokube/.espressif/python_env/idf5.4_py3.12_env/bin/python
 //Python3 Properties
-_Python3_INTERPRETER_PROPERTIES:INTERNAL=Python;3;12;4;32;64;;;abi3;/usr/lib/python3.12;/home/rokube/.espressif/python_env/idf5.4_py3.12_env/lib/python3.12;/home/rokube/.espressif/python_env/idf5.4_py3.12_env/lib/python3.12/site-packages;/home/rokube/.espressif/python_env/idf5.4_py3.12_env/lib/python3.12/site-packages
+_Python3_INTERPRETER_PROPERTIES:INTERNAL=Python;3;12;5;32;64;;;abi3;/usr/lib/python3.12;/home/rokube/.espressif/python_env/idf5.4_py3.12_env/lib/python3.12;/home/rokube/.espressif/python_env/idf5.4_py3.12_env/lib/python3.12/site-packages;/home/rokube/.espressif/python_env/idf5.4_py3.12_env/lib/python3.12/site-packages
 _Python3_INTERPRETER_SIGNATURE:INTERNAL=374f2ac1c41137e2169d7cd77b7ba08f
 //NumPy reason failure
 _Python3_NumPy_REASON_FAILURE:INTERNAL=

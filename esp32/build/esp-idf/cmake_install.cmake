@@ -519,6 +519,11 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
+  include("/home/rokube/workspace/CO2_Sensor/esp32/build/esp-idf/rt/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
   include("/home/rokube/workspace/CO2_Sensor/esp32/build/esp-idf/spiffs/cmake_install.cmake")
 endif()
 
