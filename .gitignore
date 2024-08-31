@@ -1,7 +1,12 @@
+
 # Prerequisites
 *.d
 
 # Object files
+./esp32/build
+./esp32/build/*
+./esp32/main/build
+./esp32/main/build/*
 *.o
 *.ko
 *.obj
