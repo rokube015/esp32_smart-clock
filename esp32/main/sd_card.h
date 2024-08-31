@@ -4,7 +4,7 @@
 #include "esp_vfs_fat.h"
 #include "sdmmc_cmd.h"
 
-#define MAX_SDCARD_LINE_CHAR_SIZE 64
+#define MAX_SDCARD_LINE_CHAR_SIZE 128
 #define MOUNT_POINT "/sdcard"
 
 /*SPI Port for SD Card access*/

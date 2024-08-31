@@ -1,0 +1,170 @@
+[0;33m--- esp-idf-monitor 1.4.0 on /dev/ttyUSB0 115200 ---[0m
+[0;33m--- Quit: Ctrl+] | Menu: Ctrl+T | Help: Ctrl+T followed by Ctrl+H ---[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x400d767c: get_scd40_serial_number at /home/rokube/workspace/CO2_Sensor/esp32/main/scd40.c:71 (discriminator 1)
+[0m
+[0;33m0x40086ec7: _esp_error_check_failed at /home/rokube/workspace/esp-idf/components/esp_system/esp_err.c:49
+[0m
+[0;33m0x40081985: panic_abort at /home/rokube/workspace/esp-idf/components/esp_system/panic.c:453
+0x40086ed1: esp_system_abort at /home/rokube/workspace/esp-idf/components/esp_system/port/esp_system_chip.c:92
+0x4008d845: abort at /home/rokube/workspace/esp-idf/components/newlib/abort.c:38
+0x40086ec7: _esp_error_check_failed at /home/rokube/workspace/esp-idf/components/esp_system/esp_err.c:49
+0x400d767c: get_scd40_serial_number at /home/rokube/workspace/CO2_Sensor/esp32/main/scd40.c:71 (discriminator 1)
+0x400d739a: app_main at /home/rokube/workspace/CO2_Sensor/esp32/main/main.c:35
+0x400f87c0: main_task at /home/rokube/workspace/esp-idf/components/freertos/app_startup.c:208
+0x400879ed: vPortTaskWrapper at /home/rokube/workspace/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x400d767c: get_scd40_serial_number at /home/rokube/workspace/CO2_Sensor/esp32/main/scd40.c:71 (discriminator 1)
+[0m
+[0;33m0x40086ec7: _esp_error_check_failed at /home/rokube/workspace/esp-idf/components/esp_system/esp_err.c:49
+[0m
+[0;33m0x40081985: panic_abort at /home/rokube/workspace/esp-idf/components/esp_system/panic.c:453
+0x40086ed1: esp_system_abort at /home/rokube/workspace/esp-idf/components/esp_system/port/esp_system_chip.c:92
+0x4008d845: abort at /home/rokube/workspace/esp-idf/components/newlib/abort.c:38
+0x40086ec7: _esp_error_check_failed at /home/rokube/workspace/esp-idf/components/esp_system/esp_err.c:49
+0x400d767c: get_scd40_serial_number at /home/rokube/workspace/CO2_Sensor/esp32/main/scd40.c:71 (discriminator 1)
+0x400d739a: app_main at /home/rokube/workspace/CO2_Sensor/esp32/main/main.c:35
+0x400f87c0: main_task at /home/rokube/workspace/esp-idf/components/freertos/app_startup.c:208
+0x400879ed: vPortTaskWrapper at /home/rokube/workspace/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x400d767c: get_scd40_serial_number at /home/rokube/workspace/CO2_Sensor/esp32/main/scd40.c:71 (discriminator 1)
+[0m
+[0;33m0x40086ec7: _esp_error_check_failed at /home/rokube/workspace/esp-idf/components/esp_system/esp_err.c:49
+[0m
+[0;33m0x40081985: panic_abort at /home/rokube/workspace/esp-idf/components/esp_system/panic.c:453
+0x40086ed1: esp_system_abort at /home/rokube/workspace/esp-idf/components/esp_system/port/esp_system_chip.c:92
+0x4008d845: abort at /home/rokube/workspace/esp-idf/components/newlib/abort.c:38
+0x40086ec7: _esp_error_check_failed at /home/rokube/workspace/esp-idf/components/esp_system/esp_err.c:49
+0x400d767c: get_scd40_serial_number at /home/rokube/workspace/CO2_Sensor/esp32/main/scd40.c:71 (discriminator 1)
+0x400d739a: app_main at /home/rokube/workspace/CO2_Sensor/esp32/main/main.c:35
+0x400f87c0: main_task at /home/rokube/workspace/esp-idf/components/freertos/app_startup.c:208
+0x400879ed: vPortTaskWrapper at /home/rokube/workspace/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x400d767c: get_scd40_serial_number at /home/rokube/workspace/CO2_Sensor/esp32/main/scd40.c:71 (discriminator 1)
+[0m
+[0;33m0x40086ec7: _esp_error_check_failed at /home/rokube/workspace/esp-idf/components/esp_system/esp_err.c:49
+[0m
+[0;33m0x40081985: panic_abort at /home/rokube/workspace/esp-idf/components/esp_system/panic.c:453
+0x40086ed1: esp_system_abort at /home/rokube/workspace/esp-idf/components/esp_system/port/esp_system_chip.c:92
+0x4008d845: abort at /home/rokube/workspace/esp-idf/components/newlib/abort.c:38
+0x40086ec7: _esp_error_check_failed at /home/rokube/workspace/esp-idf/components/esp_system/esp_err.c:49
+0x400d767c: get_scd40_serial_number at /home/rokube/workspace/CO2_Sensor/esp32/main/scd40.c:71 (discriminator 1)
+0x400d739a: app_main at /home/rokube/workspace/CO2_Sensor/esp32/main/main.c:35
+0x400f87c0: main_task at /home/rokube/workspace/esp-idf/components/freertos/app_startup.c:208
+0x400879ed: vPortTaskWrapper at /home/rokube/workspace/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x400d767c: get_scd40_serial_number at /home/rokube/workspace/CO2_Sensor/esp32/main/scd40.c:71 (discriminator 1)
+[0m
+[0;33m0x40086ec7: _esp_error_check_failed at /home/rokube/workspace/esp-idf/components/esp_system/esp_err.c:49
+[0m
+[0;33m0x40081985: panic_abort at /home/rokube/workspace/esp-idf/components/esp_system/panic.c:453
+0x40086ed1: esp_system_abort at /home/rokube/workspace/esp-idf/components/esp_system/port/esp_system_chip.c:92
+0x4008d845: abort at /home/rokube/workspace/esp-idf/components/newlib/abort.c:38
+0x40086ec7: _esp_error_check_failed at /home/rokube/workspace/esp-idf/components/esp_system/esp_err.c:49
+0x400d767c: get_scd40_serial_number at /home/rokube/workspace/CO2_Sensor/esp32/main/scd40.c:71 (discriminator 1)
+0x400d739a: app_main at /home/rokube/workspace/CO2_Sensor/esp32/main/main.c:35
+0x400f87c0: main_task at /home/rokube/workspace/esp-idf/components/freertos/app_startup.c:208
+0x400879ed: vPortTaskWrapper at /home/rokube/workspace/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x400d767c: get_scd40_serial_number at /home/rokube/workspace/CO2_Sensor/esp32/main/scd40.c:71 (discriminator 1)
+[0m
+[0;33m0x40086ec7: _esp_error_check_failed at /home/rokube/workspace/esp-idf/components/esp_system/esp_err.c:49
+[0m
+[0;33m0x40081985: panic_abort at /home/rokube/workspace/esp-idf/components/esp_system/panic.c:453
+0x40086ed1: esp_system_abort at /home/rokube/workspace/esp-idf/components/esp_system/port/esp_system_chip.c:92
+0x4008d845: abort at /home/rokube/workspace/esp-idf/components/newlib/abort.c:38
+0x40086ec7: _esp_error_check_failed at /home/rokube/workspace/esp-idf/components/esp_system/esp_err.c:49
+0x400d767c: get_scd40_serial_number at /home/rokube/workspace/CO2_Sensor/esp32/main/scd40.c:71 (discriminator 1)
+0x400d739a: app_main at /home/rokube/workspace/CO2_Sensor/esp32/main/main.c:35
+0x400f87c0: main_task at /home/rokube/workspace/esp-idf/components/freertos/app_startup.c:208
+0x400879ed: vPortTaskWrapper at /home/rokube/workspace/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x400d767c: get_scd40_serial_number at /home/rokube/workspace/CO2_Sensor/esp32/main/scd40.c:71 (discriminator 1)
+[0m
+[0;33m0x40086ec7: _esp_error_check_failed at /home/rokube/workspace/esp-idf/components/esp_system/esp_err.c:49
+[0m
+[0;33m0x40081985: panic_abort at /home/rokube/workspace/esp-idf/components/esp_system/panic.c:453
+0x40086ed1: esp_system_abort at /home/rokube/workspace/esp-idf/components/esp_system/port/esp_system_chip.c:92
+0x4008d845: abort at /home/rokube/workspace/esp-idf/components/newlib/abort.c:38
+0x40086ec7: _esp_error_check_failed at /home/rokube/workspace/esp-idf/components/esp_system/esp_err.c:49
+0x400d767c: get_scd40_serial_number at /home/rokube/workspace/CO2_Sensor/esp32/main/scd40.c:71 (discriminator 1)
+0x400d739a: app_main at /home/rokube/workspace/CO2_Sensor/esp32/main/main.c:35
+0x400f87c0: main_task at /home/rokube/workspace/esp-idf/components/freertos/app_startup.c:208
+0x400879ed: vPortTaskWrapper at /home/rokube/workspace/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x400d767c: get_scd40_serial_number at /home/rokube/workspace/CO2_Sensor/esp32/main/scd40.c:71 (discriminator 1)
+[0m
+[0;33m0x40086ec7: _esp_error_check_failed at /home/rokube/workspace/esp-idf/components/esp_system/esp_err.c:49
+[0m
+[0;33m0x40081985: panic_abort at /home/rokube/workspace/esp-idf/components/esp_system/panic.c:453
+0x40086ed1: esp_system_abort at /home/rokube/workspace/esp-idf/components/esp_system/port/esp_system_chip.c:92
+0x4008d845: abort at /home/rokube/workspace/esp-idf/components/newlib/abort.c:38
+0x40086ec7: _esp_error_check_failed at /home/rokube/workspace/esp-idf/components/esp_system/esp_err.c:49
+0x400d767c: get_scd40_serial_number at /home/rokube/workspace/CO2_Sensor/esp32/main/scd40.c:71 (discriminator 1)
+0x400d739a: app_main at /home/rokube/workspace/CO2_Sensor/esp32/main/main.c:35
+0x400f87c0: main_task at /home/rokube/workspace/esp-idf/components/freertos/app_startup.c:208
+0x400879ed: vPortTaskWrapper at /home/rokube/workspace/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x400d767c: get_scd40_serial_number at /home/rokube/workspace/CO2_Sensor/esp32/main/scd40.c:71 (discriminator 1)
+[0m
+[0;33m0x40086ec7: _esp_error_check_failed at /home/rokube/workspace/esp-idf/components/esp_system/esp_err.c:49
+[0m
+[0;33m0x40081985: panic_abort at /home/rokube/workspace/esp-idf/components/esp_system/panic.c:453
+0x40086ed1: esp_system_abort at /home/rokube/workspace/esp-idf/components/esp_system/port/esp_system_chip.c:92
+0x4008d845: abort at /home/rokube/workspace/esp-idf/components/newlib/abort.c:38
+0x40086ec7: _esp_error_check_failed at /home/rokube/workspace/esp-idf/components/esp_system/esp_err.c:49
+0x400d767c: get_scd40_serial_number at /home/rokube/workspace/CO2_Sensor/esp32/main/scd40.c:71 (discriminator 1)
+0x400d739a: app_main at /home/rokube/workspace/CO2_Sensor/esp32/main/main.c:35
+0x400f87c0: main_task at /home/rokube/workspace/esp-idf/components/freertos/app_startup.c:208
+0x400879ed: vPortTaskWrapper at /home/rokube/workspace/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x400d767c: get_scd40_serial_number at /home/rokube/workspace/CO2_Sensor/esp32/main/scd40.c:71 (discriminator 1)
+[0m
+[0;33m0x40086ec7: _esp_error_check_failed at /home/rokube/workspace/esp-idf/components/esp_system/esp_err.c:49
+[0m
+[0;33m0x40081985: panic_abort at /home/rokube/workspace/esp-idf/components/esp_system/panic.c:453
+0x40086ed1: esp_system_abort at /home/rokube/workspace/esp-idf/components/esp_system/port/esp_system_chip.c:92
+0x4008d845: abort at /home/rokube/workspace/esp-idf/components/newlib/abort.c:38
+0x40086ec7: _esp_error_check_failed at /home/rokube/workspace/esp-idf/components/esp_system/esp_err.c:49
+0x400d767c: get_scd40_serial_number at /home/rokube/workspace/CO2_Sensor/esp32/main/scd40.c:71 (discriminator 1)
+0x400d739a: app_main at /home/rokube/workspace/CO2_Sensor/esp32/main/main.c:35
+0x400f87c0: main_task at /home/rokube/workspace/esp-idf/components/freertos/app_startup.c:208
+0x400879ed: vPortTaskWrapper at /home/rokube/workspace/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0;33m0x400d767c: get_scd40_serial_number at /home/rokube/workspace/CO2_Sensor/esp32/main/scd40.c:71 (discriminator 1)
+[0m
+[0;33m0x40086ec7: _esp_error_check_failed at /home/rokube/workspace/esp-idf/components/esp_system/esp_err.c:49
+[0m
+[0;33m0x40081985: panic_abort at /home/rokube/workspace/esp-idf/components/esp_system/panic.c:453
+0x40086ed1: esp_system_abort at /home/rokube/workspace/esp-idf/components/esp_system/port/esp_system_chip.c:92
+0x4008d845: abort at /home/rokube/workspace/esp-idf/components/newlib/abort.c:38
+0x40086ec7: _esp_error_check_failed at /home/rokube/workspace/esp-idf/components/esp_system/esp_err.c:49
+0x400d767c: get_scd40_serial_number at /home/rokube/workspace/CO2_Sensor/esp32/main/scd40.c:71 (discriminator 1)
+0x400d739a: app_main at /home/rokube/workspace/CO2_Sensor/esp32/main/main.c:35
+0x400f87c0: main_task at /home/rokube/workspace/esp-idf/components/freertos/app_startup.c:208
+0x400879ed: vPortTaskWrapper at /home/rokube/workspace/esp-idf/components/freertos/FreeRTOS-Kernel/portable/xtensa/port.c:134
+[0m
+[0;33m0x40080400: _init at ??:?
+[0m
+[0m
