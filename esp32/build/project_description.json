@@ -1,7 +1,7 @@
 {
     "version":            "1.1",
     "project_name":       "main",
-    "project_version":    "e82fbac-dirty",
+    "project_version":    "6d26719-dirty",
     "project_path":       "/home/rokube/workspace/CO2_Sensor/esp32",
     "idf_path":           "/home/rokube/workspace/esp-idf",
     "build_dir":          "/home/rokube/workspace/CO2_Sensor/esp32/build",

@@ -1,0 +1,1278 @@
+ets Jun  8 2016 00:22:57
+
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:7176
+load:0x40078000,len:15564
+ho 0 tail 12 room 4
+load:0x40080400,len:4
+load:0x40080404,len:3904
+entry 0x40080640
+[0;32mI (30) boot: ESP-IDF v5.4-dev-1388-g5ca9f2a49a-dirty 2nd stage bootloader[0m
+[0;32mI (30) boot: compile time Jul 21 2024 15:52:47[0m
+[0;32mI (32) boot: Multicore bootloader[0m
+[0;32mI (37) boot: chip revision: v1.0[0m
+[0;32mI (40) boot.esp32: SPI Speed      : 40MHz[0m
+[0;32mI (45) boot.esp32: SPI Mode       : DIO[0m
+[0;32mI (50) boot.esp32: SPI Flash Size : 2MB[0m
+[0;32mI (54) boot: Enabling RNG early entropy source...[0m
+[0;32mI (60) boot: Partition Table:[0m
+[0;32mI (63) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (70) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (78) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (85) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (93) boot: End of partition table[0m
+[0;32mI (97) esp_image: segment 0: paddr=00010020 vaddr=3f400020 size=0b338h ( 45880) map[0m
+[0;32mI (121) esp_image: segment 1: paddr=0001b360 vaddr=3ffb0000 size=02364h (  9060) load[0m
+[0;32mI (125) esp_image: segment 2: paddr=0001d6cc vaddr=40080000 size=0294ch ( 10572) load[0m
+[0;32mI (131) esp_image: segment 3: paddr=00020020 vaddr=400d0020 size=17a30h ( 96816) map[0m
+[0;32mI (169) esp_image: segment 4: paddr=00037a58 vaddr=4008294c size=0a678h ( 42616) load[0m
+[0;32mI (192) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (192) boot: Disabling RNG early entropy source...[0m
+[0;32mI (204) cpu_start: Multicore app[0m
+[0;32mI (213) cpu_start: Pro cpu start user code[0m
+[0;32mI (213) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (213) app_init: Application information:[0m
+[0;32mI (216) app_init: Project name:     main[0m
+[0;32mI (220) app_init: App version:      6d26719-dirty[0m
+[0;32mI (226) app_init: Compile time:     Jul 28 2024 00:36:33[0m
+[0;32mI (232) app_init: ELF file SHA256:  11a26cb24...[0m
+[0;32mI (237) app_init: ESP-IDF:          v5.4-dev-1388-g5ca9f2a49a-dirty[0m
+[0;32mI (244) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (249) efuse_init: Max chip rev:     v3.99 [0m
+[0;32mI (253) efuse_init: Chip rev:         v1.0[0m
+[0;32mI (259) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (266) heap_init: At 3FFAE6E0 len 00001920 (6 KiB): DRAM[0m
+[0;32mI (272) heap_init: At 3FFB2C50 len 0002D3B0 (180 KiB): DRAM[0m
+[0;32mI (278) heap_init: At 3FFE0440 len 00003AE0 (14 KiB): D/IRAM[0m
+[0;32mI (284) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM[0m
+[0;32mI (291) heap_init: At 4008CFC4 len 0001303C (76 KiB): IRAM[0m
+[0;32mI (298) spi_flash: detected chip: generic[0m
+[0;32mI (301) spi_flash: flash io: dio[0m
+[0;33mW (305) spi_flash: Detected size(4096k) larger than the size in the binary image header(2048k). Using the size in the binary image header.[0m
+[0;32mI (319) main_task: Started on CPU0[0m
+[0;32mI (329) main_task: Calling app_main()[0m
+[0;32mI (329) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (329) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;31mE (339) i2c.master: I2C hardware NACK detected[0m
+[0;31mE (349) i2c.master: I2C transaction unexpected nack detected[0m
+[0;31mE (349) i2c.master: s_i2c_synchronous_transaction(897): I2C transaction failed[0m
+[0;32mI (359) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (369) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;31mE (379) i2c.master: i2c_master_multi_buffer_transmit(1123): I2C transaction failed[0m
+ESP_ERROR_CHECK failed: esp_err_t 0x103 (ESP_ERR_INVALID_STATE) at 0x400d6bcc
+file: "./main/scd40.c" line 71
+func: get_scd40_serial_number
+expression: r
+
+abort() was called at PC 0x4008585f on core 0
+
+
+Backtrace: 0x40081831:0x3ffb3dd0 0x40085869:0x3ffb3df0 0x4008b89d:0x3ffb3e10 0x4008585f:0x3ffb3e80 0x400d6bcc:0x3ffb3eb0 0x400d6a16:0x3ffb3ef0 0x400e72dc:0x3ffb3f40 0x40086359:0x3ffb3f70
+
+
+
+
+ELF file SHA256: 11a26cb24
+
+Rebooting...
+ets Jun  8 2016 00:22:57
+
+rst:0xc (SW_CPU_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:7176
+load:0x40078000,len:15564
+ho 0 tail 12 room 4
+load:0x40080400,len:4
+load:0x40080404,len:3904
+entry 0x40080640
+[0;32mI (31) boot: ESP-IDF v5.4-dev-1388-g5ca9f2a49a-dirty 2nd stage bootloader[0m
+[0;32mI (31) boot: compile time Jul 21 2024 15:52:47[0m
+[0;32mI (33) boot: Multicore bootloader[0m
+[0;32mI (37) boot: chip revision: v1.0[0m
+[0;32mI (41) boot.esp32: SPI Speed      : 40MHz[0m
+[0;32mI (46) boot.esp32: SPI Mode       : DIO[0m
+[0;32mI (50) boot.esp32: SPI Flash Size : 2MB[0m
+[0;32mI (55) boot: Enabling RNG early entropy source...[0m
+[0;32mI (60) boot: Partition Table:[0m
+[0;32mI (64) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (71) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (79) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (86) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (94) boot: End of partition table[0m
+[0;32mI (98) esp_image: segment 0: paddr=00010020 vaddr=3f400020 size=0b338h ( 45880) map[0m
+[0;32mI (122) esp_image: segment 1: paddr=0001b360 vaddr=3ffb0000 size=02364h (  9060) load[0m
+[0;32mI (126) esp_image: segment 2: paddr=0001d6cc vaddr=40080000 size=0294ch ( 10572) load[0m
+[0;32mI (132) esp_image: segment 3: paddr=00020020 vaddr=400d0020 size=17a30h ( 96816) map[0m
+[0;32mI (169) esp_image: segment 4: paddr=00037a58 vaddr=4008294c size=0a678h ( 42616) load[0m
+[0;32mI (193) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (193) boot: Disabling RNG early entropy source...[0m
+[0;32mI (205) cpu_start: Multicore app[0m
+[0;32mI (213) cpu_start: Pro cpu start user code[0m
+[0;32mI (213) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (213) app_init: Application information:[0m
+[0;32mI (216) app_init: Project name:     main[0m
+[0;32mI (221) app_init: App version:      6d26719-dirty[0m
+[0;32mI (226) app_init: Compile time:     Jul 28 2024 00:36:33[0m
+[0;32mI (232) app_init: ELF file SHA256:  11a26cb24...[0m
+[0;32mI (238) app_init: ESP-IDF:          v5.4-dev-1388-g5ca9f2a49a-dirty[0m
+[0;32mI (245) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (249) efuse_init: Max chip rev:     v3.99 [0m
+[0;32mI (254) efuse_init: Chip rev:         v1.0[0m
+[0;32mI (259) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (266) heap_init: At 3FFAE6E0 len 00001920 (6 KiB): DRAM[0m
+[0;32mI (272) heap_init: At 3FFB2C50 len 0002D3B0 (180 KiB): DRAM[0m
+[0;32mI (279) heap_init: At 3FFE0440 len 00003AE0 (14 KiB): D/IRAM[0m
+[0;32mI (285) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM[0m
+[0;32mI (291) heap_init: At 4008CFC4 len 0001303C (76 KiB): IRAM[0m
+[0;32mI (299) spi_flash: detected chip: generic[0m
+[0;32mI (302) spi_flash: flash io: dio[0m
+[0;33mW (306) spi_flash: Detected size(4096k) larger than the size in the binary image header(2048k). Using the size in the binary image header.[0m
+[0;32mI (320) main_task: Started on CPU0[0m
+[0;32mI (330) main_task: Calling app_main()[0m
+[0;32mI (330) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (330) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;31mE (340) i2c.master: I2C hardware NACK detected[0m
+[0;31mE (350) i2c.master: I2C transaction unexpected nack detected[0m
+[0;31mE (350) i2c.master: s_i2c_synchronous_transaction(897): I2C transaction failed[0m
+[0;32mI (360) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (370) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;31mE (380) i2c.master: i2c_master_multi_buffer_transmit(1123): I2C transaction failed[0m
+ESP_ERROR_CHECK failed: esp_err_t 0x103 (ESP_ERR_INVALID_STATE) at 0x400d6bcc
+file: "./main/scd40.c" line 71
+func: get_scd40_serial_number
+expression: r
+
+abort() was called at PC 0x4008585f on core 0
+
+
+Backtrace: 0x40081831:0x3ffb3dd0 0x40085869:0x3ffb3df0 0x4008b89d:0x3ffb3e10 0x4008585f:0x3ffb3e80 0x400d6bcc:0x3ffb3eb0 0x400d6a16:0x3ffb3ef0 0x400e72dc:0x3ffb3f40 0x40086359:0x3ffb3f70
+
+
+
+
+ELF file SHA256: 11a26cb24
+
+Rebooting...
+ets Jun  8 2016 00:22:57
+
+rst:0xc (SW_CPU_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:7176
+load:0x40078000,len:15564
+ho 0 tail 12 room 4
+load:0x40080400,len:4
+load:0x40080404,len:3904
+entry 0x40080640
+[0;32mI (31) boot: ESP-IDF v5.4-dev-1388-g5ca9f2a49a-dirty 2nd stage bootloader[0m
+[0;32mI (31) boot: compile time Jul 21 2024 15:52:47[0m
+[0;32mI (33) boot: Multicore bootloader[0m
+[0;32mI (37) boot: chip revision: v1.0[0m
+[0;32mI (41) boot.esp32: SPI Speed      : 40MHz[0m
+[0;32mI (46) boot.esp32: SPI Mode       : DIO[0m
+[0;32mI (50) boot.esp32: SPI Flash Size : 2MB[0m
+[0;32mI (55) boot: Enabling RNG early entropy source...[0m
+[0;32mI (60) boot: Partition Table:[0m
+[0;32mI (64) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (71) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (79) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (86) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (94) boot: End of partition table[0m
+[0;32mI (98) esp_image: segment 0: paddr=00010020 vaddr=3f400020 size=0b338h ( 45880) map[0m
+[0;32mI (122) esp_image: segment 1: paddr=0001b360 vaddr=3ffb0000 size=02364h (  9060) load[0m
+[0;32mI (126) esp_image: segment 2: paddr=0001d6cc vaddr=40080000 size=0294ch ( 10572) load[0m
+[0;32mI (132) esp_image: segment 3: paddr=00020020 vaddr=400d0020 size=17a30h ( 96816) map[0m
+[0;32mI (169) esp_image: segment 4: paddr=00037a58 vaddr=4008294c size=0a678h ( 42616) load[0m
+[0;32mI (193) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (193) boot: Disabling RNG early entropy source...[0m
+[0;32mI (205) cpu_start: Multicore app[0m
+[0;32mI (213) cpu_start: Pro cpu start user code[0m
+[0;32mI (213) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (213) app_init: Application information:[0m
+[0;32mI (216) app_init: Project name:     main[0m
+[0;32mI (221) app_init: App version:      6d26719-dirty[0m
+[0;32mI (226) app_init: Compile time:     Jul 28 2024 00:36:33[0m
+[0;32mI (232) app_init: ELF file SHA256:  11a26cb24...[0m
+[0;32mI (238) app_init: ESP-IDF:          v5.4-dev-1388-g5ca9f2a49a-dirty[0m
+[0;32mI (245) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (249) efuse_init: Max chip rev:     v3.99 [0m
+[0;32mI (254) efuse_init: Chip rev:         v1.0[0m
+[0;32mI (259) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (266) heap_init: At 3FFAE6E0 len 00001920 (6 KiB): DRAM[0m
+[0;32mI (272) heap_init: At 3FFB2C50 len 0002D3B0 (180 KiB): DRAM[0m
+[0;32mI (279) heap_init: At 3FFE0440 len 00003AE0 (14 KiB): D/IRAM[0m
+[0;32mI (285) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM[0m
+[0;32mI (291) heap_init: At 4008CFC4 len 0001303C (76 KiB): IRAM[0m
+[0;32mI (299) spi_flash: detected chip: generic[0m
+[0;32mI (302) spi_flash: flash io: dio[0m
+[0;33mW (306) spi_flash: Detected size(4096k) larger than the size in the binary image header(2048k). Using the size in the binary image header.[0m
+[0;32mI (320) main_task: Started on CPU0[0m
+[0;32mI (330) main_task: Calling app_main()[0m
+[0;32mI (330) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (330) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;31mE (340) i2c.master: I2C hardware NACK detected[0m
+[0;31mE (350) i2c.master: I2C transaction unexpected nack detected[0m
+[0;31mE (350) i2c.master: s_i2c_synchronous_transaction(897): I2C transaction failed[0m
+[0;32mI (360) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (370) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;31mE (380) i2c.master: i2c_master_multi_buffer_transmit(1123): I2C transaction failed[0m
+ESP_ERROR_CHECK failed: esp_err_t 0x103 (ESP_ERR_INVALID_STATE) at 0x400d6bcc
+file: "./main/scd40.c" line 71
+func: get_scd40_serial_number
+expression: r
+
+abort() was called at PC 0x4008585f on core 0
+
+
+Backtrace: 0x40081831:0x3ffb3dd0 0x40085869:0x3ffb3df0 0x4008b89d:0x3ffb3e10 0x4008585f:0x3ffb3e80 0x400d6bcc:0x3ffb3eb0 0x400d6a16:0x3ffb3ef0 0x400e72dc:0x3ffb3f40 0x40086359:0x3ffb3f70
+
+
+
+
+ELF file SHA256: 11a26cb24
+
+Rebooting...
+ets Jun  8 2016 00:22:57
+
+rst:0xc (SW_CPU_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:7176
+load:0x40078000,len:15564
+ho 0 tail 12 room 4
+load:0x40080400,len:4
+load:0x40080404,len:3904
+entry 0x40080640
+[0;32mI (31) boot: ESP-IDF v5.4-dev-1388-g5ca9f2a49a-dirty 2nd stage bootloader[0m
+[0;32mI (31) boot: compile time Jul 21 2024 15:52:47[0m
+[0;32mI (33) boot: Multicore bootloader[0m
+[0;32mI (37) boot: chip revision: v1.0[0m
+[0;32mI (41) boot.esp32: SPI Speed      : 40MHz[0m
+[0;32mI (46) boot.esp32: SPI Mode       : DIO[0m
+[0;32mI (50) boot.esp32: SPI Flash Size : 2MB[0m
+[0;32mI (55) boot: Enabling RNG early entropy source...[0m
+[0;32mI (60) boot: Partition Table:[0m
+[0;32mI (64) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (71) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (79) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (86) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (94) boot: End of partition table[0m
+[0;32mI (98) esp_image: segment 0: paddr=00010020 vaddr=3f400020 size=0b338h ( 45880) map[0m
+[0;32mI (122) esp_image: segment 1: paddr=0001b360 vaddr=3ffb0000 size=02364h (  9060) load[0m
+[0;32mI (126) esp_image: segment 2: paddr=0001d6cc vaddr=40080000 size=0294ch ( 10572) load[0m
+[0;32mI (132) esp_image: segment 3: paddr=00020020 vaddr=400d0020 size=17a30h ( 96816) map[0m
+[0;32mI (169) esp_image: segment 4: paddr=00037a58 vaddr=4008294c size=0a678h ( 42616) load[0m
+[0;32mI (193) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (193) boot: Disabling RNG early entropy source...[0m
+[0;32mI (205) cpu_start: Multicore app[0m
+[0;32mI (213) cpu_start: Pro cpu start user code[0m
+[0;32mI (213) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (213) app_init: Application information:[0m
+[0;32mI (216) app_init: Project name:     main[0m
+[0;32mI (221) app_init: App version:      6d26719-dirty[0m
+[0;32mI (226) app_init: Compile time:     Jul 28 2024 00:36:33[0m
+[0;32mI (232) app_init: ELF file SHA256:  11a26cb24...[0m
+[0;32mI (238) app_init: ESP-IDF:          v5.4-dev-1388-g5ca9f2a49a-dirty[0m
+[0;32mI (245) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (249) efuse_init: Max chip rev:     v3.99 [0m
+[0;32mI (254) efuse_init: Chip rev:         v1.0[0m
+[0;32mI (259) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (266) heap_init: At 3FFAE6E0 len 00001920 (6 KiB): DRAM[0m
+[0;32mI (272) heap_init: At 3FFB2C50 len 0002D3B0 (180 KiB): DRAM[0m
+[0;32mI (279) heap_init: At 3FFE0440 len 00003AE0 (14 KiB): D/IRAM[0m
+[0;32mI (285) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM[0m
+[0;32mI (291) heap_init: At 4008CFC4 len 0001303C (76 KiB): IRAM[0m
+[0;32mI (299) spi_flash: detected chip: generic[0m
+[0;32mI (302) spi_flash: flash io: dio[0m
+[0;33mW (306) spi_flash: Detected size(4096k) larger than the size in the binary image header(2048k). Using the size in the binary image header.[0m
+[0;32mI (320) main_task: Started on CPU0[0m
+[0;32mI (330) main_task: Calling app_main()[0m
+[0;32mI (330) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (330) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;31mE (340) i2c.master: I2C hardware NACK detected[0m
+[0;31mE (350) i2c.master: I2C transaction unexpected nack detected[0m
+[0;31mE (350) i2c.master: s_i2c_synchronous_transaction(897): I2C transaction failed[0m
+[0;32mI (360) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (370) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;31mE (380) i2c.master: i2c_master_multi_buffer_transmit(1123): I2C transaction failed[0m
+ESP_ERROR_CHECK failed: esp_err_t 0x103 (ESP_ERR_INVALID_STATE) at 0x400d6bcc
+file: "./main/scd40.c" line 71
+func: get_scd40_serial_number
+expression: r
+
+abort() was called at PC 0x4008585f on core 0
+
+
+Backtrace: 0x40081831:0x3ffb3dd0 0x40085869:0x3ffb3df0 0x4008b89d:0x3ffb3e10 0x4008585f:0x3ffb3e80 0x400d6bcc:0x3ffb3eb0 0x400d6a16:0x3ffb3ef0 0x400e72dc:0x3ffb3f40 0x40086359:0x3ffb3f70
+
+
+
+
+ELF file SHA256: 11a26cb24
+
+Rebooting...
+ets Jun  8 2016 00:22:57
+
+rst:0xc (SW_CPU_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:7176
+load:0x40078000,len:15564
+ho 0 tail 12 room 4
+load:0x40080400,len:4
+load:0x40080404,len:3904
+entry 0x40080640
+[0;32mI (31) boot: ESP-IDF v5.4-dev-1388-g5ca9f2a49a-dirty 2nd stage bootloader[0m
+[0;32mI (31) boot: compile time Jul 21 2024 15:52:47[0m
+[0;32mI (33) boot: Multicore bootloader[0m
+[0;32mI (37) boot: chip revision: v1.0[0m
+[0;32mI (41) boot.esp32: SPI Speed      : 40MHz[0m
+[0;32mI (46) boot.esp32: SPI Mode       : DIO[0m
+[0;32mI (50) boot.esp32: SPI Flash Size : 2MB[0m
+[0;32mI (55) boot: Enabling RNG early entropy source...[0m
+[0;32mI (60) boot: Partition Table:[0m
+[0;32mI (64) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (71) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (79) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (86) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (94) boot: End of partition table[0m
+[0;32mI (98) esp_image: segment 0: paddr=00010020 vaddr=3f400020 size=0b338h ( 45880) map[0m
+[0;32mI (122) esp_image: segment 1: paddr=0001b360 vaddr=3ffb0000 size=02364h (  9060) load[0m
+[0;32mI (126) esp_image: segment 2: paddr=0001d6cc vaddr=40080000 size=0294ch ( 10572) load[0m
+[0;32mI (132) esp_image: segment 3: paddr=00020020 vaddr=400d0020 size=17a30h ( 96816) map[0m
+[0;32mI (169) esp_image: segment 4: paddr=00037a58 vaddr=4008294c size=0a678h ( 42616) load[0m
+[0;32mI (193) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (193) boot: Disabling RNG early entropy source...[0m
+[0;32mI (205) cpu_start: Multicore app[0m
+[0;32mI (213) cpu_start: Pro cpu start user code[0m
+[0;32mI (213) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (213) app_init: Application information:[0m
+[0;32mI (216) app_init: Project name:     main[0m
+[0;32mI (221) app_init: App version:      6d26719-dirty[0m
+[0;32mI (226) app_init: Compile time:     Jul 28 2024 00:36:33[0m
+[0;32mI (232) app_init: ELF file SHA256:  11a26cb24...[0m
+[0;32mI (238) app_init: ESP-IDF:          v5.4-dev-1388-g5ca9f2a49a-dirty[0m
+[0;32mI (245) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (249) efuse_init: Max chip rev:     v3.99 [0m
+[0;32mI (254) efuse_init: Chip rev:         v1.0[0m
+[0;32mI (259) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (266) heap_init: At 3FFAE6E0 len 00001920 (6 KiB): DRAM[0m
+[0;32mI (272) heap_init: At 3FFB2C50 len 0002D3B0 (180 KiB): DRAM[0m
+[0;32mI (279) heap_init: At 3FFE0440 len 00003AE0 (14 KiB): D/IRAM[0m
+[0;32mI (285) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM[0m
+[0;32mI (291) heap_init: At 4008CFC4 len 0001303C (76 KiB): IRAM[0m
+[0;32mI (299) spi_flash: detected chip: generic[0m
+[0;32mI (302) spi_flash: flash io: dio[0m
+[0;33mW (306) spi_flash: Detected size(4096k) larger than the size in the binary image header(2048k). Using the size in the binary image header.[0m
+[0;32mI (320) main_task: Started on CPU0[0m
+[0;32mI (330) main_task: Calling app_main()[0m
+[0;32mI (330) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (330) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;31mE (340) i2c.master: I2C hardware NACK detected[0m
+[0;31mE (350) i2c.master: I2C transaction unexpected nack detected[0m
+[0;31mE (350) i2c.master: s_i2c_synchronous_transaction(897): I2C transaction failed[0m
+[0;32mI (360) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (370) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;31mE (380) i2c.master: i2c_master_multi_buffer_transmit(1123): I2C transaction failed[0m
+ESP_ERROR_CHECK failed: esp_err_t 0x103 (ESP_ERR_INVALID_STATE) at 0x400d6bcc
+file: "./main/scd40.c" line 71
+func: get_scd40_serial_number
+expression: r
+
+abort() was called at PC 0x4008585f on core 0
+
+
+Backtrace: 0x40081831:0x3ffb3dd0 0x40085869:0x3ffb3df0 0x4008b89d:0x3ffb3e10 0x4008585f:0x3ffb3e80 0x400d6bcc:0x3ffb3eb0 0x400d6a16:0x3ffb3ef0 0x400e72dc:0x3ffb3f40 0x40086359:0x3ffb3f70
+
+
+
+
+ELF file SHA256: 11a26cb24
+
+Rebooting...
+ets Jun  8 2016 00:22:57
+
+rst:0xc (SW_CPU_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:7176
+load:0x40078000,len:15564
+ho 0 tail 12 room 4
+load:0x40080400,len:4
+load:0x40080404,len:3904
+entry 0x40080640
+[0;32mI (31) boot: ESP-IDF v5.4-dev-1388-g5ca9f2a49a-dirty 2nd stage bootloader[0m
+[0;32mI (31) boot: compile time Jul 21 2024 15:52:47[0m
+[0;32mI (33) boot: Multicore bootloader[0m
+[0;32mI (37) boot: chip revision: v1.0[0m
+[0;32mI (41) boot.esp32: SPI Speed      : 40MHz[0m
+[0;32mI (46) boot.esp32: SPI Mode       : DIO[0m
+[0;32mI (50) boot.esp32: SPI Flash Size : 2MB[0m
+[0;32mI (55) boot: Enabling RNG early entropy source...[0m
+[0;32mI (60) boot: Partition Table:[0m
+[0;32mI (64) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (71) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (79) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (86) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (94) boot: End of partition table[0m
+[0;32mI (98) esp_image: segment 0: paddr=00010020 vaddr=3f400020 size=0b338h ( 45880) map[0m
+[0;32mI (122) esp_image: segment 1: paddr=0001b360 vaddr=3ffb0000 size=02364h (  9060) load[0m
+[0;32mI (126) esp_image: segment 2: paddr=0001d6cc vaddr=40080000 size=0294ch ( 10572) load[0m
+[0;32mI (132) esp_image: segment 3: paddr=00020020 vaddr=400d0020 size=17a30h ( 96816) map[0m
+[0;32mI (169) esp_image: segment 4: paddr=00037a58 vaddr=4008294c size=0a678h ( 42616) load[0m
+[0;32mI (193) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (193) boot: Disabling RNG early entropy source...[0m
+[0;32mI (205) cpu_start: Multicore app[0m
+[0;32mI (213) cpu_start: Pro cpu start user code[0m
+[0;32mI (213) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (213) app_init: Application information:[0m
+[0;32mI (216) app_init: Project name:     main[0m
+[0;32mI (221) app_init: App version:      6d26719-dirty[0m
+[0;32mI (226) app_init: Compile time:     Jul 28 2024 00:36:33[0m
+[0;32mI (232) app_init: ELF file SHA256:  11a26cb24...[0m
+[0;32mI (238) app_init: ESP-IDF:          v5.4-dev-1388-g5ca9f2a49a-dirty[0m
+[0;32mI (245) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (249) efuse_init: Max chip rev:     v3.99 [0m
+[0;32mI (254) efuse_init: Chip rev:         v1.0[0m
+[0;32mI (259) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (266) heap_init: At 3FFAE6E0 len 00001920 (6 KiB): DRAM[0m
+[0;32mI (272) heap_init: At 3FFB2C50 len 0002D3B0 (180 KiB): DRAM[0m
+[0;32mI (279) heap_init: At 3FFE0440 len 00003AE0 (14 KiB): D/IRAM[0m
+[0;32mI (285) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM[0m
+[0;32mI (291) heap_init: At 4008CFC4 len 0001303C (76 KiB): IRAM[0m
+[0;32mI (299) spi_flash: detected chip: generic[0m
+[0;32mI (302) spi_flash: flash io: dio[0m
+[0;33mW (306) spi_flash: Detected size(4096k) larger than the size in the binary image header(2048k). Using the size in the binary image header.[0m
+[0;32mI (320) main_task: Started on CPU0[0m
+[0;32mI (330) main_task: Calling app_main()[0m
+[0;32mI (330) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (330) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;31mE (340) i2c.master: I2C hardware NACK detected[0m
+[0;31mE (350) i2c.master: I2C transaction unexpected nack detected[0m
+[0;31mE (350) i2c.master: s_i2c_synchronous_transaction(897): I2C transaction failed[0m
+[0;32mI (360) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (370) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;31mE (380) i2c.master: i2c_master_multi_buffer_transmit(1123): I2C transaction failed[0m
+ESP_ERROR_CHECK failed: esp_err_t 0x103 (ESP_ERR_INVALID_STATE) at 0x400d6bcc
+file: "./main/scd40.c" line 71
+func: get_scd40_serial_number
+expression: r
+
+abort() was called at PC 0x4008585f on core 0
+
+
+Backtrace: 0x40081831:0x3ffb3dd0 0x40085869:0x3ffb3df0 0x4008b89d:0x3ffb3e10 0x4008585f:0x3ffb3e80 0x400d6bcc:0x3ffb3eb0 0x400d6a16:0x3ffb3ef0 0x400e72dc:0x3ffb3f40 0x40086359:0x3ffb3f70
+
+
+
+
+ELF file SHA256: 11a26cb24
+
+Rebooting...
+ets Jun  8 2016 00:22:57
+
+rst:0xc (SW_CPU_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:7176
+load:0x40078000,len:15564
+ho 0 tail 12 room 4
+load:0x40080400,len:4
+load:0x40080404,len:3904
+entry 0x40080640
+[0;32mI (31) boot: ESP-IDF v5.4-dev-1388-g5ca9f2a49a-dirty 2nd stage bootloader[0m
+[0;32mI (31) boot: compile time Jul 21 2024 15:52:47[0m
+[0;32mI (33) boot: Multicore bootloader[0m
+[0;32mI (37) boot: chip revision: v1.0[0m
+[0;32mI (41) boot.esp32: SPI Speed      : 40MHz[0m
+[0;32mI (46) boot.esp32: SPI Mode       : DIO[0m
+[0;32mI (50) boot.esp32: SPI Flash Size : 2MB[0m
+[0;32mI (55) boot: Enabling RNG early entropy source...[0m
+[0;32mI (60) boot: Partition Table:[0m
+[0;32mI (64) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (71) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (79) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (86) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (94) boot: End of partition table[0m
+[0;32mI (98) esp_image: segment 0: paddr=00010020 vaddr=3f400020 size=0b338h ( 45880) map[0m
+[0;32mI (122) esp_image: segment 1: paddr=0001b360 vaddr=3ffb0000 size=02364h (  9060) load[0m
+[0;32mI (126) esp_image: segment 2: paddr=0001d6cc vaddr=40080000 size=0294ch ( 10572) load[0m
+[0;32mI (132) esp_image: segment 3: paddr=00020020 vaddr=400d0020 size=17a30h ( 96816) map[0m
+[0;32mI (169) esp_image: segment 4: paddr=00037a58 vaddr=4008294c size=0a678h ( 42616) load[0m
+[0;32mI (193) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (193) boot: Disabling RNG early entropy source...[0m
+[0;32mI (205) cpu_start: Multicore app[0m
+[0;32mI (213) cpu_start: Pro cpu start user code[0m
+[0;32mI (213) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (213) app_init: Application information:[0m
+[0;32mI (216) app_init: Project name:     main[0m
+[0;32mI (221) app_init: App version:      6d26719-dirty[0m
+[0;32mI (226) app_init: Compile time:     Jul 28 2024 00:36:33[0m
+[0;32mI (232) app_init: ELF file SHA256:  11a26cb24...[0m
+[0;32mI (238) app_init: ESP-IDF:          v5.4-dev-1388-g5ca9f2a49a-dirty[0m
+[0;32mI (245) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (249) efuse_init: Max chip rev:     v3.99 [0m
+[0;32mI (254) efuse_init: Chip rev:         v1.0[0m
+[0;32mI (259) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (266) heap_init: At 3FFAE6E0 len 00001920 (6 KiB): DRAM[0m
+[0;32mI (272) heap_init: At 3FFB2C50 len 0002D3B0 (180 KiB): DRAM[0m
+[0;32mI (279) heap_init: At 3FFE0440 len 00003AE0 (14 KiB): D/IRAM[0m
+[0;32mI (285) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM[0m
+[0;32mI (291) heap_init: At 4008CFC4 len 0001303C (76 KiB): IRAM[0m
+[0;32mI (299) spi_flash: detected chip: generic[0m
+[0;32mI (302) spi_flash: flash io: dio[0m
+[0;33mW (306) spi_flash: Detected size(4096k) larger than the size in the binary image header(2048k). Using the size in the binary image header.[0m
+[0;32mI (320) main_task: Started on CPU0[0m
+[0;32mI (330) main_task: Calling app_main()[0m
+[0;32mI (330) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (330) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;31mE (340) i2c.master: I2C hardware NACK detected[0m
+[0;31mE (350) i2c.master: I2C transaction unexpected nack detected[0m
+[0;31mE (350) i2c.master: s_i2c_synchronous_transaction(897): I2C transaction failed[0m
+[0;32mI (360) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (370) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;31mE (380) i2c.master: i2c_master_multi_buffer_transmit(1123): I2C transaction failed[0m
+ESP_ERROR_CHECK failed: esp_err_t 0x103 (ESP_ERR_INVALID_STATE) at 0x400d6bcc
+file: "./main/scd40.c" line 71
+func: get_scd40_serial_number
+expression: r
+
+abort() was called at PC 0x4008585f on core 0
+
+
+Backtrace: 0x40081831:0x3ffb3dd0 0x40085869:0x3ffb3df0 0x4008b89d:0x3ffb3e10 0x4008585f:0x3ffb3e80 0x400d6bcc:0x3ffb3eb0 0x400d6a16:0x3ffb3ef0 0x400e72dc:0x3ffb3f40 0x40086359:0x3ffb3f70
+
+
+
+
+ELF file SHA256: 11a26cb24
+
+Rebooting...
+ets Jun  8 2016 00:22:57
+
+rst:0xc (SW_CPU_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:7176
+load:0x40078000,len:15564
+ho 0 tail 12 room 4
+load:0x40080400,len:4
+load:0x40080404,len:3904
+entry 0x40080640
+[0;32mI (31) boot: ESP-IDF v5.4-dev-1388-g5ca9f2a49a-dirty 2nd stage bootloader[0m
+[0;32mI (31) boot: compile time Jul 21 2024 15:52:47[0m
+[0;32mI (33) boot: Multicore bootloader[0m
+[0;32mI (37) boot: chip revision: v1.0[0m
+[0;32mI (41) boot.esp32: SPI Speed      : 40MHz[0m
+[0;32mI (46) boot.esp32: SPI Mode       : DIO[0m
+[0;32mI (50) boot.esp32: SPI Flash Size : 2MB[0m
+[0;32mI (55) boot: Enabling RNG early entropy source...[0m
+[0;32mI (60) boot: Partition Table:[0m
+[0;32mI (64) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (71) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (79) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (86) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (94) boot: End of partition table[0m
+[0;32mI (98) esp_image: segment 0: paddr=00010020 vaddr=3f400020 size=0b338h ( 45880) map[0m
+[0;32mI (122) esp_image: segment 1: paddr=0001b360 vaddr=3ffb0000 size=02364h (  9060) load[0m
+[0;32mI (126) esp_image: segment 2: paddr=0001d6cc vaddr=40080000 size=0294ch ( 10572) load[0m
+[0;32mI (132) esp_image: segment 3: paddr=00020020 vaddr=400d0020 size=17a30h ( 96816) map[0m
+[0;32mI (169) esp_image: segment 4: paddr=00037a58 vaddr=4008294c size=0a678h ( 42616) load[0m
+[0;32mI (193) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (193) boot: Disabling RNG early entropy source...[0m
+[0;32mI (205) cpu_start: Multicore app[0m
+[0;32mI (213) cpu_start: Pro cpu start user code[0m
+[0;32mI (213) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (213) app_init: Application information:[0m
+[0;32mI (216) app_init: Project name:     main[0m
+[0;32mI (221) app_init: App version:      6d26719-dirty[0m
+[0;32mI (226) app_init: Compile time:     Jul 28 2024 00:36:33[0m
+[0;32mI (232) app_init: ELF file SHA256:  11a26cb24...[0m
+[0;32mI (238) app_init: ESP-IDF:          v5.4-dev-1388-g5ca9f2a49a-dirty[0m
+[0;32mI (245) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (249) efuse_init: Max chip rev:     v3.99 [0m
+[0;32mI (254) efuse_init: Chip rev:         v1.0[0m
+[0;32mI (259) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (266) heap_init: At 3FFAE6E0 len 00001920 (6 KiB): DRAM[0m
+[0;32mI (272) heap_init: At 3FFB2C50 len 0002D3B0 (180 KiB): DRAM[0m
+[0;32mI (279) heap_init: At 3FFE0440 len 00003AE0 (14 KiB): D/IRAM[0m
+[0;32mI (285) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM[0m
+[0;32mI (291) heap_init: At 4008CFC4 len 0001303C (76 KiB): IRAM[0m
+[0;32mI (299) spi_flash: detected chip: generic[0m
+[0;32mI (302) spi_flash: flash io: dio[0m
+[0;33mW (306) spi_flash: Detected size(4096k) larger than the size in the binary image header(2048k). Using the size in the binary image header.[0m
+[0;32mI (320) main_task: Started on CPU0[0m
+[0;32mI (330) main_task: Calling app_main()[0m
+[0;32mI (330) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (330) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;31mE (340) i2c.master: I2C hardware NACK detected[0m
+[0;31mE (350) i2c.master: I2C transaction unexpected nack detected[0m
+[0;31mE (350) i2c.master: s_i2c_synchronous_transaction(897): I2C transaction failed[0m
+[0;32mI (360) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (370) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;31mE (380) i2c.master: i2c_master_multi_buffer_transmit(1123): I2C transaction failed[0m
+ESP_ERROR_CHECK failed: esp_err_t 0x103 (ESP_ERR_INVALID_STATE) at 0x400d6bcc
+file: "./main/scd40.c" line 71
+func: get_scd40_serial_number
+expression: r
+
+abort() was called at PC 0x4008585f on core 0
+
+
+Backtrace: 0x40081831:0x3ffb3dd0 0x40085869:0x3ffb3df0 0x4008b89d:0x3ffb3e10 0x4008585f:0x3ffb3e80 0x400d6bcc:0x3ffb3eb0 0x400d6a16:0x3ffb3ef0 0x400e72dc:0x3ffb3f40 0x40086359:0x3ffb3f70
+
+
+
+
+ELF file SHA256: 11a26cb24
+
+Rebooting...
+ets Jun  8 2016 00:22:57
+
+rst:0xc (SW_CPU_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:7176
+load:0x40078000,len:15564
+ho 0 tail 12 room 4
+load:0x40080400,len:4
+load:0x40080404,len:3904
+entry 0x40080640
+[0;32mI (31) boot: ESP-IDF v5.4-dev-1388-g5ca9f2a49a-dirty 2nd stage bootloader[0m
+[0;32mI (31) boot: compile time Jul 21 2024 15:52:47[0m
+[0;32mI (33) boot: Multicore bootloader[0m
+[0;32mI (37) boot: chip revision: v1.0[0m
+[0;32mI (41) boot.esp32: SPI Speed      : 40MHz[0m
+[0;32mI (46) boot.esp32: SPI Mode       : DIO[0m
+[0;32mI (50) boot.esp32: SPI Flash Size : 2MB[0m
+[0;32mI (55) boot: Enabling RNG early entropy source...[0m
+[0;32mI (60) boot: Partition Table:[0m
+[0;32mI (64) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (71) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (79) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (86) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (94) boot: End of partition table[0m
+[0;32mI (98) esp_image: segment 0: paddr=00010020 vaddr=3f400020 size=0b338h ( 45880) map[0m
+[0;32mI (122) esp_image: segment 1: paddr=0001b360 vaddr=3ffb0000 size=02364h (  9060) load[0m
+[0;32mI (126) esp_image: segment 2: paddr=0001d6cc vaddr=40080000 size=0294ch ( 10572) load[0m
+[0;32mI (132) esp_image: segment 3: paddr=00020020 vaddr=400d0020 size=17a30h ( 96816) map[0m
+[0;32mI (169) esp_image: segment 4: paddr=00037a58 vaddr=4008294c size=0a678h ( 42616) load[0m
+[0;32mI (193) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (193) boot: Disabling RNG early entropy source...[0m
+[0;32mI (205) cpu_start: Multicore app[0m
+[0;32mI (213) cpu_start: Pro cpu start user code[0m
+[0;32mI (213) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (213) app_init: Application information:[0m
+[0;32mI (216) app_init: Project name:     main[0m
+[0;32mI (221) app_init: App version:      6d26719-dirty[0m
+[0;32mI (226) app_init: Compile time:     Jul 28 2024 00:36:33[0m
+[0;32mI (232) app_init: ELF file SHA256:  11a26cb24...[0m
+[0;32mI (238) app_init: ESP-IDF:          v5.4-dev-1388-g5ca9f2a49a-dirty[0m
+[0;32mI (245) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (249) efuse_init: Max chip rev:     v3.99 [0m
+[0;32mI (254) efuse_init: Chip rev:         v1.0[0m
+[0;32mI (259) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (266) heap_init: At 3FFAE6E0 len 00001920 (6 KiB): DRAM[0m
+[0;32mI (272) heap_init: At 3FFB2C50 len 0002D3B0 (180 KiB): DRAM[0m
+[0;32mI (279) heap_init: At 3FFE0440 len 00003AE0 (14 KiB): D/IRAM[0m
+[0;32mI (285) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM[0m
+[0;32mI (291) heap_init: At 4008CFC4 len 0001303C (76 KiB): IRAM[0m
+[0;32mI (299) spi_flash: detected chip: generic[0m
+[0;32mI (302) spi_flash: flash io: dio[0m
+[0;33mW (306) spi_flash: Detected size(4096k) larger than the size in the binary image header(2048k). Using the size in the binary image header.[0m
+[0;32mI (320) main_task: Started on CPU0[0m
+[0;32mI (330) main_task: Calling app_main()[0m
+[0;32mI (330) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (330) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;31mE (340) i2c.master: I2C hardware NACK detected[0m
+[0;31mE (350) i2c.master: I2C transaction unexpected nack detected[0m
+[0;31mE (350) i2c.master: s_i2c_synchronous_transaction(897): I2C transaction failed[0m
+[0;32mI (360) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (370) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;31mE (380) i2c.master: i2c_master_multi_buffer_transmit(1123): I2C transaction failed[0m
+ESP_ERROR_CHECK failed: esp_err_t 0x103 (ESP_ERR_INVALID_STATE) at 0x400d6bcc
+file: "./main/scd40.c" line 71
+func: get_scd40_serial_number
+expression: r
+
+abort() was called at PC 0x4008585f on core 0
+
+
+Backtrace: 0x40081831:0x3ffb3dd0 0x40085869:0x3ffb3df0 0x4008b89d:0x3ffb3e10 0x4008585f:0x3ffb3e80 0x400d6bcc:0x3ffb3eb0 0x400d6a16:0x3ffb3ef0 0x400e72dc:0x3ffb3f40 0x40086359:0x3ffb3f70
+
+
+
+
+ELF file SHA256: 11a26cb24
+
+Rebooting...
+ets Jun  8 2016 00:22:57
+
+rst:0xc (SW_CPU_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:7176
+load:0x40078000,len:15564
+ho 0 tail 12 room 4
+load:0x40080400,len:4
+load:0x40080404,len:3904
+entry 0x40080640
+[0;32mI (31) boot: ESP-IDF v5.4-dev-1388-g5ca9f2a49a-dirty 2nd stage bootloader[0m
+[0;32mI (31) boot: compile time Jul 21 2024 15:52:47[0m
+[0;32mI (33) boot: Multicore bootloader[0m
+[0;32mI (37) boot: chip revision: v1.0[0m
+[0;32mI (41) boot.esp32: SPI Speed      : 40MHz[0m
+[0;32mI (46) boot.esp32: SPI Mode       : DIO[0m
+[0;32mI (50) boot.esp32: SPI Flash Size : 2MB[0m
+[0;32mI (55) boot: Enabling RNG early entropy source...[0m
+[0;32mI (60) boot: Partition Table:[0m
+[0;32mI (64) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (71) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (79) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (86) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (94) boot: End of partition table[0m
+[0;32mI (98) esp_image: segment 0: paddr=00010020 vaddr=3f400020 size=0b338h ( 45880) map[0m
+[0;32mI (122) esp_image: segment 1: paddr=0001b360 vaddr=3ffb0000 size=02364h (  9060) load[0m
+[0;32mI (126) esp_image: segment 2: paddr=0001d6cc vaddr=40080000 size=0294ch ( 10572) load[0m
+[0;32mI (132) esp_image: segment 3: paddr=00020020 vaddr=400d0020 size=17a30h ( 96816) map[0m
+[0;32mI (169) esp_image: segment 4: paddr=00037a58 vaddr=4008294c size=0a678h ( 42616) load[0m
+[0;32mI (193) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (193) boot: Disabling RNG early entropy source...[0m
+[0;32mI (205) cpu_start: Multicore app[0m
+[0;32mI (213) cpu_start: Pro cpu start user code[0m
+[0;32mI (213) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (213) app_init: Application information:[0m
+[0;32mI (216) app_init: Project name:     main[0m
+[0;32mI (221) app_init: App version:      6d26719-dirty[0m
+[0;32mI (226) app_init: Compile time:     Jul 28 2024 00:36:33[0m
+[0;32mI (232) app_init: ELF file SHA256:  11a26cb24...[0m
+[0;32mI (238) app_init: ESP-IDF:          v5.4-dev-1388-g5ca9f2a49a-dirty[0m
+[0;32mI (245) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (249) efuse_init: Max chip rev:     v3.99 [0m
+[0;32mI (254) efuse_init: Chip rev:         v1.0[0m
+[0;32mI (259) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (266) heap_init: At 3FFAE6E0 len 00001920 (6 KiB): DRAM[0m
+[0;32mI (272) heap_init: At 3FFB2C50 len 0002D3B0 (180 KiB): DRAM[0m
+[0;32mI (279) heap_init: At 3FFE0440 len 00003AE0 (14 KiB): D/IRAM[0m
+[0;32mI (285) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM[0m
+[0;32mI (291) heap_init: At 4008CFC4 len 0001303C (76 KiB): IRAM[0m
+[0;32mI (299) spi_flash: detected chip: generic[0m
+[0;32mI (302) spi_flash: flash io: dio[0m
+[0;33mW (306) spi_flash: Detected size(4096k) larger than the size in the binary image header(2048k). Using the size in the binary image header.[0m
+[0;32mI (320) main_task: Started on CPU0[0m
+[0;32mI (330) main_task: Calling app_main()[0m
+[0;32mI (330) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (330) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;31mE (340) i2c.master: I2C hardware NACK detected[0m
+[0;31mE (350) i2c.master: I2C transaction unexpected nack detected[0m
+[0;31mE (350) i2c.master: s_i2c_synchronous_transaction(897): I2C transaction failed[0m
+[0;32mI (360) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (370) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;31mE (380) i2c.master: i2c_master_multi_buffer_transmit(1123): I2C transaction failed[0m
+ESP_ERROR_CHECK failed: esp_err_t 0x103 (ESP_ERR_INVALID_STATE) at 0x400d6bcc
+file: "./main/scd40.c" line 71
+func: get_scd40_serial_number
+expression: r
+
+abort() was called at PC 0x4008585f on core 0
+
+
+Backtrace: 0x40081831:0x3ffb3dd0 0x40085869:0x3ffb3df0 0x4008b89d:0x3ffb3e10 0x4008585f:0x3ffb3e80 0x400d6bcc:0x3ffb3eb0 0x400d6a16:0x3ffb3ef0 0x400e72dc:0x3ffb3f40 0x40086359:0x3ffb3f70
+
+
+
+
+ELF file SHA256: 11a26cb24
+
+Rebooting...
+ets Jun  8 2016 00:22:57
+
+rst:0xc (SW_CPU_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:7176
+load:0x40078000,len:15564
+ho 0 tail 12 room 4
+load:0x40080400,len:4
+load:0x40080404,len:3904
+entry 0x40080640
+[0;32mI (31) boot: ESP-IDF v5.4-dev-1388-g5ca9f2a49a-dirty 2nd stage bootloader[0m
+[0;32mI (31) boot: compile time Jul 21 2024 15:52:47[0m
+[0;32mI (33) boot: Multicore bootloader[0m
+[0;32mI (37) boot: chip revision: v1.0[0m
+[0;32mI (41) boot.esp32: SPI Speed      : 40MHz[0m
+[0;32mI (46) boot.esp32: SPI Mode       : DIO[0m
+[0;32mI (50) boot.esp32: SPI Flash Size : 2MB[0m
+[0;32mI (55) boot: Enabling RNG early entropy source...[0m
+[0;32mI (60) boot: Partition Table:[0m
+[0;32mI (64) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (71) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (79) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (86) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (94) boot: End of partition table[0m
+[0;32mI (98) esp_image: segment 0: paddr=00010020 vaddr=3f400020 size=0b338h ( 45880) map[0m
+[0;32mI (122) esp_image: segment 1: paddr=0001b360 vaddr=3ffb0000 size=02364h (  9060) load[0m
+[0;32mI (126) esp_image: segment 2: paddr=0001d6cc vaddr=40080000 size=0294ch ( 10572) load[0m
+[0;32mI (132) esp_image: segment 3: paddr=00020020 vaddr=400d0020 size=17a30h ( 96816) map[0m
+[0;32mI (169) esp_image: segment 4: paddr=00037a58 vaddr=4008294c size=0a678h ( 42616) load[0m
+[0;32mI (193) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (193) boot: Disabling RNG early entropy source...[0m
+[0;32mI (205) cpu_start: Multicore app[0m
+[0;32mI (213) cpu_start: Pro cpu start user code[0m
+[0;32mI (213) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (213) app_init: Application information:[0m
+[0;32mI (216) app_init: Project name:     main[0m
+[0;32mI (221) app_init: App version:      6d26719-dirty[0m
+[0;32mI (226) app_init: Compile time:     Jul 28 2024 00:36:33[0m
+[0;32mI (232) app_init: ELF file SHA256:  11a26cb24...[0m
+[0;32mI (238) app_init: ESP-IDF:          v5.4-dev-1388-g5ca9f2a49a-dirty[0m
+[0;32mI (245) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (249) efuse_init: Max chip rev:     v3.99 [0m
+[0;32mI (254) efuse_init: Chip rev:         v1.0[0m
+[0;32mI (259) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (266) heap_init: At 3FFAE6E0 len 00001920 (6 KiB): DRAM[0m
+[0;32mI (272) heap_init: At 3FFB2C50 len 0002D3B0 (180 KiB): DRAM[0m
+[0;32mI (279) heap_init: At 3FFE0440 len 00003AE0 (14 KiB): D/IRAM[0m
+[0;32mI (285) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM[0m
+[0;32mI (291) heap_init: At 4008CFC4 len 0001303C (76 KiB): IRAM[0m
+[0;32mI (299) spi_flash: detected chip: generic[0m
+[0;32mI (302) spi_flash: flash io: dio[0m
+[0;33mW (306) spi_flash: Detected size(4096k) larger than the size in the binary image header(2048k). Using the size in the binary image header.[0m
+[0;32mI (320) main_task: Started on CPU0[0m
+[0;32mI (330) main_task: Calling app_main()[0m
+[0;32mI (330) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (330) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;31mE (340) i2c.master: I2C hardware NACK detected[0m
+[0;31mE (350) i2c.master: I2C transaction unexpected nack detected[0m
+[0;31mE (350) i2c.master: s_i2c_synchronous_transaction(897): I2C transaction failed[0m
+[0;32mI (360) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (370) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;31mE (380) i2c.master: i2c_master_multi_buffer_transmit(1123): I2C transaction failed[0m
+ESP_ERROR_CHECK failed: esp_err_t 0x103 (ESP_ERR_INVALID_STATE) at 0x400d6bcc
+file: "./main/scd40.c" line 71
+func: get_scd40_serial_number
+expression: r
+
+abort() was called at PC 0x4008585f on core 0
+
+
+Backtrace: 0x40081831:0x3ffb3dd0 0x40085869:0x3ffb3df0 0x4008b89d:0x3ffb3e10 0x4008585f:0x3ffb3e80 0x400d6bcc:0x3ffb3eb0 0x400d6a16:0x3ffb3ef0 0x400e72dc:0x3ffb3f40 0x40086359:0x3ffb3f70
+
+
+
+
+ELF file SHA256: 11a26cb24
+
+Rebooting...
+ets Jun  8 2016 00:22:57
+
+rst:0xc (SW_CPU_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:7176
+load:0x40078000,len:15564
+ho 0 tail 12 room 4
+load:0x40080400,len:4
+load:0x40080404,len:3904
+entry 0x40080640
+[0;32mI (31) boot: ESP-IDF v5.4-dev-1388-g5ca9f2a49a-dirty 2nd stage bootloader[0m
+[0;32mI (31) boot: compile time Jul 21 2024 15:52:47[0m
+[0;32mI (33) boot: Multicore bootloader[0m
+[0;32mI (37) boot: chip revision: v1.0[0m
+[0;32mI (41) boot.esp32: SPI Speed      : 40MHz[0m
+[0;32mI (46) boot.esp32: SPI Mode       : DIO[0m
+[0;32mI (50) boot.esp32: SPI Flash Size : 2MB[0m
+[0;32mI (55) boot: Enabling RNG early entropy source...[0m
+[0;32mI (60) boot: Partition Table:[0m
+[0;32mI (64) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (71) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (79) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (86) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (94) boot: End of partition table[0m
+[0;32mI (98) esp_image: segment 0: paddr=00010020 vaddr=3f400020 size=0b338h ( 45880) map[0m
+[0;32mI (122) esp_image: segment 1: paddr=0001b360 vaddr=3ffb0000 size=02364h (  9060) load[0m
+[0;32mI (126) esp_image: segment 2: paddr=0001d6cc vaddr=40080000 size=0294ch ( 10572) load[0m
+[0;32mI (132) esp_image: segment 3: paddr=00020020 vaddr=400d0020 size=17a30h ( 96816) map[0m
+[0;32mI (169) esp_image: segment 4: paddr=00037a58 vaddr=4008294c size=0a678h ( 42616) load[0m
+[0;32mI (193) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (193) boot: Disabling RNG early entropy source...[0m
+[0;32mI (205) cpu_start: Multicore app[0m
+[0;32mI (213) cpu_start: Pro cpu start user code[0m
+[0;32mI (213) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (213) app_init: Application information:[0m
+[0;32mI (216) app_init: Project name:     main[0m
+[0;32mI (221) app_init: App version:      6d26719-dirty[0m
+[0;32mI (226) app_init: Compile time:     Jul 28 2024 00:36:33[0m
+[0;32mI (232) app_init: ELF file SHA256:  11a26cb24...[0m
+[0;32mI (238) app_init: ESP-IDF:          v5.4-dev-1388-g5ca9f2a49a-dirty[0m
+[0;32mI (245) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (249) efuse_init: Max chip rev:     v3.99 [0m
+[0;32mI (254) efuse_init: Chip rev:         v1.0[0m
+[0;32mI (259) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (266) heap_init: At 3FFAE6E0 len 00001920 (6 KiB): DRAM[0m
+[0;32mI (272) heap_init: At 3FFB2C50 len 0002D3B0 (180 KiB): DRAM[0m
+[0;32mI (279) heap_init: At 3FFE0440 len 00003AE0 (14 KiB): D/IRAM[0m
+[0;32mI (285) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM[0m
+[0;32mI (291) heap_init: At 4008CFC4 len 0001303C (76 KiB): IRAM[0m
+[0;32mI (299) spi_flash: detected chip: generic[0m
+[0;32mI (302) spi_flash: flash io: dio[0m
+[0;33mW (306) spi_flash: Detected size(4096k) larger than the size in the binary image header(2048k). Using the size in the binary image header.[0m
+[0;32mI (320) main_task: Started on CPU0[0m
+[0;32mI (330) main_task: Calling app_main()[0m
+[0;32mI (330) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (330) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;31mE (340) i2c.master: I2C hardware NACK detected[0m
+[0;31mE (350) i2c.master: I2C transaction unexpected nack detected[0m
+[0;31mE (350) i2c.master: s_i2c_synchronous_transaction(897): I2C transaction failed[0m
+[0;32mI (360) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (370) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;31mE (380) i2c.master: i2c_master_multi_buffer_transmit(1123): I2C transaction failed[0m
+ESP_ERROR_CHECK failed: esp_err_t 0x103 (ESP_ERR_INVALID_STATE) at 0x400d6bcc
+file: "./main/scd40.c" line 71
+func: get_scd40_serial_number
+expression: r
+
+abort() was called at PC 0x4008585f on core 0
+
+
+Backtrace: 0x40081831:0x3ffb3dd0 0x40085869:0x3ffb3df0 0x4008b89d:0x3ffb3e10 0x4008585f:0x3ffb3e80 0x400d6bcc:0x3ffb3eb0 0x400d6a16:0x3ffb3ef0 0x400e72dc:0x3ffb3f40 0x40086359:0x3ffb3f70
+
+
+
+
+ELF file SHA256: 11a26cb24
+
+Rebooting...
+ets Jun  8 2016 00:22:57
+
+rst:0xc (SW_CPU_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:7176
+load:0x40078000,len:15564
+ho 0 tail 12 room 4
+load:0x40080400,len:4
+load:0x40080404,len:3904
+entry 0x40080640
+[0;32mI (31) boot: ESP-IDF v5.4-dev-1388-g5ca9f2a49a-dirty 2nd stage bootloader[0m
+[0;32mI (31) boot: compile time Jul 21 2024 15:52:47[0m
+[0;32mI (33) boot: Multicore bootloader[0m
+[0;32mI (37) boot: chip revision: v1.0[0m
+[0;32mI (41) boot.esp32: SPI Speed      : 40MHz[0m
+[0;32mI (46) boot.esp32: SPI Mode       : DIO[0m
+[0;32mI (50) boot.esp32: SPI Flash Size : 2MB[0m
+[0;32mI (55) boot: Enabling RNG early entropy source...[0m
+[0;32mI (60) boot: Partition Table:[0m
+[0;32mI (64) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (71) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (79) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (86) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (94) boot: End of partition table[0m
+[0;32mI (98) esp_image: segment 0: paddr=00010020 vaddr=3f400020 size=0b338h ( 45880) map[0m
+[0;32mI (122) esp_image: segment 1: paddr=0001b360 vaddr=3ffb0000 size=02364h (  9060) load[0m
+[0;32mI (126) esp_image: segment 2: paddr=0001d6cc vaddr=40080000 size=0294ch ( 10572) load[0m
+[0;32mI (132) esp_image: segment 3: paddr=00020020 vaddr=400d0020 size=17a30h ( 96816) map[0m
+[0;32mI (169) esp_image: segment 4: paddr=00037a58 vaddr=4008294c size=0a678h ( 42616) load[0m
+[0;32mI (193) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (193) boot: Disabling RNG early entropy source...[0m
+[0;32mI (205) cpu_start: Multicore app[0m
+[0;32mI (213) cpu_start: Pro cpu start user code[0m
+[0;32mI (213) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (213) app_init: Application information:[0m
+[0;32mI (216) app_init: Project name:     main[0m
+[0;32mI (221) app_init: App version:      6d26719-dirty[0m
+[0;32mI (226) app_init: Compile time:     Jul 28 2024 00:36:33[0m
+[0;32mI (232) app_init: ELF file SHA256:  11a26cb24...[0m
+[0;32mI (238) app_init: ESP-IDF:          v5.4-dev-1388-g5ca9f2a49a-dirty[0m
+[0;32mI (245) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (249) efuse_init: Max chip rev:     v3.99 [0m
+[0;32mI (254) efuse_init: Chip rev:         v1.0[0m
+[0;32mI (259) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (266) heap_init: At 3FFAE6E0 len 00001920 (6 KiB): DRAM[0m
+[0;32mI (272) heap_init: At 3FFB2C50 len 0002D3B0 (180 KiB): DRAM[0m
+[0;32mI (279) heap_init: At 3FFE0440 len 00003AE0 (14 KiB): D/IRAM[0m
+[0;32mI (285) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM[0m
+[0;32mI (291) heap_init: At 4008CFC4 len 0001303C (76 KiB): IRAM[0m
+[0;32mI (299) spi_flash: detected chip: generic[0m
+[0;32mI (302) spi_flash: flash io: dio[0m
+[0;33mW (306) spi_flash: Detected size(4096k) larger than the size in the binary image header(2048k). Using the size in the binary image header.[0m
+[0;32mI (320) main_task: Started on CPU0[0m
+[0;32mI (330) main_task: Calling app_main()[0m
+[0;32mI (330) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (330) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;31mE (340) i2c.master: I2C hardware NACK detected[0m
+[0;31mE (350) i2c.master: I2C transaction unexpected nack detected[0m
+[0;31mE (350) i2c.master: s_i2c_synchronous_transaction(897): I2C transaction failed[0m
+[0;32mI (360) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (370) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;31mE (380) i2c.master: i2c_master_multi_buffer_transmit(1123): I2C transaction failed[0m
+ESP_ERROR_CHECK failed: esp_err_t 0x103 (ESP_ERR_INVALID_STATE) at 0x400d6bcc
+file: "./main/scd40.c" line 71
+func: get_scd40_serial_number
+expression: r
+
+abort() was called at PC 0x4008585f on core 0
+
+
+Backtrace: 0x40081831:0x3ffb3dd0 0x40085869:0x3ffb3df0 0x4008b89d:0x3ffb3e10 0x4008585f:0x3ffb3e80 0x400d6bcc:0x3ffb3eb0 0x400d6a16:0x3ffb3ef0 0x400e72dc:0x3ffb3f40 0x40086359:0x3ffb3f70
+
+
+
+
+ELF file SHA256: 11a26cb24
+
+Rebooting...
+ets Jun  8 2016 00:22:57
+
+rst:0xc (SW_CPU_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:7176
+load:0x40078000,len:15564
+ho 0 tail 12 room 4
+load:0x40080400,len:4
+load:0x40080404,len:3904
+entry 0x40080640
+[0;32mI (31) boot: ESP-IDF v5.4-dev-1388-g5ca9f2a49a-dirty 2nd stage bootloader[0m
+[0;32mI (31) boot: compile time Jul 21 2024 15:52:47[0m
+[0;32mI (33) boot: Multicore bootloader[0m
+[0;32mI (37) boot: chip revision: v1.0[0m
+[0;32mI (41) boot.esp32: SPI Speed      : 40MHz[0m
+[0;32mI (46) boot.esp32: SPI Mode       : DIO[0m
+[0;32mI (50) boot.esp32: SPI Flash Size : 2MB[0m
+[0;32mI (55) boot: Enabling RNG early entropy source...[0m
+[0;32mI (60) boot: Partition Table:[0m
+[0;32mI (64) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (71) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (79) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (86) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (94) boot: End of partition table[0m
+[0;32mI (98) esp_image: segment 0: paddr=00010020 vaddr=3f400020 size=0b338h ( 45880) map[0m
+[0;32mI (122) esp_image: segment 1: paddr=0001b360 vaddr=3ffb0000 size=02364h (  9060) load[0m
+[0;32mI (126) esp_image: segment 2: paddr=0001d6cc vaddr=40080000 size=0294ch ( 10572) load[0m
+[0;32mI (132) esp_image: segment 3: paddr=00020020 vaddr=400d0020 size=17a30h ( 96816) map[0m
+[0;32mI (169) esp_image: segment 4: paddr=00037a58 vaddr=4008294c size=0a678h ( 42616) load[0m
+[0;32mI (193) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (193) boot: Disabling RNG early entropy source...[0m
+[0;32mI (205) cpu_start: Multicore app[0m
+[0;32mI (213) cpu_start: Pro cpu start user code[0m
+[0;32mI (213) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (213) app_init: Application information:[0m
+[0;32mI (216) app_init: Project name:     main[0m
+[0;32mI (221) app_init: App version:      6d26719-dirty[0m
+[0;32mI (226) app_init: Compile time:     Jul 28 2024 00:36:33[0m
+[0;32mI (232) app_init: ELF file SHA256:  11a26cb24...[0m
+[0;32mI (238) app_init: ESP-IDF:          v5.4-dev-1388-g5ca9f2a49a-dirty[0m
+[0;32mI (245) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (249) efuse_init: Max chip rev:     v3.99 [0m
+[0;32mI (254) efuse_init: Chip rev:         v1.0[0m
+[0;32mI (259) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (266) heap_init: At 3FFAE6E0 len 00001920 (6 KiB): DRAM[0m
+[0;32mI (272) heap_init: At 3FFB2C50 len 0002D3B0 (180 KiB): DRAM[0m
+[0;32mI (279) heap_init: At 3FFE0440 len 00003AE0 (14 KiB): D/IRAM[0m
+[0;32mI (285) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM[0m
+[0;32mI (291) heap_init: At 4008CFC4 len 0001303C (76 KiB): IRAM[0m
+[0;32mI (299) spi_flash: detected chip: generic[0m
+[0;32mI (302) spi_flash: flash io: dio[0m
+[0;33mW (306) spi_flash: Detected size(4096k) larger than the size in the binary image header(2048k). Using the size in the binary image header.[0m
+[0;32mI (320) main_task: Started on CPU0[0m
+[0;32mI (330) main_task: Calling app_main()[0m
+[0;32mI (330) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (330) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;31mE (340) i2c.master: I2C hardware NACK detected[0m
+[0;31mE (350) i2c.master: I2C transaction unexpected nack detected[0m
+[0;31mE (350) i2c.master: s_i2c_synchronous_transaction(897): I2C transaction failed[0m
+[0;32mI (360) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (370) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;31mE (380) i2c.master: i2c_master_multi_buffer_transmit(1123): I2C transaction failed[0m
+ESP_ERROR_CHECK failed: esp_err_t 0x103 (ESP_ERR_INVALID_STATE) at 0x400d6bcc
+file: "./main/scd40.c" line 71
+func: get_scd40_serial_number
+expression: r
+
+abort() was called at PC 0x4008585f on core 0
+
+
+Backtrace: 0x40081831:0x3ffb3dd0 0x40085869:0x3ffb3df0 0x4008b89d:0x3ffb3e10 0x4008585f:0x3ffb3e80 0x400d6bcc:0x3ffb3eb0 0x400d6a16:0x3ffb3ef0 0x400e72dc:0x3ffb3f40 0x40086359:0x3ffb3f70
+
+
+
+
+ELF file SHA256: 11a26cb24
+
+Rebooting...
+ets Jun  8 2016 00:22:57
+
+rst:0xc (SW_CPU_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:7176
+load:0x40078000,len:15564
+ho 0 tail 12 room 4
+load:0x40080400,len:4
+load:0x40080404,len:3904
+entry 0x40080640
+[0;32mI (31) boot: ESP-IDF v5.4-dev-1388-g5ca9f2a49a-dirty 2nd stage bootloader[0m
+[0;32mI (31) boot: compile time Jul 21 2024 15:52:47[0m
+[0;32mI (33) boot: Multicore bootloader[0m
+[0;32mI (37) boot: chip revision: v1.0[0m
+[0;32mI (41) boot.esp32: SPI Speed      : 40MHz[0m
+[0;32mI (46) boot.esp32: SPI Mode       : DIO[0m
+[0;32mI (50) boot.esp32: SPI Flash Size : 2MB[0m
+[0;32mI (55) boot: Enabling RNG early entropy source...[0m
+[0;32mI (60) boot: Partition Table:[0m
+[0;32mI (64) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (71) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (79) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (86) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (94) boot: End of partition table[0m
+[0;32mI (98) esp_image: segment 0: paddr=00010020 vaddr=3f400020 size=0b338h ( 45880) map[0m
+[0;32mI (122) esp_image: segment 1: paddr=0001b360 vaddr=3ffb0000 size=02364h (  9060) load[0m
+[0;32mI (126) esp_image: segment 2: paddr=0001d6cc vaddr=40080000 size=0294ch ( 10572) load[0m
+[0;32mI (132) esp_image: segment 3: paddr=00020020 vaddr=400d0020 size=17a30h ( 96816) map[0m
+[0;32mI (169) esp_image: segment 4: paddr=00037a58 vaddr=4008294c size=0a678h ( 42616) load[0m
+[0;32mI (193) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (193) boot: Disabling RNG early entropy source...[0m
+[0;32mI (205) cpu_start: Multicore app[0m
+[0;32mI (213) cpu_start: Pro cpu start user code[0m
+[0;32mI (213) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (213) app_init: Application information:[0m
+[0;32mI (216) app_init: Project name:     main[0m
+[0;32mI (221) app_init: App version:      6d26719-dirty[0m
+[0;32mI (226) app_init: Compile time:     Jul 28 2024 00:36:33[0m
+[0;32mI (232) app_init: ELF file SHA256:  11a26cb24...[0m
+[0;32mI (238) app_init: ESP-IDF:          v5.4-dev-1388-g5ca9f2a49a-dirty[0m
+[0;32mI (245) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (249) efuse_init: Max chip rev:     v3.99 [0m
+[0;32mI (254) efuse_init: Chip rev:         v1.0[0m
+[0;32mI (259) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (266) heap_init: At 3FFAE6E0 len 00001920 (6 KiB): DRAM[0m
+[0;32mI (272) heap_init: At 3FFB2C50 len 0002D3B0 (180 KiB): DRAM[0m
+[0;32mI (279) heap_init: At 3FFE0440 len 00003AE0 (14 KiB): D/IRAM[0m
+[0;32mI (285) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM[0m
+[0;32mI (291) heap_init: At 4008CFC4 len 0001303C (76 KiB): IRAM[0m
+[0;32mI (299) spi_flash: detected chip: generic[0m
+[0;32mI (302) spi_flash: flash io: dio[0m
+[0;33mW (306) spi_flash: Detected size(4096k) larger than the size in the binary image header(2048k). Using the size in the binary image header.[0m
+[0;32mI (320) main_task: Started on CPU0[0m
+[0;32mI (330) main_task: Calling app_main()[0m
+[0;32mI (330) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (330) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (340) scd40_tag: scd40 serial number:152843105483599[0m
+[0;32mI (350) scd40_tag: Calculate CRC = da[0m
+[0;32mI (350) scd40_tag: word_0 crc: da, calculate word_0 crc: da[0m
+[0;32mI (360) scd40_tag: Calculate CRC = ac[0m
+[0;32mI (360) scd40_tag: word_1 crc: ac, calculate word_1 crc: ac[0m
+[0;32mI (370) scd40_tag: Calculate CRC = 3a[0m
+[0;32mI (370) scd40_tag: word_2 crc: 3a, calculate word_2 crc: 3a[0m
+[0;32mI (380) app_main_tag: SCD40 Serial Number:152843105483599[0m
+[0;32mI (5890) app_main_tag: co2:1630, temperature:30.094987, humidity:53.224994[0m
+[0;32mI (16890) app_main_tag: co2:1501, temperature:30.265888, humidity:53.096818[0m
+[0;32mI (27890) app_main_tag: co2:1420, temperature:30.810636, humidity:52.764172[0m
+[0;32mI (38890) app_main_tag: co2:1409, temperature:31.211185, humidity:52.228580[0m
+[0;32mI (49890) app_main_tag: co2:1419, temperature:31.488899, humidity:51.374075[0m
+[0;32mI (60890) app_main_tag: co2:1402, temperature:31.769284, humidity:50.751507[0m
+[0;32mI (71890) app_main_tag: co2:1398, temperature:31.998932, humidity:50.263218[0m
+[0;32mI (82890) app_main_tag: co2:1348, temperature:32.223239, humidity:49.805447[0m
+[0;32mI (93890) app_main_tag: co2:1377, temperature:32.426184, humidity:49.378195[0m
+[0;32mI (104890) app_main_tag: co2:1416, temperature:32.618448, humidity:48.961624[0m
+[0;32mI (115890) app_main_tag: co2:1419, temperature:32.824063, humidity:48.702220[0m
+[0;32mI (126890) app_main_tag: co2:1411, temperature:32.952239, humidity:48.364996[0m
+[0;32mI (137890) app_main_tag: co2:1380, temperature:33.069734, humidity:48.108644[0m
+[0;32mI (148890) app_main_tag: co2:1395, temperature:33.176547, humidity:47.876707[0m
+[0;32mI (159890) app_main_tag: co2:1349, temperature:33.326085, humidity:47.571527[0m
+[0;32mI (170890) app_main_tag: co2:1352, temperature:33.419547, humidity:47.330434[0m
+[0;32mI (181890) app_main_tag: co2:1337, temperature:33.515679, humidity:47.136645[0m
+[0;32mI (192890) app_main_tag: co2:1419, temperature:33.595789, humidity:46.942855[0m
+[0;32mI (203890) app_main_tag: co2:1398, temperature:33.659876, humidity:46.791791[0m
+[0;32mI (214890) app_main_tag: co2:1408, temperature:33.766690, humidity:46.605631[0m
+[0;32mI (225890) app_main_tag: co2:1437, temperature:33.838788, humidity:46.424048[0m
+[0;32mI (236890) app_main_tag: co2:1377, temperature:33.950942, humidity:46.320287[0m
+[0;32mI (247890) app_main_tag: co2:1445, temperature:33.977646, humidity:46.167697[0m
+[0;32mI (258890) app_main_tag: co2:1411, temperature:34.020371, humidity:46.106661[0m
+[0;32mI (269890) app_main_tag: co2:1414, temperature:34.137865, humidity:45.896086[0m
+[0;32mI (280890) app_main_tag: co2:1442, temperature:34.215305, humidity:45.923552[0m
+[0;32mI (291890) app_main_tag: co2:1433, temperature:34.290074, humidity:45.922026[0m
+[0;32mI (302890) app_main_tag: co2:1454, temperature:34.348821, humidity:45.963226[0m
+[0;32mI (313890) app_main_tag: co2:1489, temperature:34.407568, humidity:46.082246[0m
+[0;32mI (324890) app_main_tag: co2:1474, temperature:34.434272, humidity:46.169223[0m
+[0;32mI (335890) app_main_tag: co2:1465, temperature:34.458305, humidity:46.160067[0m
+[0;32mI (346890) app_main_tag: co2:1448, temperature:34.517052, humidity:46.210422[0m
+[0;32mI (357890) app_main_tag: co2:1481, temperature:34.511711, humidity:46.289769[0m
+[0;32mI (368890) app_main_tag: co2:1479, temperature:34.533074, humidity:46.369116[0m
+[0;32mI (379890) app_main_tag: co2:1553, temperature:34.527733, humidity:46.524758[0m
+[0;32mI (390890) app_main_tag: co2:1533, temperature:34.535744, humidity:46.616312[0m
+[0;32mI (401890) app_main_tag: co2:1492, temperature:34.530404, humidity:46.610208[0m
+[0;32mI (412890) app_main_tag: co2:1492, temperature:34.514382, humidity:46.686503[0m
+[0;32mI (423890) app_main_tag: co2:1504, temperature:34.519722, humidity:46.744488[0m
+[0;32mI (434890) app_main_tag: co2:1452, temperature:34.525063, humidity:46.797894[0m
+[0;32mI (445890) app_main_tag: co2:1483, temperature:34.463645, humidity:46.796368[0m
+[0;32mI (456890) app_main_tag: co2:1481, temperature:34.458305, humidity:46.831464[0m
+[0;32mI (467890) app_main_tag: co2:1475, temperature:34.479667, humidity:46.822309[0m
+[0;32mI (478890) app_main_tag: co2:1455, temperature:34.495689, humidity:46.657511[0m
+[0;32mI (489890) app_main_tag: co2:1430, temperature:34.522393, humidity:46.533913[0m
+[0;32mI (500890) app_main_tag: co2:1474, temperature:34.498360, humidity:46.420996[0m
+[0;32mI (511890) app_main_tag: co2:1433, temperature:34.514382, humidity:46.405737[0m
+[0;32mI (522890) app_main_tag: co2:1504, temperature:34.535744, humidity:46.187533[0m
+[0;32mI (533890) app_main_tag: co2:1493, temperature:34.573129, humidity:46.073091[0m
+[0;32mI (544890) app_main_tag: co2:1483, temperature:34.594491, humidity:45.967803[0m
+[0;32mI (555890) app_main_tag: co2:1438, temperature:34.559777, humidity:45.754177[0m
+[0;32mI (566890) app_main_tag: co2:1446, temperature:34.533074, humidity:45.525292[0m
+[0;32mI (577890) app_main_tag: co2:1531, temperature:34.581140, humidity:45.319295[0m
+[0;32mI (588890) app_main_tag: co2:1474, temperature:34.538415, humidity:45.139239[0m
+[0;32mI (599890) app_main_tag: co2:1458, temperature:34.527733, humidity:44.916457[0m
+[0;32mI (610890) app_main_tag: co2:1464, temperature:34.498360, humidity:44.798962[0m
+[0;32mI (621890) app_main_tag: co2:1445, temperature:34.509041, humidity:44.603647[0m
+[0;32mI (632890) app_main_tag: co2:1411, temperature:34.503700, humidity:44.519722[0m
+[0;32mI (643890) app_main_tag: co2:1431, temperature:34.407568, humidity:44.586862[0m
+[0;32mI (654890) app_main_tag: co2:1401, temperature:34.407568, humidity:44.669261[0m
+[0;32mI (665890) app_main_tag: co2:1454, temperature:34.452964, humidity:44.597543[0m
+[0;32mI (676890) app_main_tag: co2:1436, temperature:34.431601, humidity:44.599069[0m
+[0;32mI (687890) app_main_tag: co2:1418, temperature:34.447623, humidity:44.631113[0m
+[0;32mI (698890) app_main_tag: co2:1443, temperature:34.468986, humidity:44.559396[0m
+[0;32mI (709890) app_main_tag: co2:1422, temperature:34.463645, humidity:44.649424[0m
+[0;32mI (720890) app_main_tag: co2:1423, temperature:34.482338, humidity:44.699779[0m
+[0;32mI (731890) app_main_tag: co2:1403, temperature:34.514382, humidity:44.652476[0m
+[0;32mI (742890) app_main_tag: co2:1395, temperature:34.514382, humidity:44.585336[0m
+[0;32mI (753890) app_main_tag: co2:1416, temperature:34.551766, humidity:44.580758[0m
+[0;32mI (764890) app_main_tag: co2:1442, temperature:34.541085, humidity:44.560922[0m
+[0;32mI (775890) app_main_tag: co2:1458, temperature:34.549096, humidity:44.505989[0m
+[0;32mI (786890) app_main_tag: co2:1403, temperature:34.586481, humidity:44.542611[0m
+[0;32mI (797890) app_main_tag: co2:1447, temperature:34.623865, humidity:44.516670[0m
+[0;32mI (808890) app_main_tag: co2:1409, temperature:34.666590, humidity:44.443427[0m
+[0;32mI (819890) app_main_tag: co2:1418, temperature:34.650568, humidity:44.385443[0m
+[0;32mI (830890) app_main_tag: co2:1403, temperature:34.695964, humidity:44.402228[0m
+[0;32mI (841890) app_main_tag: co2:1397, temperature:34.722667, humidity:44.367132[0m
+[0;32mI (852890) app_main_tag: co2:1397, temperature:34.760052, humidity:44.327459[0m
+[0;32mI (863890) app_main_tag: co2:1425, temperature:34.808118, humidity:44.255741[0m
+[0;32mI (874890) app_main_tag: co2:1383, temperature:34.840162, humidity:44.184024[0m
+[0;32mI (885890) app_main_tag: co2:1380, temperature:34.890898, humidity:44.116884[0m
+[0;32mI (896890) app_main_tag: co2:1433, temperature:34.938964, humidity:44.061952[0m
+[0;32mI (907890) app_main_tag: co2:1414, temperature:34.933623, humidity:44.058900[0m
+[0;32mI (918890) app_main_tag: co2:1411, temperature:34.992370, humidity:44.017700[0m
+[0;32mI (929890) app_main_tag: co2:1517, temperature:35.029755, humidity:43.982605[0m
+[0;32mI (940890) app_main_tag: co2:1485, temperature:35.064469, humidity:43.889525[0m
+[0;32mI (951890) app_main_tag: co2:1554, temperature:35.069810, humidity:44.086366[0m
+[0;32mI (962890) app_main_tag: co2:1565, temperature:35.080491, humidity:44.228275[0m
+[0;32mI (973890) app_main_tag: co2:1489, temperature:35.059129, humidity:44.249638[0m
+[0;32mI (984890) app_main_tag: co2:1514, temperature:35.059129, humidity:44.249638[0m
+[0;32mI (995890) app_main_tag: co2:1461, temperature:35.051118, humidity:44.269474[0m
+[0;32mI (1006890) app_main_tag: co2:1529, temperature:35.083162, humidity:44.316777[0m

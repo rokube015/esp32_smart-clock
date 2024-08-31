@@ -1,0 +1,208 @@
+b���m[0m
+[0;32mI (125) esp_image: segment 2: paddr=0001d6cc vaddr=40080000 �ets Jun  8 2016 00:22:57
+
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:7176
+load:0x40078000,len:15564
+ho 0 tail 12 room 4
+load:0x40080400,len:4
+load:0x40080404,len:3904
+entry 0x40080640
+[0;32mI (30) boot: ESP-IDF v5.4-dev-1388-g5ca9f2a49a-dirty 2nd stage bootloader[0m
+[0;32mI (30) boot: compile time Jul 21 2024 15:52:47[0m
+[0;32mI (32) boot: Multicore bootloader[0m
+[0;32mI (37) boot: chip revision: v1.0[0m
+[0;32mI (40) boot.esp32: SPI Speed      : 40MHz[0m
+[0;32mI (45) boot.esp32: SPI Mode       : DIO[0m
+[0;32mI (50) boot.esp32: SPI Flash Size : 2MB[0m
+[0;32mI (54) boot: Enabling RNG early entropy source...[0m
+[0;32mI (59) boot: Partition Table:[0m
+[0;32mI (63) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (70) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (78) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (85) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (93) boot: End of partition table[0m
+[0;32mI (97) esp_image: segment 0: paddr=00010020 vaddr=3f400020 size=0b338h ( 45880) map[0m
+[0;32mI (121) esp_image: segment 1: paddr=0001b360 vaddr=3ffb0000 size=02364h (  9060) load[0m
+[0;32mI (125) esp_image: segment 2: paddr=0001d6cc vaddr=40080000 size=0294ch ( 10572) load[0m
+[0;32mI (131) esp_image: segment 3: paddr=00020020 vaddr=400d0020 size=17a34h ( 96820) map[0m
+[0;32mI (169) esp_image: segment 4: paddr=00037a5c vaddr=4008294c size=0a678h ( 42616) load[0m
+[0;32mI (192) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (192) boot: Disabling RNG early entropy source...[0m
+[0;32mI (204) cpu_start: Multicore app[0m
+[0;32mI (212) cpu_start: Pro cpu start user code[0m
+[0;32mI (213) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (213) app_init: Application information:[0m
+[0;32mI (215) app_init: Project name:     main[0m
+[0;32mI (220) app_init: App version:      6d26719-dirty[0m
+[0;32mI (225) app_init: Compile time:     Jul 28 2024 00:36:33[0m
+[0;32mI (231) app_init: ELF file SHA256:  0d67ba96d...[0m
+[0;32mI (237) app_init: ESP-IDF:          v5.4-dev-1388-g5ca9f2a49a-dirty[0m
+[0;32mI (244) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (248) efuse_init: Max chip rev:     v3.99 [0m
+[0;32mI (253) efuse_init: Chip rev:         v1.0[0m
+[0;32mI (259) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (266) heap_init: At 3FFAE6E0 len 00001920 (6 KiB): DRAM[0m
+[0;32mI (272) heap_init: At 3FFB2C50 len 0002D3B0 (180 KiB): DRAM[0m
+[0;32mI (278) heap_init: At 3FFE0440 len 00003AE0 (14 KiB): D/IRAM[0m
+[0;32mI (284) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM[0m
+[0;32mI (291) heap_init: At 4008CFC4 len 0001303C (76 KiB): IRAM[0m
+[0;32mI (298) spi_flash: detected chip: generic[0m
+[0;32mI (301) spi_flash: flash io: dio[0m
+[0;33mW (305) spi_flash: Detected size(4096k) larger than the size in the binary image header(2048k). Using the size in the binary image header.[0m
+[0;32mI (319) main_task: Started on CPU0[0m
+[0;32mI (329) main_task: Calling app_main()[0m
+[0;32mI (329) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (329) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (339) scd40_tag: scd40 serial number:152843105483599[0m
+[0;32mI (349) scd40_tag: Calculate CRC = da[0m
+[0;32mI (349) scd40_tag: word_0 crc: da, calculate word_0 crc: da[0m
+[0;32mI (359) scd40_tag: Calculate CRC = ac[0m
+[0;32mI (359) scd40_tag: word_1 crc: ac, calculate word_1 crc: ac[0m
+[0;32mI (369) scd40_tag: Calculate CRC = 3a[0m
+[0;32mI (369) scd40_tag: word_2 crc: 3a, calculate word_2 crc: 3a[0m
+[0;32mI (379) app_main_tag: SCD40 Serial Number:152843105483599[0m
+[0;32mI (5889) app_main_tag: co2:1449, temperature:30.775921, humidity:57.953765[0m
+[0;32mI (12889) app_main_tag: co2:1435, temperature:31.091020, humidity:57.524987[0m
+[0;32mI (19889) app_main_tag: co2:1456, temperature:31.296635, humidity:56.977188[0m
+[0;32mI (26889) app_main_tag: co2:2822, temperature:31.480888, humidity:56.508736[0m
+[0;32mI (33889) app_main_tag: co2:4193, temperature:31.555657, humidity:58.182650[0m
+[0;32mI (40889) app_main_tag: co2:5648, temperature:31.673152, humidity:60.097658[0m
+[0;32mI (47889) app_main_tag: co2:5338, temperature:31.793317, humidity:62.287327[0m
+[0;32mI (54889) app_main_tag: co2:4490, temperature:31.929503, humidity:60.704967[0m
+[0;32mI (61889) app_main_tag: co2:3866, temperature:32.087053, humidity:58.875410[0m
+[0;32mI (68889) app_main_tag: co2:3295, temperature:32.201877, humidity:57.332723[0m
+[0;32mI (75889) app_main_tag: co2:2973, temperature:32.338064, humidity:56.282902[0m
+[0;32mI (82889) app_main_tag: co2:2598, temperature:32.418173, humidity:55.254444[0m
+[0;32mI (89889) app_main_tag: co2:2291, temperature:32.519646, humidity:54.488441[0m
+[0;32mI (96889) app_main_tag: co2:2111, temperature:32.631800, humidity:53.727016[0m
+[0;32mI (103889) app_main_tag: co2:1949, temperature:32.645151, humidity:53.199054[0m
+[0;32mI (110889) app_main_tag: co2:1866, temperature:32.695888, humidity:52.770275[0m
+[0;32mI (117889) app_main_tag: co2:1746, temperature:32.770657, humidity:52.335393[0m
+[0;32mI (124889) app_main_tag: co2:1644, temperature:32.802701, humidity:51.943236[0m
+[0;32mI (131889) app_main_tag: co2:1606, temperature:32.861448, humidity:51.728084[0m
+[0;32mI (138889) app_main_tag: co2:1607, temperature:32.909514, humidity:51.520562[0m
+[0;32mI (145889) app_main_tag: co2:1754, temperature:32.981613, humidity:51.474784[0m
+[0;32mI (152889) app_main_tag: co2:1798, temperature:33.045701, humidity:51.584649[0m
+[0;32mI (159889) app_main_tag: co2:1709, temperature:33.075074, humidity:51.505303[0m
+[0;32mI (166889) app_main_tag: co2:1652, temperature:33.136492, humidity:51.267262[0m
+[0;32mI (173889) app_main_tag: co2:1637, temperature:33.147173, humidity:50.949874[0m
+[0;32mI (180889) app_main_tag: co2:1564, temperature:33.184558, humidity:50.678264[0m
+[0;32mI (187889) app_main_tag: co2:1596, temperature:33.144503, humidity:50.539406[0m
+[0;32mI (194889) app_main_tag: co2:1590, temperature:33.189899, humidity:50.476844[0m
+[0;32mI (201889) app_main_tag: co2:1705, temperature:33.187228, humidity:50.434119[0m
+[0;32mI (208889) app_main_tag: co2:1663, temperature:33.253986, humidity:50.328832[0m
+[0;32mI (215889) app_main_tag: co2:1644, temperature:33.272679, humidity:50.128939[0m
+[0;32mI (222889) app_main_tag: co2:1634, temperature:33.310063, humidity:49.915312[0m
+[0;32mI (229889) app_main_tag: co2:1695, temperature:33.352789, humidity:49.654383[0m
+[0;32mI (236889) app_main_tag: co2:1712, temperature:33.347448, humidity:49.413291[0m
+[0;32mI (243889) app_main_tag: co2:1693, temperature:33.382162, humidity:49.285115[0m
+[0;32mI (250889) app_main_tag: co2:1655, temperature:33.390173, humidity:49.060807[0m
+[0;32mI (257889) app_main_tag: co2:1709, temperature:33.416876, humidity:48.917372[0m
+[0;32mI (264889) app_main_tag: co2:1728, temperature:33.416876, humidity:48.776989[0m
+[0;32mI (271889) app_main_tag: co2:1749, temperature:33.438239, humidity:48.593881[0m
+[0;32mI (278889) app_main_tag: co2:1732, temperature:33.448920, humidity:48.520638[0m
+[0;32mI (285889) app_main_tag: co2:1700, temperature:33.451591, humidity:48.416876[0m
+[0;32mI (292889) app_main_tag: co2:1685, temperature:33.494316, humidity:48.311589[0m
+[0;32mI (299889) app_main_tag: co2:1705, temperature:33.475624, humidity:48.151369[0m
+[0;32mI (306889) app_main_tag: co2:1672, temperature:33.472953, humidity:47.942321[0m
+[0;32mI (313889) app_main_tag: co2:1634, temperature:33.483635, humidity:47.881285[0m
+[0;32mI (320889) app_main_tag: co2:1614, temperature:33.456931, humidity:47.757687[0m
+[0;32mI (327889) app_main_tag: co2:1586, temperature:33.470283, humidity:47.553216[0m
+[0;32mI (334889) app_main_tag: co2:1543, temperature:33.515679, humidity:47.428092[0m
+[0;32mI (341889) app_main_tag: co2:1575, temperature:33.459602, humidity:47.261769[0m
+[0;32mI (348889) app_main_tag: co2:1522, temperature:33.456931, humidity:47.241932[0m
+[0;32mI (355889) app_main_tag: co2:1739, temperature:33.438239, humidity:47.150378[0m
+[0;32mI (362889) app_main_tag: co2:1706, temperature:33.427558, humidity:47.330434[0m
+[0;32mI (369889) app_main_tag: co2:1677, temperature:33.448920, humidity:47.176318[0m
+[0;32mI (376889) app_main_tag: co2:1537, temperature:33.459602, humidity:47.006943[0m
+[0;32mI (383889) app_main_tag: co2:1561, temperature:33.483635, humidity:46.863508[0m
+[0;32mI (390889) app_main_tag: co2:1497, temperature:33.507668, humidity:46.794842[0m
+[0;32mI (397889) app_main_tag: co2:1534, temperature:33.518349, humidity:46.691081[0m
+[0;32mI (404889) app_main_tag: co2:1520, temperature:33.496986, humidity:46.530861[0m
+[0;32mI (411889) app_main_tag: co2:1493, temperature:33.507668, humidity:46.341650[0m
+[0;32mI (418889) app_main_tag: co2:1575, temperature:33.518349, humidity:46.291295[0m
+[0;32mI (425889) app_main_tag: co2:1515, temperature:33.483635, humidity:46.353857[0m
+[0;32mI (432889) app_main_tag: co2:1520, temperature:33.472953, humidity:46.359960[0m
+[0;32mI (439889) app_main_tag: co2:1526, temperature:33.480964, humidity:46.182956[0m
+[0;32mI (446889) app_main_tag: co2:1471, temperature:33.494316, humidity:46.002899[0m
+[0;32mI (453889) app_main_tag: co2:1536, temperature:33.504997, humidity:45.899138[0m
+[0;32mI (460889) app_main_tag: co2:1531, temperature:33.488975, humidity:45.874723[0m
+[0;32mI (467889) app_main_tag: co2:1530, temperature:33.518349, humidity:45.821317[0m
+[0;32mI (474889) app_main_tag: co2:1569, temperature:33.553063, humidity:45.674830[0m
+[0;32mI (481889) app_main_tag: co2:1559, temperature:33.507668, humidity:45.557336[0m
+[0;32mI (488889) app_main_tag: co2:1562, temperature:33.483635, humidity:45.667201[0m
+[0;32mI (495889) app_main_tag: co2:1544, temperature:33.464942, humidity:45.595483[0m
+[0;32mI (502889) app_main_tag: co2:1583, temperature:33.486305, humidity:45.497826[0m
+[0;32mI (509889) app_main_tag: co2:1588, temperature:33.470283, humidity:45.445945[0m
+[0;32mI (516889) app_main_tag: co2:1633, temperature:33.438239, humidity:45.494774[0m
+[0;32mI (523889) app_main_tag: co2:1623, temperature:33.467613, humidity:45.426108[0m
+[0;32mI (530889) app_main_tag: co2:1613, temperature:33.443580, humidity:45.323873[0m
+[0;32mI (537889) app_main_tag: co2:1643, temperature:33.448920, humidity:45.273518[0m
+[0;32mI (544889) app_main_tag: co2:1499, temperature:33.454261, humidity:45.117876[0m
+[0;32mI (551889) app_main_tag: co2:1502, temperature:33.427558, humidity:45.027848[0m
+[0;32mI (558889) app_main_tag: co2:1473, temperature:33.411536, humidity:44.905776[0m
+[0;32mI (565889) app_main_tag: co2:1519, temperature:33.462272, humidity:44.800488[0m
+[0;32mI (572889) app_main_tag: co2:1529, temperature:33.430228, humidity:44.853895[0m
+[0;32mI (579889) app_main_tag: co2:1568, temperature:33.422217, humidity:44.878309[0m
+[0;32mI (586889) app_main_tag: co2:1486, temperature:33.419547, humidity:44.750134[0m
+[0;32mI (593889) app_main_tag: co2:1535, temperature:33.408865, humidity:44.650950[0m
+[0;32mI (600889) app_main_tag: co2:1432, temperature:33.366140, humidity:44.545663[0m
+[0;32mI (607889) app_main_tag: co2:1480, temperature:33.336767, humidity:44.525826[0m
+[0;32mI (614889) app_main_tag: co2:1447, temperature:33.366140, humidity:44.420539[0m
+[0;32mI (621889) app_main_tag: co2:1422, temperature:33.347448, humidity:44.362554[0m
+[0;32mI (628889) app_main_tag: co2:1501, temperature:33.366140, humidity:44.327459[0m
+[0;32mI (635889) app_main_tag: co2:1494, temperature:33.347448, humidity:44.258793[0m
+[0;32mI (642889) app_main_tag: co2:1458, temperature:33.363470, humidity:44.252689[0m
+[0;32mI (649889) app_main_tag: co2:1518, temperature:33.374151, humidity:44.226749[0m
+[0;32mI (656889) app_main_tag: co2:1459, temperature:33.400855, humidity:44.203861[0m
+[0;32mI (663889) app_main_tag: co2:1517, temperature:33.414206, humidity:44.155032[0m
+[0;32mI (670889) app_main_tag: co2:1490, temperature:33.459602, humidity:44.080262[0m
+[0;32mI (677889) app_main_tag: co2:1619, temperature:33.448920, humidity:44.003967[0m
+[0;32mI (684889) app_main_tag: co2:1587, temperature:33.464942, humidity:43.981079[0m
+[0;32mI (691889) app_main_tag: co2:1570, temperature:33.491646, humidity:43.851377[0m
+[0;32mI (698889) app_main_tag: co2:1512, temperature:33.502327, humidity:43.706416[0m
+[0;32mI (705889) app_main_tag: co2:1503, temperature:33.483635, humidity:43.691157[0m
+[0;32mI (712889) app_main_tag: co2:1498, temperature:33.451591, humidity:43.645380[0m
+[0;32mI (719889) app_main_tag: co2:1441, temperature:33.454261, humidity:43.654536[0m
+[0;32mI (726889) app_main_tag: co2:1448, temperature:33.440909, humidity:43.567559[0m
+[0;32mI (733889) app_main_tag: co2:1440, temperature:33.440909, humidity:43.443961[0m
+[0;32mI (740889) app_main_tag: co2:1435, temperature:33.398184, humidity:43.373770[0m
+[0;32mI (747889) app_main_tag: co2:1443, temperature:33.363470, humidity:43.331044[0m
+[0;32mI (754889) app_main_tag: co2:1440, temperature:33.355459, humidity:43.312734[0m
+[0;32mI (761889) app_main_tag: co2:1437, temperature:33.352789, humidity:43.276112[0m
+[0;32mI (768889) app_main_tag: co2:1368, temperature:33.360800, humidity:43.256275[0m
+[0;32mI (775889) app_main_tag: co2:1441, temperature:33.320745, humidity:43.212024[0m
+[0;32mI (782889) app_main_tag: co2:1361, temperature:33.342107, humidity:43.187610[0m
+[0;32mI (789889) app_main_tag: co2:1376, temperature:33.326085, humidity:43.166247[0m
+[0;32mI (796889) app_main_tag: co2:1395, temperature:33.310063, humidity:43.149462[0m
+[0;32mI (803889) app_main_tag: co2:1388, temperature:33.302052, humidity:43.131151[0m
+[0;32mI (810889) app_main_tag: co2:1387, temperature:33.267338, humidity:43.225757[0m
+[0;32mI (817889) app_main_tag: co2:1388, temperature:33.283360, humidity:43.143359[0m
+[0;32mI (824889) app_main_tag: co2:1413, temperature:33.261997, humidity:43.117418[0m
+[0;32mI (831889) app_main_tag: co2:1372, temperature:33.219272, humidity:43.083848[0m
+[0;32mI (838889) app_main_tag: co2:1405, temperature:33.197910, humidity:43.074693[0m
+[0;32mI (845889) app_main_tag: co2:1384, temperature:33.152514, humidity:43.073167[0m
+[0;32mI (852889) app_main_tag: co2:1416, temperature:33.168536, humidity:43.045701[0m
+[0;32mI (859889) app_main_tag: co2:1320, temperature:33.197910, humidity:43.009079[0m
+[0;32mI (866889) app_main_tag: co2:1419, temperature:33.173877, humidity:42.961776[0m
+[0;32mI (873889) app_main_tag: co2:1403, temperature:33.195239, humidity:42.981613[0m
+[0;32mI (880889) app_main_tag: co2:1441, temperature:33.211261, humidity:42.970932[0m
+[0;32mI (887889) app_main_tag: co2:1381, temperature:33.181888, humidity:42.893111[0m
+[0;32mI (894889) app_main_tag: co2:1403, temperature:33.173877, humidity:42.845808[0m
+[0;32mI (901889) app_main_tag: co2:1365, temperature:33.165866, humidity:42.832074[0m
+[0;32mI (908889) app_main_tag: co2:1402, temperature:33.173877, humidity:42.780194[0m
+[0;32mI (915889) app_main_tag: co2:1408, temperature:33.187228, humidity:42.748150[0m
+[0;32mI (922889) app_main_tag: co2:1379, temperature:33.144503, humidity:42.740520[0m
+[0;32mI (929889) app_main_tag: co2:1384, temperature:33.171206, humidity:42.659648[0m
+[0;32mI (936889) app_main_tag: co2:1391, temperature:33.171206, humidity:42.598611[0m
+[0;32mI (943889) app_main_tag: co2:1354, temperature:33.195239, humidity:42.613870[0m
+[0;32mI (950889) app_main_tag: co2:1423, temperature:33.203250, humidity:42.604715[0m
+[0;32mI (957889) app_main_tag: co2:1398, temperature:33.219272, humidity:42.600137[0m
+[0;32mI (964889) app_main_tag: co2:1396, temperature:33.203250, humidity:42.561990[0m
+[0;32mI (971889) app_main_tag: co2:1389, temperature:33.187228, humidity:42.528420[0m
+[0;32mI (978889) app_main_tag: co2:1455, temperature:33.149844, humidity:42.551308[0m
+[0;32mI (985889) app_main_tag: co2:1443, temperature:33.147173, humidity:42.435340[0m
