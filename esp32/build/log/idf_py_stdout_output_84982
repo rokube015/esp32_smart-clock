@@ -1,0 +1,28 @@
+[1/13] Linking C static library esp-idf/mqtt/libmqtt.a
+[2/13] Linking C static library esp-idf/spiffs/libspiffs.a
+[3/13] Linking C static library esp-idf/wifi_provisioning/libwifi_provisioning.a
+[4/13] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/main.c.obj
+[5/13] Linking C static library esp-idf/main/libmain.a
+[6/13] Performing build step for 'bootloader'
+[1/3] Linking C executable bootloader.elf
+[2/3] Generating binary image from built executable
+esptool.py v4.8.dev4
+Creating esp32 image...
+Merged 2 ELF sections
+Successfully created esp32 image.
+Generated /home/rokube/workspace/CO2_Sensor/esp32/build/bootloader/bootloader.bin
+[3/3] cd /home/rokube/workspace/CO2_Sensor/esp32/build/bootloader/esp-idf/esptool_py && /home/rokube/.espressif/python_env/idf5.4_py3.12_env/bin/python /home/rokube/workspace/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x1000 /home/rokube/workspace/CO2_Sensor/esp32/build/bootloader/bootloader.bin
+Bootloader binary size 0x6880 bytes. 0x780 bytes (7%) free.
+[7/13] No install step for 'bootloader'
+[8/13] Completed 'bootloader'
+[9/13] Generating ld/sections.ld
+[10/13] Building C object CMakeFiles/main.elf.dir/project_elf_src_esp32.c.obj
+[11/13] Linking CXX executable main.elf
+[12/13] Generating binary image from built executable
+esptool.py v4.8.dev4
+Creating esp32 image...
+Merged 2 ELF sections
+Successfully created esp32 image.
+Generated /home/rokube/workspace/CO2_Sensor/esp32/build/main.bin
+[13/13] cd /home/rokube/workspace/CO2_Sensor/esp32/build/esp-idf/esptool_py && /home/rokube/.espressif/python_env/idf5.4_py3.12_env/bin/python /home/rokube/workspace/esp-idf/components/partition_table/check_sizes.py --offset 0x8000 partition --type app /home/rokube/workspace/CO2_Sensor/esp32/build/partition_table/partition-table.bin /home/rokube/workspace/CO2_Sensor/esp32/build/main.bin
+main.bin binary size 0x320f0 bytes. Smallest app partition is 0x100000 bytes. 0xcdf10 bytes (80%) free.

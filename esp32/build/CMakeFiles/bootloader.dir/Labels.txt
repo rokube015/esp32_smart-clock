@@ -1,0 +1,13 @@
+# Target labels
+ bootloader
+# Source files and their labels
+/home/rokube/workspace/CO2_Sensor/esp32/build/CMakeFiles/bootloader
+/home/rokube/workspace/CO2_Sensor/esp32/build/CMakeFiles/bootloader.rule
+/home/rokube/workspace/CO2_Sensor/esp32/build/CMakeFiles/bootloader-complete.rule
+/home/rokube/workspace/CO2_Sensor/esp32/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule
+/home/rokube/workspace/CO2_Sensor/esp32/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule
+/home/rokube/workspace/CO2_Sensor/esp32/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule
+/home/rokube/workspace/CO2_Sensor/esp32/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule
+/home/rokube/workspace/CO2_Sensor/esp32/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule
+/home/rokube/workspace/CO2_Sensor/esp32/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule
+/home/rokube/workspace/CO2_Sensor/esp32/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule

@@ -49,7 +49,7 @@ void app_main(void){
   
   if(r == ESP_OK){
     snprintf(sdcard_write_data, sizeof(sdcard_write_data), "CO2[rpm] \tTemperature[degree] \tHumidity[%%RH]\n");
-    r = write_sd_card_file(pScd40_data_filepath, sdcard_write_data);
+    r = write_sd_card_file(pScd40_data_filepath, sdcard_write_data, 'w');
     if(r == ESP_OK){
       ESP_LOGI(MAIN_TAG, "Finish set up sd card.");
     }
@@ -84,7 +84,7 @@ void app_main(void){
     if(r == ESP_OK){
       snprintf(sdcard_write_data, sizeof(sdcard_write_data),
           "%d\t%f\t%f\n",scd40_value.co2, scd40_value.temperature, scd40_value.relative_humidity);
-      r = write_sd_card_file(pScd40_data_filepath, sdcard_write_data);
+      r = write_sd_card_file(pScd40_data_filepath, sdcard_write_data, 'a');
       ESP_LOGI(MAIN_TAG, "Write scd40 data to sd card.");
       if(r != ESP_OK){
         ESP_LOGE(MAIN_TAG, "Failed to write data to sd card.");

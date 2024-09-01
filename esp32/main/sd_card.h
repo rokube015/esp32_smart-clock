@@ -14,7 +14,7 @@
 #define PIN_NUM_CS    GPIO_NUM_5
 
 
-esp_err_t write_sd_card_file(const char* path, char* data);
+esp_err_t write_sd_card_file(const char* path, char* data, char mode);
 
 esp_err_t read_sd_card_file(const char *path);
 

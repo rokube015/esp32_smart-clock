@@ -3,9 +3,15 @@
 
 static const char* SD_CARD_TAG = "sd_card_tag";
 
-esp_err_t write_sd_card_file(const char* path, char* data){
+esp_err_t write_sd_card_file(const char* path, char* data, char mode){
   ESP_LOGI(SD_CARD_TAG, "Opening file %s", path);
-  FILE* pFile = fopen(path, "w");
+  FILE* pFile;
+  if(mode == 'a'){
+    pFile = fopen(path, "a");
+  }
+  else{
+    pFile = fopen(path, "w");
+  }
   if(pFile == NULL){
     ESP_LOGE(SD_CARD_TAG, "Faild to open file for writing");
     return ESP_FAIL;

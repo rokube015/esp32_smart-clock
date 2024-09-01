@@ -1,0 +1,761 @@
+ets Jun  8 2016 00:22:57
+
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:7112
+load:0x40078000,len:15788
+ho 0 tail 12 room 4
+load:0x40080400,len:4
+load:0x40080404,len:3904
+entry 0x40080640
+[0;32mI (30) boot: ESP-IDF v5.4-dev-2306-gdbce23f8a4-dirty 2nd stage bootloader[0m
+[0;32mI (30) boot: compile time Aug 31 2024 20:25:13[0m
+[0;32mI (33) boot: Multicore bootloader[0m
+[0;32mI (37) boot: chip revision: v1.0[0m
+[0;32mI (40) boot.esp32: SPI Speed      : 40MHz[0m
+[0;32mI (45) boot.esp32: SPI Mode       : DIO[0m
+[0;32mI (50) boot.esp32: SPI Flash Size : 2MB[0m
+[0;32mI (54) boot: Enabling RNG early entropy source...[0m
+[0;32mI (60) boot: Partition Table:[0m
+[0;32mI (63) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (70) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (78) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (85) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (93) boot: End of partition table[0m
+[0;32mI (97) esp_image: segment 0: paddr=00010020 vaddr=3f400020 size=0fe94h ( 65172) map[0m
+[0;32mI (128) esp_image: segment 1: paddr=0001febc vaddr=3ffb0000 size=0015ch (   348) load[0m
+[0;32mI (128) esp_image: segment 2: paddr=00020020 vaddr=400d0020 size=28f14h (167700) map[0m
+[0;32mI (191) esp_image: segment 3: paddr=00048f3c vaddr=3ffb015c size=02398h (  9112) load[0m
+[0;32mI (195) esp_image: segment 4: paddr=0004b2dc vaddr=40080000 size=0ef80h ( 61312) load[0m
+[0;32mI (228) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (229) boot: Disabling RNG early entropy source...[0m
+[0;32mI (241) cpu_start: Multicore app[0m
+[0;32mI (249) cpu_start: Pro cpu start user code[0m
+[0;32mI (249) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (249) app_init: Application information:[0m
+[0;32mI (252) app_init: Project name:     main[0m
+[0;32mI (257) app_init: App version:      1ba8e25-dirty[0m
+[0;32mI (262) app_init: Compile time:     Aug 31 2024 23:35:07[0m
+[0;32mI (268) app_init: ELF file SHA256:  7935441a7...[0m
+[0;32mI (273) app_init: ESP-IDF:          v5.4-dev-2306-gdbce23f8a4-dirty[0m
+[0;32mI (280) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (285) efuse_init: Max chip rev:     v3.99 [0m
+[0;32mI (290) efuse_init: Chip rev:         v1.0[0m
+[0;32mI (295) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (302) heap_init: At 3FFAE6E0 len 00001920 (6 KiB): DRAM[0m
+[0;32mI (308) heap_init: At 3FFB2E88 len 0002D178 (180 KiB): DRAM[0m
+[0;32mI (314) heap_init: At 3FFE0440 len 00003AE0 (14 KiB): D/IRAM[0m
+[0;32mI (321) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM[0m
+[0;32mI (327) heap_init: At 4008EF80 len 00011080 (68 KiB): IRAM[0m
+[0;32mI (335) spi_flash: detected chip: generic[0m
+[0;32mI (338) spi_flash: flash io: dio[0m
+[0;33mW (342) spi_flash: Detected size(4096k) larger than the size in the binary image header(2048k). Using the size in the binary image header.[0m
+[0;32mI (356) main_task: Started on CPU0[0m
+[0;32mI (366) main_task: Calling app_main()[0m
+[0;32mI (366) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (366) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (376) scd40_tag: scd40 serial number:152843105483599[0m
+[0;32mI (386) scd40_tag: Calculate CRC = da[0m
+[0;32mI (386) scd40_tag: word_0 crc: da, calculate word_0 crc: da[0m
+[0;32mI (396) scd40_tag: Calculate CRC = ac[0m
+[0;32mI (396) scd40_tag: word_1 crc: ac, calculate word_1 crc: ac[0m
+[0;32mI (406) scd40_tag: Calculate CRC = 3a[0m
+[0;32mI (406) scd40_tag: word_2 crc: 3a, calculate word_2 crc: 3a[0m
+[0;32mI (416) app_main_tag: SCD40 Serial Number:152843105483599[0m
+[0;32mI (926) sd_card_tag: Initializing SD card[0m
+[0;32mI (926) sd_card_tag: Using SPI peripheral[0m
+[0;32mI (926) sd_card_tag: Mounting file system[0m
+[0;32mI (926) gpio: GPIO[5]| InputEn: 0| OutputEn: 1| OpenDrain: 0| Pullup: 0| Pulldown: 0| Intr:0 [0m
+[0;32mI (976) sdspi_transaction: cmd=5, R1 response: command not supported[0m
+[0;32mI (1066) sd_card_tag: Filesystem mounted[0m
+Name: SA32G
+Type: SDHC/SDXC
+Speed: 20.00 MHz (limit: 20.00 MHz)
+Size: 29520MB
+CSD: ver=2, sector_size=512, capacity=60456960 read_bl_len=9
+SSR: bus_width=1
+[0;32mI (1066) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1116) sd_card_tag: File written[0m
+[0;32mI (1116) app_main_tag: Finish set up sd card.[0m
+[0;32mI (6116) app_main_tag: co2:1431, temperature:28.957427, humidity:56.081483[0m
+[0;32mI (11116) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (11136) sd_card_tag: File written[0m
+[0;32mI (11136) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (17136) app_main_tag: co2:1446, temperature:29.488823, humidity:56.108949[0m
+[0;32mI (22136) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (22156) sd_card_tag: File written[0m
+[0;32mI (22156) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (28156) app_main_tag: co2:1305, temperature:29.801251, humidity:55.814450[0m
+[0;32mI (33156) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (33176) sd_card_tag: File written[0m
+[0;32mI (33176) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (39176) app_main_tag: co2:1282, temperature:30.065614, humidity:54.717327[0m
+[0;32mI (44176) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (44196) sd_card_tag: File written[0m
+[0;32mI (44196) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (50196) app_main_tag: co2:1205, temperature:30.311284, humidity:53.891814[0m
+[0;32mI (55196) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (55216) sd_card_tag: File written[0m
+[0;32mI (55216) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (61216) app_main_tag: co2:1393, temperature:30.479515, humidity:53.279927[0m
+[0;32mI (66216) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (66236) sd_card_tag: File written[0m
+[0;32mI (66236) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (72236) app_main_tag: co2:1431, temperature:30.693141, humidity:53.456931[0m
+[0;32mI (77236) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (77256) sd_card_tag: File written[0m
+[0;32mI (77256) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (83256) app_main_tag: co2:1384, temperature:30.818647, humidity:53.714809[0m
+[0;32mI (88256) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (88276) sd_card_tag: File written[0m
+[0;32mI (88276) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (94276) app_main_tag: co2:1288, temperature:30.968185, humidity:53.592737[0m
+[0;32mI (99276) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (99296) sd_card_tag: File written[0m
+[0;32mI (99296) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (105296) app_main_tag: co2:1324, temperature:31.085679, humidity:53.554589[0m
+[0;32mI (110296) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (110316) sd_card_tag: File written[0m
+[0;32mI (110316) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (116316) app_main_tag: co2:1253, temperature:31.213855, humidity:53.714809[0m
+[0;32mI (121316) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (121336) sd_card_tag: File written[0m
+[0;32mI (121336) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (127336) app_main_tag: co2:1198, temperature:31.299306, humidity:53.707179[0m
+[0;32mI (132336) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (132356) sd_card_tag: File written[0m
+[0;32mI (132356) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (138356) app_main_tag: co2:1133, temperature:31.376745, humidity:53.453880[0m
+[0;32mI (143356) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (143376) sd_card_tag: File written[0m
+[0;32mI (143376) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (149376) app_main_tag: co2:1093, temperature:31.504921, humidity:53.279927[0m
+[0;32mI (154376) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (154396) sd_card_tag: File written[0m
+[0;32mI (154396) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (160396) app_main_tag: co2:1157, temperature:31.606394, humidity:53.174640[0m
+[0;32mI (165396) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (165416) sd_card_tag: File written[0m
+[0;32mI (165416) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (171416) app_main_tag: co2:1139, temperature:31.707866, humidity:52.961013[0m
+[0;32mI (176416) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (176436) sd_card_tag: File written[0m
+[0;32mI (176436) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (182436) app_main_tag: co2:1165, temperature:31.798657, humidity:52.826734[0m
+[0;32mI (187436) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (187456) sd_card_tag: File written[0m
+[0;32mI (187456) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (193456) app_main_tag: co2:1180, temperature:31.849393, humidity:52.706188[0m
+[0;32mI (198456) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (198476) sd_card_tag: File written[0m
+[0;32mI (198476) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (204476) app_main_tag: co2:1126, temperature:31.961547, humidity:52.414740[0m
+[0;32mI (209476) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (209496) sd_card_tag: File written[0m
+[0;32mI (209496) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (215496) app_main_tag: co2:1303, temperature:32.020294, humidity:52.240787[0m
+[0;32mI (220496) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (220516) sd_card_tag: File written[0m
+[0;32mI (220516) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (226516) app_main_tag: co2:1259, temperature:32.068360, humidity:51.999695[0m
+[0;32mI (231516) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (231536) sd_card_tag: File written[0m
+[0;32mI (231536) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (237536) app_main_tag: co2:1124, temperature:32.105745, humidity:51.598383[0m
+[0;32mI (242536) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (242556) sd_card_tag: File written[0m
+[0;32mI (242556) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (248556) app_main_tag: co2:1098, temperature:31.777295, humidity:51.639582[0m
+[0;32mI (253556) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (253576) sd_card_tag: File written[0m
+[0;32mI (253576) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (259576) app_main_tag: co2:1120, temperature:31.280613, humidity:52.593271[0m
+[0;32mI (264576) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (264596) sd_card_tag: File written[0m
+[0;32mI (264596) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (270596) app_main_tag: co2:1011, temperature:31.152438, humidity:52.538338[0m
+[0;32mI (275596) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (275616) sd_card_tag: File written[0m
+[0;32mI (275616) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (281616) app_main_tag: co2:1022, temperature:31.157778, humidity:52.361334[0m
+[0;32mI (286616) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (286636) sd_card_tag: File written[0m
+[0;32mI (286636) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (292636) app_main_tag: co2:1035, temperature:31.152438, humidity:52.191958[0m
+[0;32mI (297636) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (297656) sd_card_tag: File written[0m
+[0;32mI (297656) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (303656) app_main_tag: co2:1048, temperature:31.219196, humidity:51.915770[0m
+[0;32mI (308656) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (308676) sd_card_tag: File written[0m
+[0;32mI (308676) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (314676) app_main_tag: co2:1012, temperature:31.267262, humidity:51.830320[0m
+[0;32mI (319676) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (319696) sd_card_tag: File written[0m
+[0;32mI (319696) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (325696) app_main_tag: co2:977, temperature:31.363394, humidity:51.592279[0m
+[0;32mI (330696) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (330716) sd_card_tag: File written[0m
+[0;32mI (330716) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (336716) app_main_tag: co2:986, temperature:31.400778, humidity:51.374075[0m
+[0;32mI (341716) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (341736) sd_card_tag: File written[0m
+[0;32mI (341736) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (347736) app_main_tag: co2:1013, temperature:31.480888, humidity:51.160449[0m
+[0;32mI (352736) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (352756) sd_card_tag: File written[0m
+[0;32mI (352756) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (358756) app_main_tag: co2:974, temperature:31.488899, humidity:50.858320[0m
+[0;32mI (363756) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (363776) sd_card_tag: File written[0m
+[0;32mI (363776) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (369776) app_main_tag: co2:987, temperature:31.558328, humidity:50.569924[0m
+[0;32mI (374776) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (374796) sd_card_tag: File written[0m
+[0;32mI (374796) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (380796) app_main_tag: co2:991, temperature:31.633097, humidity:50.415808[0m
+[0;32mI (385796) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (385816) sd_card_tag: File written[0m
+[0;32mI (385816) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (391816) app_main_tag: co2:1000, temperature:31.670481, humidity:50.453956[0m
+[0;32mI (396816) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (396836) sd_card_tag: File written[0m
+[0;32mI (396836) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (402836) app_main_tag: co2:994, temperature:31.750591, humidity:50.130465[0m
+[0;32mI (407836) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (407856) sd_card_tag: File written[0m
+[0;32mI (407856) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (413856) app_main_tag: co2:966, temperature:31.785306, humidity:49.764248[0m
+[0;32mI (418856) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (418876) sd_card_tag: File written[0m
+[0;32mI (418876) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (424876) app_main_tag: co2:1023, temperature:31.828031, humidity:49.425498[0m
+[0;32mI (429876) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (429896) sd_card_tag: File written[0m
+[0;32mI (429896) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (435896) app_main_tag: co2:1001, temperature:31.902800, humidity:49.140154[0m
+[0;32mI (440896) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (440916) sd_card_tag: File written[0m
+[0;32mI (440916) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (446916) app_main_tag: co2:979, temperature:31.934844, humidity:48.886854[0m
+[0;32mI (451916) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (451936) sd_card_tag: File written[0m
+[0;32mI (451936) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (457936) app_main_tag: co2:991, temperature:32.004273, humidity:48.572519[0m
+[0;32mI (462936) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (462956) sd_card_tag: File written[0m
+[0;32mI (462956) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (468956) app_main_tag: co2:985, temperature:32.017624, humidity:48.393988[0m
+[0;32mI (473956) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (473976) sd_card_tag: File written[0m
+[0;32mI (473976) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (479976) app_main_tag: co2:1006, temperature:32.038987, humidity:48.195621[0m
+[0;32mI (484976) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (484996) sd_card_tag: File written[0m
+[0;32mI (484996) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (490996) app_main_tag: co2:1007, temperature:32.076371, humidity:47.981994[0m
+[0;32mI (495996) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (496016) sd_card_tag: File written[0m
+[0;32mI (496016) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (502016) app_main_tag: co2:987, temperature:32.108415, humidity:47.702754[0m
+[0;32mI (507016) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (507036) sd_card_tag: File written[0m
+[0;32mI (507036) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (513036) app_main_tag: co2:979, temperature:32.161822, humidity:47.385367[0m
+[0;32mI (518036) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (518056) sd_card_tag: File written[0m
+[0;32mI (518056) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (524056) app_main_tag: co2:959, temperature:32.169833, humidity:47.113756[0m
+[0;32mI (529056) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (529076) sd_card_tag: File written[0m
+[0;32mI (529076) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (535076) app_main_tag: co2:1007, temperature:32.223239, humidity:46.837568[0m
+[0;32mI (540076) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (540096) sd_card_tag: File written[0m
+[0;32mI (540096) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (546096) app_main_tag: co2:989, temperature:32.249943, humidity:46.605631[0m
+[0;32mI (551096) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (551116) sd_card_tag: File written[0m
+[0;32mI (551116) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (557116) app_main_tag: co2:1021, temperature:32.276646, humidity:46.332494[0m
+[0;32mI (562116) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (562136) sd_card_tag: File written[0m
+[0;32mI (562136) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (568136) app_main_tag: co2:983, temperature:32.319371, humidity:46.140230[0m
+[0;32mI (573136) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (573156) sd_card_tag: File written[0m
+[0;32mI (573156) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (579156) app_main_tag: co2:981, temperature:32.359426, humidity:45.903716[0m
+[0;32mI (584156) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (584176) sd_card_tag: File written[0m
+[0;32mI (584176) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (590176) app_main_tag: co2:1004, temperature:32.354086, humidity:45.670253[0m
+[0;32mI (595176) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (595196) sd_card_tag: File written[0m
+[0;32mI (595196) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (601196) app_main_tag: co2:1019, temperature:32.386130, humidity:45.519188[0m
+[0;32mI (606196) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (606216) sd_card_tag: File written[0m
+[0;32mI (606216) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (612216) app_main_tag: co2:1003, temperature:32.434195, humidity:45.430686[0m
+[0;32mI (617216) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (617236) sd_card_tag: File written[0m
+[0;32mI (617236) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (623236) app_main_tag: co2:1066, temperature:32.423514, humidity:45.406271[0m
+[0;32mI (628236) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (628266) sd_card_tag: File written[0m
+[0;32mI (628266) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (634266) app_main_tag: co2:1005, temperature:32.452888, humidity:45.358968[0m
+[0;32mI (639266) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (639286) sd_card_tag: File written[0m
+[0;32mI (639286) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (645286) app_main_tag: co2:1072, temperature:32.500954, humidity:45.226215[0m
+[0;32mI (650286) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (650306) sd_card_tag: File written[0m
+[0;32mI (650306) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (656306) app_main_tag: co2:1078, temperature:32.538338, humidity:45.181964[0m
+[0;32mI (661306) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (661326) sd_card_tag: File written[0m
+[0;32mI (661326) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (667326) app_main_tag: co2:1034, temperature:32.575723, humidity:45.081254[0m
+[0;32mI (672326) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (672346) sd_card_tag: File written[0m
+[0;32mI (672346) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (678346) app_main_tag: co2:1023, temperature:32.607767, humidity:44.989700[0m
+[0;32mI (683346) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (683366) sd_card_tag: File written[0m
+[0;32mI (683366) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (689366) app_main_tag: co2:1052, temperature:32.631800, humidity:44.939345[0m
+[0;32mI (694366) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (694386) sd_card_tag: File written[0m
+[0;32mI (694386) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (700386) app_main_tag: co2:1068, temperature:32.669184, humidity:44.823377[0m
+[0;32mI (705386) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (705406) sd_card_tag: File written[0m
+[0;32mI (705406) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (711406) app_main_tag: co2:1017, temperature:32.695888, humidity:44.733349[0m
+[0;32mI (716406) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (716426) sd_card_tag: File written[0m
+[0;32mI (716426) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (722426) app_main_tag: co2:1036, temperature:32.722591, humidity:44.614328[0m
+[0;32mI (727426) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (727446) sd_card_tag: File written[0m
+[0;32mI (727446) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (733446) app_main_tag: co2:1014, temperature:32.759976, humidity:44.583810[0m
+[0;32mI (738446) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (738466) sd_card_tag: File written[0m
+[0;32mI (738466) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (744466) app_main_tag: co2:1040, temperature:32.778668, humidity:44.492256[0m
+[0;32mI (749466) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (749486) sd_card_tag: File written[0m
+[0;32mI (749486) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (755486) app_main_tag: co2:1028, temperature:32.832074, humidity:44.460212[0m
+[0;32mI (760486) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (760506) sd_card_tag: File written[0m
+[0;32mI (760506) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (766506) app_main_tag: co2:1018, temperature:32.864118, humidity:44.379339[0m
+[0;32mI (771506) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (771526) sd_card_tag: File written[0m
+[0;32mI (771526) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (777526) app_main_tag: co2:1023, temperature:32.874800, humidity:44.292363[0m
+[0;32mI (782526) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (782546) sd_card_tag: File written[0m
+[0;32mI (782546) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (788546) app_main_tag: co2:1097, temperature:32.890822, humidity:44.223697[0m
+[0;32mI (793546) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (793566) sd_card_tag: File written[0m
+[0;32mI (793566) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (799566) app_main_tag: co2:1056, temperature:32.909514, humidity:44.272526[0m
+[0;32mI (804566) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (804586) sd_card_tag: File written[0m
+[0;32mI (804586) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (810586) app_main_tag: co2:999, temperature:32.925536, humidity:44.272526[0m
+[0;32mI (815586) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (815606) sd_card_tag: File written[0m
+[0;32mI (815606) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (821606) app_main_tag: co2:1069, temperature:32.946899, humidity:44.141299[0m
+[0;32mI (826606) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (826626) sd_card_tag: File written[0m
+[0;32mI (826626) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (832626) app_main_tag: co2:1054, temperature:32.968261, humidity:44.071107[0m
+[0;32mI (837626) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (837646) sd_card_tag: File written[0m
+[0;32mI (837646) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (843646) app_main_tag: co2:1065, temperature:32.968261, humidity:44.037537[0m
+[0;32mI (848646) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (848666) sd_card_tag: File written[0m
+[0;32mI (848666) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (854666) app_main_tag: co2:1085, temperature:32.965591, humidity:44.032959[0m
+[0;32mI (859666) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (859686) sd_card_tag: File written[0m
+[0;32mI (859686) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (865686) app_main_tag: co2:1023, temperature:33.018997, humidity:43.974975[0m
+[0;32mI (870686) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (870706) sd_card_tag: File written[0m
+[0;32mI (870706) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (876706) app_main_tag: co2:1058, temperature:33.045701, humidity:43.981079[0m
+[0;32mI (881706) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (881726) sd_card_tag: File written[0m
+[0;32mI (881726) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (887726) app_main_tag: co2:1077, temperature:33.045701, humidity:43.897154[0m
+[0;32mI (892726) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (892746) sd_card_tag: File written[0m
+[0;32mI (892746) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (898746) app_main_tag: co2:1110, temperature:33.045701, humidity:43.936828[0m
+[0;32mI (903746) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (903766) sd_card_tag: File written[0m
+[0;32mI (903766) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (909766) app_main_tag: co2:1089, temperature:33.027008, humidity:43.987182[0m
+[0;32mI (914766) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (914786) sd_card_tag: File written[0m
+[0;32mI (914786) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (920786) app_main_tag: co2:1093, temperature:33.000305, humidity:44.180972[0m
+[0;32mI (925786) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (925806) sd_card_tag: File written[0m
+[0;32mI (925806) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (931806) app_main_tag: co2:1037, temperature:33.032349, humidity:44.362554[0m
+[0;32mI (936806) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (936826) sd_card_tag: File written[0m
+[0;32mI (936826) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (942826) app_main_tag: co2:1093, temperature:33.005646, humidity:44.591440[0m
+[0;32mI (947826) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (947846) sd_card_tag: File written[0m
+[0;32mI (947846) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (953846) app_main_tag: co2:1102, temperature:32.978943, humidity:44.757763[0m
+[0;32mI (958846) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (958866) sd_card_tag: File written[0m
+[0;32mI (958866) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (964866) app_main_tag: co2:1110, temperature:33.024338, humidity:44.849317[0m
+[0;32mI (969866) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (969886) sd_card_tag: File written[0m
+[0;32mI (969886) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (975886) app_main_tag: co2:1069, temperature:33.018997, humidity:44.979019[0m
+[0;32mI (980886) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (980906) sd_card_tag: File written[0m
+[0;32mI (980906) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (986906) app_main_tag: co2:1124, temperature:33.051041, humidity:45.076677[0m
+[0;32mI (991906) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (991926) sd_card_tag: File written[0m
+[0;32mI (991926) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (997926) app_main_tag: co2:1103, temperature:33.035019, humidity:45.149920[0m
+[0;32mI (1002926) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1002946) sd_card_tag: File written[0m
+[0;32mI (1002946) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1008946) app_main_tag: co2:1112, temperature:33.029679, humidity:45.136187[0m
+[0;32mI (1013946) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1013966) sd_card_tag: File written[0m
+[0;32mI (1013966) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1019966) app_main_tag: co2:1121, temperature:33.016327, humidity:45.258259[0m
+[0;32mI (1024966) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1024986) sd_card_tag: File written[0m
+[0;32mI (1024986) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1030986) app_main_tag: co2:1055, temperature:33.043030, humidity:45.246052[0m
+[0;32mI (1035986) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1036006) sd_card_tag: File written[0m
+[0;32mI (1036006) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1042006) app_main_tag: co2:1105, temperature:33.032349, humidity:45.246052[0m
+[0;32mI (1047006) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1047026) sd_card_tag: File written[0m
+[0;32mI (1047026) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1053026) app_main_tag: co2:1135, temperature:33.053712, humidity:45.159075[0m
+[0;32mI (1058026) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1058046) sd_card_tag: File written[0m
+[0;32mI (1058046) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1064046) app_main_tag: co2:1111, temperature:33.069734, humidity:45.094987[0m
+[0;32mI (1069046) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1069066) sd_card_tag: File written[0m
+[0;32mI (1069066) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1075066) app_main_tag: co2:1145, temperature:33.083085, humidity:44.945449[0m
+[0;32mI (1080066) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1080086) sd_card_tag: File written[0m
+[0;32mI (1080086) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1086086) app_main_tag: co2:1131, temperature:33.083085, humidity:44.785229[0m
+[0;32mI (1091086) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1091106) sd_card_tag: File written[0m
+[0;32mI (1091106) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1097106) app_main_tag: co2:1111, temperature:33.120470, humidity:44.686046[0m
+[0;32mI (1102106) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1102126) sd_card_tag: File written[0m
+[0;32mI (1102126) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1108126) app_main_tag: co2:1158, temperature:33.115129, humidity:44.501411[0m
+[0;32mI (1113126) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1113156) sd_card_tag: File written[0m
+[0;32mI (1113156) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1119156) app_main_tag: co2:1127, temperature:33.109789, humidity:44.325933[0m
+[0;32mI (1124156) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1124176) sd_card_tag: File written[0m
+[0;32mI (1124176) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1130176) app_main_tag: co2:1131, temperature:33.085756, humidity:44.153506[0m
+[0;32mI (1135176) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1135196) sd_card_tag: File written[0m
+[0;32mI (1135196) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1141196) app_main_tag: co2:1163, temperature:33.107118, humidity:43.979553[0m
+[0;32mI (1146196) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1146216) sd_card_tag: File written[0m
+[0;32mI (1146216) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1152216) app_main_tag: co2:1083, temperature:33.080415, humidity:43.828489[0m
+[0;32mI (1157216) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1157236) sd_card_tag: File written[0m
+[0;32mI (1157236) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1163236) app_main_tag: co2:1100, temperature:33.107118, humidity:43.707942[0m
+[0;32mI (1168236) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1168256) sd_card_tag: File written[0m
+[0;32mI (1168256) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1174256) app_main_tag: co2:1119, temperature:33.069734, humidity:43.555352[0m
+[0;32mI (1179256) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1179276) sd_card_tag: File written[0m
+[0;32mI (1179276) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1185276) app_main_tag: co2:1100, temperature:33.083085, humidity:43.479057[0m
+[0;32mI (1190276) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1190296) sd_card_tag: File written[0m
+[0;32mI (1190296) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1196296) app_main_tag: co2:1103, temperature:33.061723, humidity:43.347829[0m
+[0;32mI (1201296) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1201316) sd_card_tag: File written[0m
+[0;32mI (1201316) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1207316) app_main_tag: co2:1165, temperature:33.088426, humidity:43.233387[0m
+[0;32mI (1212316) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1212336) sd_card_tag: File written[0m
+[0;32mI (1212336) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1218336) app_main_tag: co2:1117, temperature:33.104448, humidity:43.001450[0m
+[0;32mI (1223336) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1223356) sd_card_tag: File written[0m
+[0;32mI (1223356) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1229356) app_main_tag: co2:1089, temperature:33.099107, humidity:42.865644[0m
+[0;32mI (1234356) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1234376) sd_card_tag: File written[0m
+[0;32mI (1234376) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1240376) app_main_tag: co2:1107, temperature:33.096437, humidity:42.738994[0m
+[0;32mI (1245376) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1245396) sd_card_tag: File written[0m
+[0;32mI (1245396) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1251396) app_main_tag: co2:1169, temperature:33.085756, humidity:42.598611[0m
+[0;32mI (1256396) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1256416) sd_card_tag: File written[0m
+[0;32mI (1256416) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1262416) app_main_tag: co2:1150, temperature:33.128481, humidity:42.529946[0m
+[0;32mI (1267416) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1267436) sd_card_tag: File written[0m
+[0;32mI (1267436) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1273436) app_main_tag: co2:1145, temperature:33.091096, humidity:42.352941[0m
+[0;32mI (1278436) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1278456) sd_card_tag: File written[0m
+[0;32mI (1278456) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1284456) app_main_tag: co2:1134, temperature:33.064393, humidity:42.223239[0m
+[0;32mI (1289456) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1289476) sd_card_tag: File written[0m
+[0;32mI (1289476) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1295476) app_main_tag: co2:1122, temperature:33.056382, humidity:42.186618[0m
+[0;32mI (1300476) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1300496) sd_card_tag: File written[0m
+[0;32mI (1300496) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1306496) app_main_tag: co2:1167, temperature:33.056382, humidity:42.070649[0m
+[0;32mI (1311496) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1311516) sd_card_tag: File written[0m
+[0;32mI (1311516) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1317516) app_main_tag: co2:1115, temperature:33.099107, humidity:41.980621[0m
+[0;32mI (1322516) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1322546) sd_card_tag: File written[0m
+[0;32mI (1322546) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1328546) app_main_tag: co2:1171, temperature:33.109789, humidity:41.806668[0m
+[0;32mI (1333546) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1333566) sd_card_tag: File written[0m
+[0;32mI (1333566) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1339566) app_main_tag: co2:1131, temperature:33.099107, humidity:41.776150[0m
+[0;32mI (1344566) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1344586) sd_card_tag: File written[0m
+[0;32mI (1344586) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1350586) app_main_tag: co2:1134, temperature:33.069734, humidity:41.866178[0m
+[0;32mI (1355586) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1355606) sd_card_tag: File written[0m
+[0;32mI (1355606) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1361606) app_main_tag: co2:1110, temperature:33.107118, humidity:41.840238[0m
+[0;32mI (1366606) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1366626) sd_card_tag: File written[0m
+[0;32mI (1366626) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1372626) app_main_tag: co2:1151, temperature:33.139162, humidity:41.809720[0m
+[0;32mI (1377626) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1377646) sd_card_tag: File written[0m
+[0;32mI (1377646) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1383646) app_main_tag: co2:1186, temperature:33.133822, humidity:41.821927[0m
+[0;32mI (1388646) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1388666) sd_card_tag: File written[0m
+[0;32mI (1388666) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1394666) app_main_tag: co2:1155, temperature:33.144503, humidity:41.797513[0m
+[0;32mI (1399666) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1399686) sd_card_tag: File written[0m
+[0;32mI (1399686) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1405686) app_main_tag: co2:1139, temperature:33.136492, humidity:41.788357[0m
+[0;32mI (1410686) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1410706) sd_card_tag: File written[0m
+[0;32mI (1410706) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1416706) app_main_tag: co2:1177, temperature:33.147173, humidity:41.812772[0m
+[0;32mI (1421706) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1421726) sd_card_tag: File written[0m
+[0;32mI (1421726) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1427726) app_main_tag: co2:1150, temperature:33.168536, humidity:41.806668[0m
+[0;32mI (1432726) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1432746) sd_card_tag: File written[0m
+[0;32mI (1432746) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1438746) app_main_tag: co2:1218, temperature:33.189899, humidity:41.745632[0m
+[0;32mI (1443746) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1443766) sd_card_tag: File written[0m
+[0;32mI (1443766) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1449766) app_main_tag: co2:1133, temperature:33.189899, humidity:41.734951[0m
+[0;32mI (1454766) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1454786) sd_card_tag: File written[0m
+[0;32mI (1454786) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1460786) app_main_tag: co2:1181, temperature:33.187228, humidity:41.734951[0m
+[0;32mI (1465786) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1465806) sd_card_tag: File written[0m
+[0;32mI (1465806) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1471806) app_main_tag: co2:1179, temperature:33.176547, humidity:41.837186[0m
+[0;32mI (1476806) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1476826) sd_card_tag: File written[0m
+[0;32mI (1476826) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1482826) app_main_tag: co2:1168, temperature:33.181888, humidity:41.721218[0m
+[0;32mI (1487826) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1487846) sd_card_tag: File written[0m
+[0;32mI (1487846) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1493846) app_main_tag: co2:1157, temperature:33.160525, humidity:41.693751[0m
+[0;32mI (1498846) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1498866) sd_card_tag: File written[0m
+[0;32mI (1498866) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1504866) app_main_tag: co2:1165, temperature:33.181888, humidity:41.736477[0m
+[0;32mI (1509866) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1509886) sd_card_tag: File written[0m
+[0;32mI (1509886) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1515886) app_main_tag: co2:1098, temperature:33.189899, humidity:41.690700[0m
+[0;32mI (1520886) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1520906) sd_card_tag: File written[0m
+[0;32mI (1520906) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1526906) app_main_tag: co2:1122, temperature:33.200580, humidity:41.704433[0m
+[0;32mI (1531906) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1531926) sd_card_tag: File written[0m
+[0;32mI (1531926) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1537926) app_main_tag: co2:1194, temperature:33.211261, humidity:41.667811[0m
+[0;32mI (1542926) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1542946) sd_card_tag: File written[0m
+[0;32mI (1542946) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1548946) app_main_tag: co2:1194, temperature:33.205921, humidity:41.654078[0m
+[0;32mI (1553946) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1553966) sd_card_tag: File written[0m
+[0;32mI (1553966) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1559966) app_main_tag: co2:1236, temperature:33.189899, humidity:41.684596[0m
+[0;32mI (1564966) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1564986) sd_card_tag: File written[0m
+[0;32mI (1564986) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1570986) app_main_tag: co2:1230, temperature:33.224613, humidity:41.664759[0m
+[0;32mI (1575986) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1576006) sd_card_tag: File written[0m
+[0;32mI (1576006) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1582006) app_main_tag: co2:1190, temperature:33.208591, humidity:41.724269[0m
+[0;32mI (1587006) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1587026) sd_card_tag: File written[0m
+[0;32mI (1587026) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1593026) app_main_tag: co2:1198, temperature:33.272679, humidity:41.705959[0m
+[0;32mI (1598026) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1598046) sd_card_tag: File written[0m
+[0;32mI (1598046) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1604046) app_main_tag: co2:1169, temperature:33.251316, humidity:41.718166[0m
+[0;32mI (1609046) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1609066) sd_card_tag: File written[0m
+[0;32mI (1609066) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1615066) app_main_tag: co2:1208, temperature:33.256657, humidity:41.744106[0m
+[0;32mI (1620066) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1620086) sd_card_tag: File written[0m
+[0;32mI (1620086) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1626086) app_main_tag: co2:1202, temperature:33.243305, humidity:41.687648[0m
+[0;32mI (1631086) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1631106) sd_card_tag: File written[0m
+[0;32mI (1631106) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1637106) app_main_tag: co2:1228, temperature:33.270008, humidity:41.811246[0m
+[0;32mI (1642106) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1642126) sd_card_tag: File written[0m
+[0;32mI (1642126) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1648126) app_main_tag: co2:1190, temperature:33.248646, humidity:42.037079[0m
+[0;32mI (1653126) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1653146) sd_card_tag: File written[0m
+[0;32mI (1653146) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1659146) app_main_tag: co2:1227, temperature:33.184558, humidity:42.302586[0m
+[0;32mI (1664146) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1664166) sd_card_tag: File written[0m
+[0;32mI (1664166) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1670166) app_main_tag: co2:1190, temperature:33.163195, humidity:42.623026[0m
+[0;32mI (1675166) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1675186) sd_card_tag: File written[0m
+[0;32mI (1675186) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1681186) app_main_tag: co2:1188, temperature:33.133822, humidity:42.908370[0m
+[0;32mI (1686186) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1686206) sd_card_tag: File written[0m
+[0;32mI (1686206) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1692206) app_main_tag: co2:1188, temperature:33.128481, humidity:43.086900[0m
+[0;32mI (1697206) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1697226) sd_card_tag: File written[0m
+[0;32mI (1697226) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1703226) app_main_tag: co2:1194, temperature:33.117800, humidity:43.184558[0m
+[0;32mI (1708226) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1708246) sd_card_tag: File written[0m
+[0;32mI (1708246) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1714246) app_main_tag: co2:1194, temperature:33.149844, humidity:43.323415[0m
+[0;32mI (1719246) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1719266) sd_card_tag: File written[0m
+[0;32mI (1719266) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1725266) app_main_tag: co2:1169, temperature:33.171206, humidity:43.392081[0m
+[0;32mI (1730266) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1730286) sd_card_tag: File written[0m
+[0;32mI (1730286) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1736286) app_main_tag: co2:1217, temperature:33.152514, humidity:43.476005[0m
+[0;32mI (1741286) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1741306) sd_card_tag: File written[0m
+[0;32mI (1741306) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1747306) app_main_tag: co2:1254, temperature:33.157855, humidity:43.550774[0m
+[0;32mI (1752306) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1752326) sd_card_tag: File written[0m
+[0;32mI (1752326) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1758326) app_main_tag: co2:1181, temperature:33.163195, humidity:43.559930[0m
+[0;32mI (1763326) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1763346) sd_card_tag: File written[0m
+[0;32mI (1763346) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1769346) app_main_tag: co2:1220, temperature:33.141833, humidity:43.628595[0m
+[0;32mI (1774346) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1774366) sd_card_tag: File written[0m
+[0;32mI (1774366) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1780366) app_main_tag: co2:1174, temperature:33.147173, humidity:43.616388[0m
+[0;32mI (1785366) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1785386) sd_card_tag: File written[0m
+[0;32mI (1785386) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1791386) app_main_tag: co2:1224, temperature:33.160525, humidity:43.555352[0m
+[0;32mI (1796386) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1796406) sd_card_tag: File written[0m
+[0;32mI (1796406) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1802406) app_main_tag: co2:1220, temperature:33.139162, humidity:43.530938[0m
+[0;32mI (1807406) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1807426) sd_card_tag: File written[0m
+[0;32mI (1807426) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1813426) app_main_tag: co2:1207, temperature:33.139162, humidity:43.425650[0m
+[0;32mI (1818426) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1818446) sd_card_tag: File written[0m
+[0;32mI (1818446) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1824446) app_main_tag: co2:1214, temperature:33.139162, humidity:43.370718[0m
+[0;32mI (1829446) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1829476) sd_card_tag: File written[0m
+[0;32mI (1829476) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1835476) app_main_tag: co2:1241, temperature:33.112459, humidity:43.215076[0m
+[0;32mI (1840476) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1840496) sd_card_tag: File written[0m
+[0;32mI (1840496) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1846496) app_main_tag: co2:1215, temperature:33.152514, humidity:43.140307[0m
+[0;32mI (1851496) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1851516) sd_card_tag: File written[0m
+[0;32mI (1851516) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1857516) app_main_tag: co2:1245, temperature:33.109789, humidity:42.949569[0m
+[0;32mI (1862516) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1862536) sd_card_tag: File written[0m
+[0;32mI (1862536) app_main_tag: Write scd40 data to sd card.[0m
+[0;32mI (1868536) app_main_tag: co2:1183, temperature:33.109789, humidity:42.873274[0m
+[0;32mI (1873536) sd_card_tag: Opening file /sdcard/scd40.txt[0m
+[0;32mI (1873556) sd_card_tag: File written[0m
+[0;32mI (1873556) app_main_tag: Write scd40 data to sd card.[0m

@@ -1,0 +1,87 @@
+ets Jun  8 2016 00:22:57
+
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:7176
+load:0x40078000,len:15564
+ho 0 tail 12 room 4
+load:0x40080400,len:4
+load:0x40080404,len:3904
+entry 0x40080640
+[0;32mI (30) boot: ESP-IDF v5.4-dev-1388-g5ca9f2a49a-dirty 2nd stage bootloader[0m
+[0;32mI (30) boot: compile time Jul 21 2024 15:52:47[0m
+[0;32mI (32) boot: Multicore bootloader[0m
+[0;32mI (37) boot: chip revision: v1.0[0m
+[0;32mI (40) boot.esp32: SPI Speed      : 40MHz[0m
+[0;32mI (45) boot.esp32: SPI Mode       : DIO[0m
+[0;32mI (50) boot.esp32: SPI Flash Size : 2MB[0m
+[0;32mI (54) boot: Enabling RNG early entropy source...[0m
+[0;32mI (59) boot: Partition Table:[0m
+[0;32mI (63) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (70) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (78) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (85) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (93) boot: End of partition table[0m
+[0;32mI (97) esp_image: segment 0: paddr=00010020 vaddr=3f400020 size=0b2e8h ( 45800) map[0m
+[0;32mI (121) esp_image: segment 1: paddr=0001b310 vaddr=3ffb0000 size=02364h (  9060) load[0m
+[0;32mI (125) esp_image: segment 2: paddr=0001d67c vaddr=40080000 size=0299ch ( 10652) load[0m
+[0;32mI (131) esp_image: segment 3: paddr=00020020 vaddr=400d0020 size=17888h ( 96392) map[0m
+[0;32mI (168) esp_image: segment 4: paddr=000378b0 vaddr=4008299c size=0a628h ( 42536) load[0m
+[0;32mI (192) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (192) boot: Disabling RNG early entropy source...[0m
+[0;32mI (204) cpu_start: Multicore app[0m
+[0;32mI (212) cpu_start: Pro cpu start user code[0m
+[0;32mI (212) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (212) app_init: Application information:[0m
+[0;32mI (215) app_init: Project name:     main[0m
+[0;32mI (220) app_init: App version:      6d26719-dirty[0m
+[0;32mI (225) app_init: Compile time:     Jul 21 2024 15:52:43[0m
+[0;32mI (231) app_init: ELF file SHA256:  49f554047...[0m
+[0;32mI (237) app_init: ESP-IDF:          v5.4-dev-1388-g5ca9f2a49a-dirty[0m
+[0;32mI (243) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (248) efuse_init: Max chip rev:     v3.99 [0m
+[0;32mI (253) efuse_init: Chip rev:         v1.0[0m
+[0;32mI (258) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (265) heap_init: At 3FFAE6E0 len 00001920 (6 KiB): DRAM[0m
+[0;32mI (271) heap_init: At 3FFB2C50 len 0002D3B0 (180 KiB): DRAM[0m
+[0;32mI (278) heap_init: At 3FFE0440 len 00003AE0 (14 KiB): D/IRAM[0m
+[0;32mI (284) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM[0m
+[0;32mI (290) heap_init: At 4008CFC4 len 0001303C (76 KiB): IRAM[0m
+[0;32mI (298) spi_flash: detected chip: generic[0m
+[0;32mI (301) spi_flash: flash io: dio[0m
+[0;33mW (305) spi_flash: Detected size(4096k) larger than the size in the binary image header(2048k). Using the size in the binary image header.[0m
+[0;32mI (319) main_task: Started on CPU0[0m
+[0;32mI (329) main_task: Calling app_main()[0m
+[0;32mI (329) gpio: GPIO[21]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (329) gpio: GPIO[22]| InputEn: 1| OutputEn: 1| OpenDrain: 1| Pullup: 1| Pulldown: 0| Intr:0 [0m
+[0;32mI (339) scd40_tag: scd40 serial number:152843105483599[0m
+[0;32mI (349) scd40_tag: Calculate CRC = da[0m
+[0;32mI (349) scd40_tag: word_0 crc: da, calculate word_0 crc: da[0m
+[0;32mI (359) scd40_tag: Calculate CRC = ac[0m
+[0;32mI (359) scd40_tag: word_1 crc: ac, calculate word_1 crc: ac[0m
+[0;32mI (369) scd40_tag: Calculate CRC = 3a[0m
+[0;32mI (369) scd40_tag: word_2 crc: 3a, calculate word_2 crc: 3a[0m
+[0;32mI (379) app_main_tag: SCD40 Serial Number:152843105483599[0m
+[0;32mI (379) app_main_tag: SCD40 CO2:0 SCD40 Temperature:0.000000  SCD40 RH:0.000000[0m
+[0;31mE (5349) task_wdt: Task watchdog got triggered. The following tasks/users did not reset the watchdog in time:[0m
+[0;31mE (5349) task_wdt:  - IDLE0 (CPU 0)[0m
+[0;31mE (5349) task_wdt: Tasks currently running:[0m
+[0;31mE (5349) task_wdt: CPU 0: main[0m
+[0;31mE (5349) task_wdt: CPU 1: IDLE1[0m
+[0;31mE (5349) task_wdt: Print CPU 0 (current core) backtrace[0m
+
+
+Backtrace: 0x400D8D0F:0x3FFB0F80 0x400D90D4:0x3FFB0FA0 0x40082D8D:0x3FFB0FD0 0x400D6A2D:0x3FFB3EF0 0x400E7134:0x3FFB3F40 0x40086359:0x3FFB3F70
+
+[0;31mE (10349) task_wdt: Task watchdog got triggered. The following tasks/users did not reset the watchdog in time:[0m
+[0;31mE (10349) task_wdt:  - IDLE0 (CPU 0)[0m
+[0;31mE (10349) task_wdt: Tasks currently running:[0m
+[0;31mE (10349) task_wdt: CPU 0: main[0m
+[0;31mE (10349) task_wdt: CPU 1: IDLE1[0m
+[0;31mE (10349) task_wdt: Print CPU 0 (current core) backtrace[0m
+
+
+Backtrace: 0x400D8D0F:0x3FFB0F80 0x400D90D4:0x3FFB0FA0 0x40082D8D:0x3FFB0FD0 0x400D6A2D:0x3FFB3EF0 0x400E7134:0x3FFB3F40 0x40086359:0x3FFB3F70
+
