@@ -3,10 +3,7 @@
 *.d
 
 # Object files
-./esp32/build
-./esp32/build/*
-./esp32/main/build
-./esp32/main/build/*
+build
 *.o
 *.ko
 *.obj
