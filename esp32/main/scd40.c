@@ -168,4 +168,34 @@ esp_err_t stop_scd40_periodic_measurement() {
   return r;
 }
 
+esp_err_t set_scd40_temperature_offset(double temperature_offset){
+  esp_err_t r = ESP_OK;
 
+  uint16_t offset = (temperature_offset * 65536.0) / 175.0;
+  
+  scd40_data_t scd40_temperature_data = {
+    .data = {0x00, 0x00},
+    .crc = 0x00
+  };
+  
+  uint8_t set_offset_temperature_command[2] = {0x24, 0x1d}; 
+  scd40_temperature_data.data[0] = offset >> 8; //msb
+  scd40_temperature_data.data[1] = offset && 0xFF; //lsb
+  scd40_temperature_data.crc = calculate_scd40_crc(scd40_temperature_data.data, sizeof(scd40_temperature_data));
+
+  uint8_t transmit_data[5] = {
+    set_offset_temperature_command[0],
+    set_offset_temperature_command[1],
+    scd40_temperature_data.data[0],
+    scd40_temperature_data.data[1],
+    scd40_temperature_data.crc,
+  };
+  
+  r = i2c_master_transmit(dev_handle, transmit_data, sizeof(transmit_data), -1);
+  ESP_ERROR_CHECK(r);
+  if(r != ESP_OK){
+    ESP_LOGE(SCD40_TAG, "failed transmit command data with status code: %s", esp_err_to_name(r));
+  }
+  
+  return r;
+}
