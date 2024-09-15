@@ -29,5 +29,7 @@ esp_err_t get_scd40_sensor_data(scd40_value_t* scd40_value);
 
 esp_err_t stop_scd40_periodic_measurement();
 
-esp_err_t set_scd40_temperature_offset(double temperature_offset);
+esp_err_t set_scd40_temperature_offset(float temperature_offset);
+
+esp_err_t get_scd40_temperature_offset(float* ptemperature_offset);
 #endif 

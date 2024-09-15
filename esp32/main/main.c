@@ -17,15 +17,15 @@ void app_main(void){
   
   esp_err_t r = ESP_OK;
   esp_log_level_set(MAIN_TAG, ESP_LOG_DEBUG);
-
+  
   scd40_value_t scd40_value = {
     .co2 = 0,
     .temperature = 0.0, 
     .relative_humidity = 0.0
   };
-  
+  float temperature_offset = 0.0;
+
   r = init_scd40();
-  
   if(r != ESP_OK){
    ESP_LOGE(MAIN_TAG, "Faild to set up scd40.");
   }
@@ -38,13 +38,35 @@ void app_main(void){
     } 
     if(r == ESP_OK){
       ESP_LOGI(MAIN_TAG, "SCD40 Serial Number:%llu", serial_number);
-      vTaskDelay(500/ portTICK_PERIOD_MS);
+      vTaskDelay(5/ portTICK_PERIOD_MS);
+    }
+  }
+  
+  if(r == ESP_OK){
+    r = get_scd40_temperature_offset(&temperature_offset);
+    if(r == ESP_OK){
+      ESP_LOGI(MAIN_TAG, "default temperature_offset is %f", temperature_offset);
+      vTaskDelay(1 / portTICK_PERIOD_MS);
+    }
+    else if(r != ESP_OK){
+      ESP_LOGE(MAIN_TAG, "faild to read temperature offset");
     }
   }
 
-  r =  init_sd_card();
-  if(r != ESP_OK){
-    ESP_LOGE(MAIN_TAG, "Failed to initialize initilize SD Card setup.");
+  if(r == ESP_OK){
+    temperature_offset = 0.0;
+    r = set_scd40_temperature_offset(temperature_offset);
+    vTaskDelay(5/ portTICK_PERIOD_MS);
+    if(r != ESP_OK){
+      ESP_LOGE(MAIN_TAG, "Failed to set temperature offset.");
+    }
+    ESP_LOGI(MAIN_TAG, "set temperature offset: %f", temperature_offset);
+  }
+  if(r == ESP_OK){
+    r =  init_sd_card();
+    if(r != ESP_OK){
+      ESP_LOGE(MAIN_TAG, "Failed to initialize initilize SD Card setup.");
+    }
   }
   
   if(r == ESP_OK){

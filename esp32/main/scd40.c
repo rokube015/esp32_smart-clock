@@ -1,3 +1,4 @@
+#include <math.h>
 #include "scd40.h"
 
 static const char* SCD40_TAG = "scd40_tag";
@@ -168,11 +169,11 @@ esp_err_t stop_scd40_periodic_measurement() {
   return r;
 }
 
-esp_err_t set_scd40_temperature_offset(double temperature_offset){
+esp_err_t set_scd40_temperature_offset(float temperature_offset){
   esp_err_t r = ESP_OK;
 
   uint16_t offset = (temperature_offset * 65536.0) / 175.0;
-  
+  ESP_LOGI(SCD40_TAG, "temperature offset is 0x%x", offset);
   scd40_data_t scd40_temperature_data = {
     .data = {0x00, 0x00},
     .crc = 0x00
@@ -181,8 +182,8 @@ esp_err_t set_scd40_temperature_offset(double temperature_offset){
   uint8_t set_offset_temperature_command[2] = {0x24, 0x1d}; 
   scd40_temperature_data.data[0] = offset >> 8; //msb
   scd40_temperature_data.data[1] = offset && 0xFF; //lsb
-  scd40_temperature_data.crc = calculate_scd40_crc(scd40_temperature_data.data, sizeof(scd40_temperature_data));
-
+  scd40_temperature_data.crc = calculate_scd40_crc(scd40_temperature_data.data, sizeof(scd40_temperature_data.data));
+  ESP_LOGI(SCD40_TAG, "temperature offset crc is 0x%x", scd40_temperature_data.crc);
   uint8_t transmit_data[5] = {
     set_offset_temperature_command[0],
     set_offset_temperature_command[1],
@@ -192,10 +193,36 @@ esp_err_t set_scd40_temperature_offset(double temperature_offset){
   };
   
   r = i2c_master_transmit(dev_handle, transmit_data, sizeof(transmit_data), -1);
-  ESP_ERROR_CHECK(r);
   if(r != ESP_OK){
     ESP_LOGE(SCD40_TAG, "failed transmit command data with status code: %s", esp_err_to_name(r));
+    ESP_ERROR_CHECK(r);
   }
+  return r;
+}
+
+esp_err_t get_scd40_temperature_offset(float* ptemperature_offset){
+  esp_err_t r = ESP_OK;
   
+  uint8_t get_offset_temperature_command[2] = {0x23,0x18};
+  uint8_t read_data[3] = {0x00, 0x00, 0x00};
+
+  r = i2c_master_transmit_receive(dev_handle, get_offset_temperature_command, sizeof(get_offset_temperature_command), read_data, sizeof(read_data), -1);
+
+  if(r != ESP_OK){
+    ESP_LOGE(SCD40_TAG, "failed read data with status code: %s", esp_err_to_name(r));
+    ESP_ERROR_CHECK(r);
+  }
+  if(r == ESP_OK){
+    uint8_t expected_crc = calculate_scd40_crc(read_data, 2);
+    if(expected_crc != read_data[2]){
+      r = ESP_ERR_INVALID_CRC;
+      ESP_LOGE(SCD40_TAG, "don't much read crc and expected crc.");
+      ESP_LOGE(SCD40_TAG, "read crc: 0x%x, expected crc: 0x%x", read_data[2], expected_crc);
+    }
+  }
+  if(r == ESP_OK){
+    *ptemperature_offset = round((175 * (((read_data[0] << 8) + read_data[1]) / 65536.0)) * 10.0) / 10.0;
+  }
+
   return r;
 }
