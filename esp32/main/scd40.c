@@ -217,8 +217,7 @@ esp_err_t set_scd40_temperature_offset(float temperature_offset){
   
   r = i2c_master_transmit(dev_handle, transmit_data, sizeof(transmit_data), -1);
   if(r != ESP_OK){
-    ESP_LOGE(SCD40_TAG, "failed transmit command data with status code: %s", esp_err_to_name(r));
-    ESP_ERROR_CHECK(r);
+    ESP_LOGE(SCD40_TAG, "failed transmit set temperature offset command with status code: %s", esp_err_to_name(r));
   }
   return r;
 }
