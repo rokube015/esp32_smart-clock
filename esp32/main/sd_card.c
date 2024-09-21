@@ -1,7 +1,7 @@
 #include <string.h>
 #include "sd_card.h"
 
-static const char* SD_CARD_TAG = "sd_card_tag";
+static const char* SD_CARD_TAG = "sd_card";
 
 esp_err_t write_sd_card_file(const char* path, char* data, char mode){
   esp_err_t r = ESP_OK; 

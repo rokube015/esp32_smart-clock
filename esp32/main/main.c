@@ -30,7 +30,7 @@ void app_main(void){
     r = init_scd40();
   }
   if(r != ESP_OK){
-    ESP_LOGE(MAIN_TAG, "Faild to set up scd40.");
+    ESP_LOGE(MAIN_TAG, "faild to set up scd40.");
   }
 
   if(r == ESP_OK){
@@ -79,7 +79,7 @@ void app_main(void){
       snprintf(sdcard_write_data, sizeof(sdcard_write_data),
           "%d\t%f\t%f\n",scd40_value.co2, scd40_value.temperature, scd40_value.relative_humidity);
       r = write_sd_card_file(pScd40_data_filepath, sdcard_write_data, 'a');
-      ESP_LOGI(MAIN_TAG, "Write scd40 data to sd card.");
+      ESP_LOGI(MAIN_TAG, "write scd40 data to sd card.");
       vTaskDelay(1000/ portTICK_PERIOD_MS);
     }
   }

@@ -1,7 +1,7 @@
 #include <math.h>
 #include "scd40.h"
 
-static const char* SCD40_TAG = "scd40_tag";
+static const char* SCD40_TAG = "scd40";
 
 i2c_master_dev_handle_t dev_handle;
 
