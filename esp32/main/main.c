@@ -24,8 +24,10 @@ void app_main(void){
     .relative_humidity = 0.0
   };
   float temperature_offset = 0.0;
-
-  r = init_scd40();
+  
+  if(r == ESP_OK){
+    r = init_scd40();
+  }
   if(r != ESP_OK){
     ESP_LOGE(MAIN_TAG, "Faild to set up scd40.");
   }
@@ -75,25 +77,16 @@ void app_main(void){
   while(1){
     if(r == ESP_OK){
       r = start_scd40_periodic_measurement();
-      if(r != ESP_OK){
-        ESP_LOGE(MAIN_TAG, "Failed to send start periodic measurecommand to scd40.");
-      }
     }
     if(r == ESP_OK){
       vTaskDelay(5000/ portTICK_PERIOD_MS);
       r = get_scd40_sensor_data(&scd40_value);
-      if(r != ESP_OK){
-        ESP_LOGE(MAIN_TAG, "Failed to read scd40 sensor data");
-      }
-    }
-    if(r == ESP_OK){
       ESP_LOGI(MAIN_TAG, "co2:%d, temperature:%f, humidity:%f",
           scd40_value.co2, scd40_value.temperature, scd40_value.relative_humidity);
+    }
+    if(r == ESP_OK){
       vTaskDelay(5000/ portTICK_PERIOD_MS);
       r = stop_scd40_periodic_measurement();
-      if(r != ESP_OK){
-        ESP_LOGE(MAIN_TAG, "Failed to send stop periodic measure command to scd40.");
-      }
     }
     if(r == ESP_OK){
       snprintf(sdcard_write_data, sizeof(sdcard_write_data),

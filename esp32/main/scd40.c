@@ -138,7 +138,7 @@ esp_err_t start_scd40_periodic_measurement(){
   r = i2c_master_transmit(dev_handle, periodic_measurement_start_command, sizeof(periodic_measurement_start_command), -1);
   ESP_ERROR_CHECK(r);
   if(r != ESP_OK){
-    ESP_LOGE(SCD40_TAG, "failed transmit command data with status code: %s", esp_err_to_name(r));
+    ESP_LOGE(SCD40_TAG, "failed to transmit periodic measurement command with status code: %s", esp_err_to_name(r));
   }
   return r;
 }
@@ -158,24 +158,26 @@ esp_err_t get_scd40_sensor_data(scd40_value_t* scd40_value) {
   }measurement_data;
 
   uint8_t measurement_read_command[2] = {0xec, 0x05};
-  //if(!scd4x_get_data_ready_status()) {
-  //    return ESP_FAIL;
-  // }
-  r = i2c_master_transmit(dev_handle, measurement_read_command, sizeof(measurement_read_command), -1);
-  ESP_ERROR_CHECK(r);
+  if(r == ESP_OK){
+    r = i2c_master_transmit(dev_handle, measurement_read_command, sizeof(measurement_read_command), -1);
+    if(r != ESP_OK){
+      ESP_LOGE(SCD40_TAG, "failed transmit command data with status code: %s", esp_err_to_name(r));
+    }
+  }
+  
+  if(r == ESP_OK){
+    r = i2c_master_receive(dev_handle, measurement_data.arr, sizeof(measurement_data.arr), -1);
+    if(r != ESP_OK) {
+      ESP_LOGE(SCD40_TAG, "get_serial_number failed with status code: %s", esp_err_to_name(r));
+    }
+    scd40_value->co2 = (measurement_data.data.co2[0] << 8) + measurement_data.data.co2[1];
+    scd40_value->temperature = (double) (175.0 * (((measurement_data.data.temperature[0] << 8) + measurement_data.data.temperature[1]) / 65535.0)) - 45.0;
+    scd40_value->relative_humidity = 100.0 * ((measurement_data.data.relative_humidity[0] << 8) + measurement_data.data.relative_humidity[1]) / 65535.0;
+  }
   if(r != ESP_OK){
-    ESP_LOGE(SCD40_TAG, "failed transmit command data with status code: %s", esp_err_to_name(r));
-    return r;
+    ESP_LOGE(SCD40_TAG, "failed to read sensor data with status code: %s", esp_err_to_name(r));
   }
-  r = i2c_master_receive(dev_handle, measurement_data.arr, sizeof(measurement_data.arr), -1);
-  ESP_ERROR_CHECK(r);
-  if(r != ESP_OK) {
-    ESP_LOGE(SCD40_TAG, "get_serial_number failed with status code: %s", esp_err_to_name(r));
-    return r;
-  }
-  scd40_value->co2 = (measurement_data.data.co2[0] << 8) + measurement_data.data.co2[1];
-  scd40_value->temperature = (double) (175.0 * (((measurement_data.data.temperature[0] << 8) + measurement_data.data.temperature[1]) / 65535.0)) - 45.0;
-  scd40_value->relative_humidity = 100.0 * ((measurement_data.data.relative_humidity[0] << 8) + measurement_data.data.relative_humidity[1]) / 65535.0;
+  
   return r;
 }
 
@@ -185,7 +187,7 @@ esp_err_t stop_scd40_periodic_measurement() {
   r = i2c_master_transmit(dev_handle, periodic_measurement_stop_command, sizeof(periodic_measurement_stop_command), -1);
   ESP_ERROR_CHECK(r);
   if(r != ESP_OK){
-    ESP_LOGE(SCD40_TAG, "failed transmit command data with status code: %s", esp_err_to_name(r));
+    ESP_LOGE(SCD40_TAG, "failed to transmit stop periodic measurement command with status code: %s", esp_err_to_name(r));
   }
   return r;
 }
