@@ -9,7 +9,7 @@
 #include "scd40.h"
 #include "sd_card.h"
 
-static const char* MAIN_TAG = "app_main_tag";
+static const char* MAIN_TAG = "app_main";
 
 void app_main(void){
   const char* pScd40_data_filepath = MOUNT_POINT"/scd40.txt";
@@ -27,19 +27,11 @@ void app_main(void){
 
   r = init_scd40();
   if(r != ESP_OK){
-   ESP_LOGE(MAIN_TAG, "Faild to set up scd40.");
+    ESP_LOGE(MAIN_TAG, "Faild to set up scd40.");
   }
 
   if(r == ESP_OK){
-    uint64_t serial_number = 0;
-    r = get_scd40_serial_number(&serial_number);
-    if(r != ESP_OK){
-      ESP_LOGE(MAIN_TAG, "Faild to read serial number");
-    } 
-    if(r == ESP_OK){
-      ESP_LOGI(MAIN_TAG, "SCD40 Serial Number:%llu", serial_number);
-      vTaskDelay(5/ portTICK_PERIOD_MS);
-    }
+    r = check_scd40_serial_number();
   }
   
   if(r == ESP_OK){

@@ -68,49 +68,70 @@ esp_err_t get_scd40_serial_number(uint64_t* pserial_number){
   }serial_number;
 
   uint8_t serial_number_get_command[2] = {0x36, 0x82};
-  r = i2c_master_transmit(dev_handle, serial_number_get_command, sizeof(serial_number_get_command), -1);
-  ESP_ERROR_CHECK(r);
-  if(r != ESP_OK){
-    ESP_LOGE(SCD40_TAG, "failed transmit command data with status code: %s", esp_err_to_name(r));
-    return r;
+  
+  if(r == ESP_OK){
+    r = i2c_master_transmit(dev_handle, serial_number_get_command, sizeof(serial_number_get_command), -1);
+    if(r != ESP_OK){
+      ESP_LOGE(SCD40_TAG, "failed transmit command data with status code: %s", esp_err_to_name(r));
+    }
+  }
+  
+  if(r == ESP_OK){
+    r = i2c_master_receive(dev_handle, serial_number.arr, sizeof(serial_number.arr), -1);
+    if(r != ESP_OK) {
+      ESP_LOGE(SCD40_TAG, "get_serial_number failed with status code: %s", esp_err_to_name(r));
+    }
   }
 
-  r = i2c_master_receive(dev_handle, serial_number.arr, sizeof(serial_number.arr), -1);
-  ESP_ERROR_CHECK(r);
-  if(r != ESP_OK) {
-    ESP_LOGE(SCD40_TAG, "get_serial_number failed with status code: %s", esp_err_to_name(r));
-    return r;
+  if(r == ESP_OK){
+    *pserial_number =  ((uint64_t)serial_number.data.word_0[0] << 40 | (uint64_t)serial_number.data.word_0[1] << 32) |
+      ((uint64_t)serial_number.data.word_1[0] << 24 | (uint64_t)serial_number.data.word_0[1] << 16) |
+      ((uint64_t)serial_number.data.word_2[0] << 8 | (uint64_t)serial_number.data.word_2[1]);
+    ESP_LOGD(SCD40_TAG, "scd40 get serial number:%llu", *pserial_number);
   }
-
-  *pserial_number =  ((uint64_t)serial_number.data.word_0[0] << 40 | (uint64_t)serial_number.data.word_0[1] << 32) |
-    ((uint64_t)serial_number.data.word_1[0] << 24 | (uint64_t)serial_number.data.word_0[1] << 16) |
-    ((uint64_t)serial_number.data.word_2[0] << 8 | (uint64_t)serial_number.data.word_2[1]);
+  
+  if(r == ESP_OK){
+    uint8_t word_crc = calculate_scd40_crc(serial_number.data.word_0, sizeof(serial_number.data.word_0));
+    ESP_LOGD(SCD40_TAG, "word_0 crc: %x, calculate word_0 crc: %x", serial_number.data.crc_0, word_crc);
+    if(word_crc != serial_number.data.crc_0){
+      r = ESP_FAIL;
+      ESP_LOGE(SCD40_TAG, "scd40 data_0 crc does not match.");
+    }
+  }
+  
+  if(r == ESP_OK){
+    uint8_t word_crc = calculate_scd40_crc(serial_number.data.word_1, sizeof(serial_number.data.word_1));
+    ESP_LOGD(SCD40_TAG, "word_1 crc: %x, calculate word_1 crc: %x", serial_number.data.crc_1, word_crc);
+    if(word_crc != serial_number.data.crc_1){
+      r = ESP_FAIL;
+      ESP_LOGE(SCD40_TAG, "scd40 data_1 crc does not match.");
+    }
+  }
+  
+  if(r == ESP_OK){
+    uint8_t word_crc = calculate_scd40_crc(serial_number.data.word_2, sizeof(serial_number.data.word_2));
+    ESP_LOGD(SCD40_TAG, "word_2 crc: %x, calculate word_2 crc: %x", serial_number.data.crc_2, word_crc);
+    if(word_crc != serial_number.data.crc_2){
+      r = ESP_FAIL;
+      ESP_LOGE(SCD40_TAG, "scd40 data_2 crc does not match.");
+    }
+  }
   ESP_LOGI(SCD40_TAG, "scd40 serial number:%llu", *pserial_number);
-
-  uint8_t word_crc = calculate_scd40_crc(serial_number.data.word_0, sizeof(serial_number.data.word_0));
-  ESP_LOGI(SCD40_TAG, "word_0 crc: %x, calculate word_0 crc: %x", serial_number.data.crc_0, word_crc);
-  if(word_crc != serial_number.data.crc_0){
-    r = ESP_FAIL;
-    ESP_LOGE(SCD40_TAG, "scd40 data_0 crc does not match.");
-  }
-
-  word_crc = calculate_scd40_crc(serial_number.data.word_1, sizeof(serial_number.data.word_1));
-  ESP_LOGI(SCD40_TAG, "word_1 crc: %x, calculate word_1 crc: %x", serial_number.data.crc_1, word_crc);
-  if(word_crc != serial_number.data.crc_1){
-    r = ESP_FAIL;
-    ESP_LOGE(SCD40_TAG, "scd40 data_1 crc does not match.");
-  }
-
-  word_crc = calculate_scd40_crc(serial_number.data.word_2, sizeof(serial_number.data.word_2));
-  ESP_LOGI(SCD40_TAG, "word_2 crc: %x, calculate word_2 crc: %x", serial_number.data.crc_2, word_crc);
-  if(word_crc != serial_number.data.crc_2){
-    r = ESP_FAIL;
-    ESP_LOGE(SCD40_TAG, "scd40 data_2 crc does not match.");
-  }
 
   return r;
 }
 
+esp_err_t check_scd40_serial_number(){
+  esp_err_t r = ESP_OK;
+  uint64_t serial_number = 0;
+  
+  r = get_scd40_serial_number(&serial_number);
+  if(r != ESP_OK){
+      ESP_LOGE(SCD40_TAG, "Faild to read serial number");
+  }
+  return r;
+}
+  
 esp_err_t start_scd40_periodic_measurement(){
   esp_err_t r = ESP_OK;
   uint8_t periodic_measurement_start_command[2] = {0x21, 0xb1};
