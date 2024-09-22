@@ -31,14 +31,14 @@ void app_main(void){
     time(&now);
   }
 
-  char strftime_buf[64];
+  char time_buf[64];
 
   // Set timezone to JST Standard Time
   setenv("TZ", "JST-9", 1);
   tzset();
   localtime_r(&now, &timeinfo);
-  strftime(strftime_buf, sizeof(strftime_buf), "%c", &timeinfo);
-  ESP_LOGI(MAIN_TAG, "The current date/time in Japan is: %s", strftime_buf);
+  strftime(time_buf, sizeof(time_buf), "%Y/%m/%d %H:%M:%S", &timeinfo);
+  ESP_LOGI(MAIN_TAG, "The current date/time in Japan is: %s", time_buf);
 
   const char* pScd40_data_filepath = MOUNT_POINT"/scd40.txt";
   char sdcard_write_data[MAX_SDCARD_LINE_CHAR_SIZE] = "\0";
@@ -82,7 +82,7 @@ void app_main(void){
   }
   
   if(r == ESP_OK){
-    snprintf(sdcard_write_data, sizeof(sdcard_write_data), "CO2[rpm] \tTemperature[degree] \tHumidity[%%RH]\n");
+    snprintf(sdcard_write_data, sizeof(sdcard_write_data), "YYYY/MM/DD HH/MM/SS,\tCO2[rpm],\tTemperature[degree],\tHumidity[%%RH]\n");
     r = write_sd_card_file(pScd40_data_filepath, sdcard_write_data, 'w');
   }
   
@@ -93,8 +93,14 @@ void app_main(void){
     if(r == ESP_OK){
       vTaskDelay(5000/ portTICK_PERIOD_MS);
       r = get_scd40_sensor_data(&scd40_value);
-      ESP_LOGI(MAIN_TAG, "co2:%d, temperature:%f, humidity:%f",
-          scd40_value.co2, scd40_value.temperature, scd40_value.relative_humidity);
+      if(r == ESP_OK){
+        time(&now);
+        localtime_r(&now, &timeinfo);
+        strftime(day_buf, sizeof(day_buf), "%Y/%m/%d", &timeinfo);
+        strftime(time_buf, sizeof(time_buf), "%H:%M:%S", &timeinfo);
+        ESP_LOGI(MAIN_TAG, "%s co2:%d, temperature:%f, humidity:%f",
+                 time_buf, scd40_value.co2, scd40_value.temperature, scd40_value.relative_humidity);
+      }
     }
     if(r == ESP_OK){
       vTaskDelay(5000/ portTICK_PERIOD_MS);
@@ -102,7 +108,7 @@ void app_main(void){
     }
     if(r == ESP_OK){
       snprintf(sdcard_write_data, sizeof(sdcard_write_data),
-          "%d\t%f\t%f\n",scd40_value.co2, scd40_value.temperature, scd40_value.relative_humidity);
+               "%s,\t%d,\t%f,\t%f\n",time_buf, scd40_value.co2, scd40_value.temperature, scd40_value.relative_humidity);
       r = write_sd_card_file(pScd40_data_filepath, sdcard_write_data, 'a');
       ESP_LOGI(MAIN_TAG, "write scd40 data to sd card.");
       vTaskDelay(1000/ portTICK_PERIOD_MS);
