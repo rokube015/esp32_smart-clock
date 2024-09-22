@@ -96,8 +96,7 @@ void app_main(void){
       if(r == ESP_OK){
         time(&now);
         localtime_r(&now, &timeinfo);
-        strftime(day_buf, sizeof(day_buf), "%Y/%m/%d", &timeinfo);
-        strftime(time_buf, sizeof(time_buf), "%H:%M:%S", &timeinfo);
+        strftime(time_buf, sizeof(time_buf), "%Y/%m/%d %H:%M:%S", &timeinfo);
         ESP_LOGI(MAIN_TAG, "%s co2:%d, temperature:%f, humidity:%f",
                  time_buf, scd40_value.co2, scd40_value.temperature, scd40_value.relative_humidity);
       }
