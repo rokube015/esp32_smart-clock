@@ -60,6 +60,14 @@ void app_main(void){
 
   if(r == ESP_OK){
     r = check_scd40_serial_number();
+    if(r != ESP_OK){
+      vTaskDelay(5000/ portTICK_PERIOD_MS);
+      r = stop_scd40_periodic_measurement();
+      if(r == ESP_OK){
+        vTaskDelay(5000/ portTICK_PERIOD_MS);
+        r = check_scd40_serial_number();
+      }
+    }
   }
   
   if(r == ESP_OK){
