@@ -9,7 +9,9 @@
 #include "freertos/task.h"
 #include "freertos/event_groups.h"
 
+#include "i2c_base.h"
 #include "scd40.h"
+#include "bme280.h"
 #include "sd_card.h"
 #include "wifi.h"
 
@@ -52,6 +54,9 @@ void app_main(void){
   float temperature_offset = 0.0;
   
   if(r == ESP_OK){
+    r = i2c_port_init();
+  }
+  if(r == ESP_OK){
     r = init_scd40();
   }
   if(r != ESP_OK){
@@ -84,6 +89,21 @@ void app_main(void){
     r = set_scd40_temperature_offset(temperature_offset);
     vTaskDelay(5/ portTICK_PERIOD_MS);
   }
+
+  if(r == ESP_OK){
+    r = init_bme280();
+    if(r != ESP_OK){
+      ESP_LOGE(MAIN_TAG, "fail to initialize bme280 setup.");
+    }
+  }
+
+  if(r == ESP_OK){
+    r = check_bme280_chip_id();
+    if(r != ESP_OK){
+      ESP_LOGE(MAIN_TAG, "fail to check bme280 chip id.");
+    }
+  }
+
   if(r == ESP_OK){
     ESP_LOGI(MAIN_TAG, "initilize SD Card setup.");
     r =  init_sd_card();

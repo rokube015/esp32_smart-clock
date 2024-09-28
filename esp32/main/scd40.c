@@ -1,26 +1,14 @@
 #include <math.h>
+#include "i2c_base.h"
 #include "scd40.h"
 
 static const char* SCD40_TAG = "scd40";
 
-i2c_master_dev_handle_t dev_handle;
+i2c_master_dev_handle_t scd40_handle;
 
 esp_err_t init_scd40(){
   esp_err_t r = ESP_OK;
   esp_log_level_set(SCD40_TAG, ESP_LOG_DEBUG);
-  
-  i2c_master_bus_config_t i2c_bus_config = {
-    .clk_source = I2C_CLK_SRC_DEFAULT,
-    .i2c_port = PORT_NUMBER,
-    .scl_io_num = GPIO_NUM_22,
-    .sda_io_num = GPIO_NUM_21,
-    .glitch_ignore_cnt = 7,
-    .flags.enable_internal_pullup = true, 
-  };
-  i2c_master_bus_handle_t bus_handle;
-
-  r = i2c_new_master_bus(&i2c_bus_config, &bus_handle);
-  ESP_ERROR_CHECK(r);
 
   i2c_device_config_t i2c_dev_conf = {    
     .dev_addr_length = I2C_ADDR_BIT_LEN_7,
@@ -28,7 +16,7 @@ esp_err_t init_scd40(){
     .scl_speed_hz = 100000,
   };
 
-  r = i2c_master_bus_add_device(bus_handle, &i2c_dev_conf, &dev_handle);
+  r = i2c_master_bus_add_device(bus_handle, &i2c_dev_conf, &scd40_handle);
   ESP_ERROR_CHECK(r);
 
   return r;
@@ -70,14 +58,14 @@ esp_err_t get_scd40_serial_number(uint64_t* pserial_number){
   uint8_t serial_number_get_command[2] = {0x36, 0x82};
   
   if(r == ESP_OK){
-    r = i2c_master_transmit(dev_handle, serial_number_get_command, sizeof(serial_number_get_command), -1);
+    r = i2c_master_transmit(scd40_handle, serial_number_get_command, sizeof(serial_number_get_command), -1);
     if(r != ESP_OK){
       ESP_LOGE(SCD40_TAG, "failed transmit command data with status code: %s", esp_err_to_name(r));
     }
   }
   
   if(r == ESP_OK){
-    r = i2c_master_receive(dev_handle, serial_number.arr, sizeof(serial_number.arr), -1);
+    r = i2c_master_receive(scd40_handle, serial_number.arr, sizeof(serial_number.arr), -1);
     if(r != ESP_OK) {
       ESP_LOGE(SCD40_TAG, "get_serial_number failed with status code: %s", esp_err_to_name(r));
     }
@@ -135,7 +123,7 @@ esp_err_t check_scd40_serial_number(){
 esp_err_t start_scd40_periodic_measurement(){
   esp_err_t r = ESP_OK;
   uint8_t periodic_measurement_start_command[2] = {0x21, 0xb1};
-  r = i2c_master_transmit(dev_handle, periodic_measurement_start_command, sizeof(periodic_measurement_start_command), -1);
+  r = i2c_master_transmit(scd40_handle, periodic_measurement_start_command, sizeof(periodic_measurement_start_command), -1);
   ESP_ERROR_CHECK(r);
   if(r != ESP_OK){
     ESP_LOGE(SCD40_TAG, "failed to transmit periodic measurement command with status code: %s", esp_err_to_name(r));
@@ -159,14 +147,14 @@ esp_err_t get_scd40_sensor_data(scd40_value_t* scd40_value) {
 
   uint8_t measurement_read_command[2] = {0xec, 0x05};
   if(r == ESP_OK){
-    r = i2c_master_transmit(dev_handle, measurement_read_command, sizeof(measurement_read_command), -1);
+    r = i2c_master_transmit(scd40_handle, measurement_read_command, sizeof(measurement_read_command), -1);
     if(r != ESP_OK){
       ESP_LOGE(SCD40_TAG, "failed transmit command data with status code: %s", esp_err_to_name(r));
     }
   }
   
   if(r == ESP_OK){
-    r = i2c_master_receive(dev_handle, measurement_data.arr, sizeof(measurement_data.arr), -1);
+    r = i2c_master_receive(scd40_handle, measurement_data.arr, sizeof(measurement_data.arr), -1);
     if(r != ESP_OK) {
       ESP_LOGE(SCD40_TAG, "get_serial_number failed with status code: %s", esp_err_to_name(r));
     }
@@ -184,7 +172,7 @@ esp_err_t get_scd40_sensor_data(scd40_value_t* scd40_value) {
 esp_err_t stop_scd40_periodic_measurement() {
  esp_err_t r = ESP_OK;
   uint8_t periodic_measurement_stop_command[2] = {0x3f, 0x86};
-  r = i2c_master_transmit(dev_handle, periodic_measurement_stop_command, sizeof(periodic_measurement_stop_command), -1);
+  r = i2c_master_transmit(scd40_handle, periodic_measurement_stop_command, sizeof(periodic_measurement_stop_command), -1);
   ESP_ERROR_CHECK(r);
   if(r != ESP_OK){
     ESP_LOGE(SCD40_TAG, "failed to transmit stop periodic measurement command with status code: %s", esp_err_to_name(r));
@@ -215,7 +203,7 @@ esp_err_t set_scd40_temperature_offset(float temperature_offset){
     scd40_temperature_data.crc,
   };
   
-  r = i2c_master_transmit(dev_handle, transmit_data, sizeof(transmit_data), -1);
+  r = i2c_master_transmit(scd40_handle, transmit_data, sizeof(transmit_data), -1);
   if(r != ESP_OK){
     ESP_LOGE(SCD40_TAG, "failed transmit set temperature offset command with status code: %s", esp_err_to_name(r));
   }
@@ -228,7 +216,7 @@ esp_err_t get_scd40_temperature_offset(float* ptemperature_offset){
   uint8_t get_offset_temperature_command[2] = {0x23,0x18};
   uint8_t read_data[3] = {0x00, 0x00, 0x00};
 
-  r = i2c_master_transmit_receive(dev_handle, get_offset_temperature_command, sizeof(get_offset_temperature_command), read_data, sizeof(read_data), -1);
+  r = i2c_master_transmit_receive(scd40_handle, get_offset_temperature_command, sizeof(get_offset_temperature_command), read_data, sizeof(read_data), -1);
 
   if(r != ESP_OK){
     ESP_LOGE(SCD40_TAG, "failed read data with status code: %s", esp_err_to_name(r));
