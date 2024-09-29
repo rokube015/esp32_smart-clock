@@ -116,6 +116,11 @@ void app_main(void){
  
   while(1){
     if(r == ESP_OK){
+      time(&now);
+      localtime_r(&now, &timeinfo);
+      strftime(time_buf, sizeof(time_buf), "%Y/%m/%d %H:%M:%S", &timeinfo);
+    }
+    if(r == ESP_OK){
       r = start_scd40_periodic_measurement();
     }
     if(r == ESP_OK){
@@ -130,7 +135,6 @@ void app_main(void){
       vTaskDelay(5/ portTICK_PERIOD_MS);
       r = stop_scd40_periodic_measurement();
     }
-   
     if(r == ESP_OK){
       r = get_bme280_data(&bme280_value);
       ESP_LOGI(MAIN_TAG, "temperature:%lf, pressure:%lf, humidity:%lf", 
@@ -140,12 +144,6 @@ void app_main(void){
       if(r != ESP_OK){
         ESP_LOGE(MAIN_TAG, "fail to read bme280 data");
       }
-    }
-
-    if(r == ESP_OK){
-      time(&now);
-      localtime_r(&now, &timeinfo);
-      strftime(time_buf, sizeof(time_buf), "%Y/%m/%d %H:%M:%S", &timeinfo);
     }
     if(r == ESP_OK){
       snprintf(sdcard_write_data, sizeof(sdcard_write_data),
