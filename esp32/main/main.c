@@ -51,6 +51,12 @@ void app_main(void){
     .relative_humidity = 0.0
   };
   
+  bme280_value_t bme280_value = {
+    .temperature = 0.0,
+    .pressure = 0.0,
+    .humidity = 0.0
+  };
+
   float temperature_offset = 0.0;
   
   if(r == ESP_OK){
@@ -98,13 +104,6 @@ void app_main(void){
   }
 
   if(r == ESP_OK){
-    r = check_bme280_chip_id();
-    if(r != ESP_OK){
-      ESP_LOGE(MAIN_TAG, "fail to check bme280 chip id.");
-    }
-  }
-
-  if(r == ESP_OK){
     ESP_LOGI(MAIN_TAG, "initilize SD Card setup.");
     r =  init_sd_card();
   }
@@ -130,7 +129,7 @@ void app_main(void){
       }
     }
     if(r == ESP_OK){
-      vTaskDelay(5000/ portTICK_PERIOD_MS);
+      vTaskDelay(5/ portTICK_PERIOD_MS);
       r = stop_scd40_periodic_measurement();
     }
     if(r == ESP_OK){
@@ -138,7 +137,16 @@ void app_main(void){
                "%s,\t%d,\t%f,\t%f\n",time_buf, scd40_value.co2, scd40_value.temperature, scd40_value.relative_humidity);
       r = write_sd_card_file(pScd40_data_filepath, sdcard_write_data, 'a');
       ESP_LOGI(MAIN_TAG, "write scd40 data to sd card.");
-      vTaskDelay(1000/ portTICK_PERIOD_MS);
+    }
+    if(r == ESP_OK){
+      r = get_bme280_data(&bme280_value);
+      ESP_LOGI(MAIN_TAG, "temperature:%lf, pressure:%lf, humidity:%lf", 
+          bme280_value.temperature,
+          bme280_value.pressure,
+          bme280_value.humidity);
+      if(r != ESP_OK){
+        ESP_LOGE(MAIN_TAG, "fail to read bme280 data");
+      }
     }
   }
 }
