@@ -41,8 +41,8 @@ void app_main(void){
   localtime_r(&now, &timeinfo);
   strftime(time_buf, sizeof(time_buf), "%Y/%m/%d %H:%M:%S", &timeinfo);
   ESP_LOGI(MAIN_TAG, "The current date/time in Japan is: %s", time_buf);
-
-  const char* psensor_data_filepath = MOUNT_POINT"/sensor_data.txt";
+  
+  const char* pScd40_data_filepath = MOUNT_POINT"/scd40.txt";
   char sdcard_write_data[MAX_SDCARD_LINE_CHAR_SIZE] = "\0";
   
   scd40_value_t scd40_value = {
@@ -66,7 +66,7 @@ void app_main(void){
   
   if(r == ESP_OK){
     snprintf(sdcard_write_data, sizeof(sdcard_write_data), "YYYY/MM/DD HH/MM/SS,CO2[rpm],Temperature[degree],Humidity[%%RH],Pressure[hPa]\n");
-    r = write_sd_card_file(psensor_data_filepath, sdcard_write_data, 'a');
+    r = write_sd_card_file(pScd40_data_filepath, sdcard_write_data, 'w');
   }
 
   if(r == ESP_OK){
@@ -119,7 +119,7 @@ void app_main(void){
       r = start_scd40_periodic_measurement();
     }
     if(r == ESP_OK){
-      vTaskDelay(10000/ portTICK_PERIOD_MS);
+      vTaskDelay(5000/ portTICK_PERIOD_MS);
       r = get_scd40_sensor_data(&scd40_value);
       if(r == ESP_OK){
         ESP_LOGI(MAIN_TAG, "%s co2:%d, temperature:%f, humidity:%f",
@@ -150,7 +150,7 @@ void app_main(void){
     if(r == ESP_OK){
       snprintf(sdcard_write_data, sizeof(sdcard_write_data),
           "%s,%d,%.2lf,%.2lf,%.2lf\n",time_buf, scd40_value.co2, bme280_value.temperature, bme280_value.humidity, bme280_value.pressure);
-      r = write_sd_card_file(psensor_data_filepath, sdcard_write_data, 'a');
+      r = write_sd_card_file(pScd40_data_filepath, sdcard_write_data, 'a');
       ESP_LOGI(MAIN_TAG, "write scd40 data to sd card.");
     }
   }
