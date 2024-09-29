@@ -4,8 +4,6 @@
 #include "sdkconfig.h"
 #include "esp_log.h"
 
-#define PORT_NUMBER -1
-
 typedef struct{
   uint16_t co2;
   double temperature;

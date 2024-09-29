@@ -1,10 +1,11 @@
 #include <string.h>
 #include "sd_card.h"
 
-static const char* SD_CARD_TAG = "sd_card_tag";
+static const char* SD_CARD_TAG = "sd_card";
 
 esp_err_t write_sd_card_file(const char* path, char* data, char mode){
-  ESP_LOGI(SD_CARD_TAG, "Opening file %s", path);
+  esp_err_t r = ESP_OK; 
+  ESP_LOGI(SD_CARD_TAG, "Opening SD card file %s", path);
   FILE* pFile;
   if(mode == 'a'){
     pFile = fopen(path, "a");
@@ -14,13 +15,14 @@ esp_err_t write_sd_card_file(const char* path, char* data, char mode){
   }
   if(pFile == NULL){
     ESP_LOGE(SD_CARD_TAG, "Faild to open file for writing");
-    return ESP_FAIL;
+    r = ESP_FAIL;
   }
-  fprintf(pFile, data);
-  fclose(pFile);
-  ESP_LOGI(SD_CARD_TAG, "File written");
-
-  return ESP_OK;
+  if(r == ESP_OK){
+    fprintf(pFile, data);
+    fclose(pFile);
+    ESP_LOGI(SD_CARD_TAG, "File written");
+  }
+  return r;
 }
 
 esp_err_t read_sd_card_file(const char* path){
