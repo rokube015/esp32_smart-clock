@@ -144,12 +144,12 @@
 		(uuid "e5f56d8e-736b-4df0-8f5b-2043d57a0753")
 	)
 	(pad "4" smd roundrect
-		(at 0 2.15)
+		(at 5 2.15)
 		(size 1.2 1.5)
 		(layers "F.Cu" "F.Paste" "F.Mask")
 		(roundrect_rratio 0.25)
 		(thermal_bridge_angle 45)
-		(uuid "3fbf5615-d3f4-4534-8bd8-c70c82d45624")
+		(uuid "2721fea9-7a5e-43e8-be10-f1a47611b472")
 	)
 	(pad "5" smd roundrect
 		(at 2.5 2.15)
@@ -160,11 +160,11 @@
 		(uuid "cd339920-bf76-40ef-a8bb-3d49c6159875")
 	)
 	(pad "6" smd roundrect
-		(at 5 2.15)
+		(at 0 2.15)
 		(size 1.2 1.5)
 		(layers "F.Cu" "F.Paste" "F.Mask")
 		(roundrect_rratio 0.25)
 		(thermal_bridge_angle 45)
-		(uuid "2721fea9-7a5e-43e8-be10-f1a47611b472")
+		(uuid "3fbf5615-d3f4-4534-8bd8-c70c82d45624")
 	)
 )
