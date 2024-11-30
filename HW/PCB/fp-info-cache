@@ -1,4 +1,4 @@
-24174701649552685
+24179898940339507
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -97839,6 +97839,20 @@ AQM0802A-RN-GBW
 9
 9
 mylib
+BME280_SwitchScience
+
+
+0
+7
+7
+mylib
+ESP32-S3-WROOM-1
+2.4 GHz Wi-Fi and Bluetooth module  https://www.espressif.com/sites/default/files/documentation/esp32-s3-wroom-1_wroom-1u_datasheet_en.pdf
+2.4 GHz Wi-Fi and Bluetooth module
+0
+55
+41
+mylib
 FC-135
 
 
@@ -97852,6 +97866,13 @@ MJ-179PH
 0
 3
 3
+mylib
+SCD40_Conta
+
+
+0
+5
+5
 mylib
 SKRPACE010
 
