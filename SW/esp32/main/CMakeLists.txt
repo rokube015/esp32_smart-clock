@@ -1,8 +1,6 @@
-idf_component_register(
-  SRCS "main.c"
-       "i2c_base.c"
-       "scd40.c"
-       "sd_card.c"
-       "wifi.c"
-       "bme280.c"
-  INCLUDE_DIRS ".")
+set(SOURCES main.cpp)
+idf_component_register(SRCS ${SOURCES}
+                    INCLUDE_DIRS .
+                    REQUIRES bme280 i2c)
+
+idf_component_add_link_dependency(FROM bme280 i2c) 
