@@ -8,7 +8,11 @@
 class BME280{
   private:
     constexpr static char* BME280_TAG = "bme280";
+    i2c_base::I2C *pmi2c;
 
+    // Device addrs
+    constexpr static uint8_t DEVICE_ADDRS = 0x76;
+    
     // Registers
     constexpr static uint8_t HUM_LSB = 0xFE;
     constexpr static uint8_t HUM_MSB = 0xFD;
@@ -69,61 +73,81 @@ class BME280{
     constexpr static uint8_t t_standby_250 = 0x60;
     constexpr static uint8_t t_standby_500 = 0x80;
     constexpr static uint8_t filter_off = 0x00;
-  private:
+    constexpr static uint8_t status_measuring = 0x08;
+    constexpr static uint8_t status_measured = 0x00;
+    constexpr static uint8_t status_update_busy = 0x01;
+    constexpr static uint8_t status_update_done = 0x00;
+
     typedef struct {
       long mtemperature = 0;
       unsigned long mhumidity = 0;
       unsigned long mpressure = 0;
     }sensor_raw_data_t;
+    
+    i2c_master_dev_handle_t mi2c_device_handle;
 
     uint8_t mhumidity_oversampling_value = humidityOversamplingX1;    // Default to 1X over sampling
     uint8_t mpressure_oversampling_value = pressureOversamplingX1;    // Default to 1X over sampling
     uint8_t mtemperature_oversampling_value = temperatureOversamplingX1; // Default to 1X over sampling
     uint8_t msensor_mode_value = sensorForcedMode;              // Default to forced mode
+                                                                
     // Calibration Data
-    unsigned short  dig_t1 = 0;
-    signed short    dig_t2 = 0;
-    signed short    dig_t3 = 0;
-    signed long     t_fine = 0;
-    unsigned short  dig_p1 = 0;
-    signed short    dig_p2 = 0;
-    signed short    dig_p3 = 0;
-    signed short    dig_p4 = 0;
-    signed short    dig_p5 = 0;
-    signed short    dig_p6 = 0;
-    signed short    dig_p7 = 0;
-    signed short    dig_p8 = 0;
-    signed short    dig_p9 = 0;
-    uint8_t         dig_h1 = 0;
-    signed short    dig_h2 = 0;
-    uint8_t         dig_h3 = 0;
-    signed short    dig_h4 = 0;
-    signed short    dig_h5 = 0;
-    signed char     dig_h6 = 0;
+    uint16_t  dig_t1 = 0;
+    int16_t   dig_t2 = 0;
+    int16_t   dig_t3 = 0;
+    int32_t   t_fine = 0;
+    uint16_t  dig_p1 = 0;
+    int16_t   dig_p2 = 0;
+    int16_t   dig_p3 = 0;
+    int16_t   dig_p4 = 0;
+    int16_t   dig_p5 = 0;
+    int16_t   dig_p6 = 0;
+    int16_t   dig_p7 = 0;
+    int16_t   dig_p8 = 0;
+    int16_t   dig_p9 = 0;
+    uint8_t   dig_h1 = 0;
+    int16_t   dig_h2 = 0;
+    uint8_t   dig_h3 = 0;
+    int16_t   dig_h4 = 0;
+    int16_t   dig_h5 = 0;
+    int8_t    dig_h6 = 0;
 
-    int get_status();
+    esp_err_t init_i2c(void);
+    uint8_t get_status();
     esp_err_t get_calibration_data();
     esp_err_t get_sensor_data(sensor_raw_data_t* sensor_result_row_data);
     float compensate_temperature(const signed long adc_T);
     float compensate_pressure(const unsigned long adc_P);
     double compensate_humidity(const unsigned long adc_H);
+
+    esp_err_t write_byte(const uint8_t command, const uint8_t value);
+    esp_err_t read_byte(const uint8_t command, uint8_t* pread_data);
+    uint8_t read_byte(const uint8_t command);
+    esp_err_t read_int16_t(const uint8_t command, int16_t* pread_data);
+    esp_err_t read_uint16_t(const uint8_t command, uint16_t* pread_data);
+    esp_err_t read_data(const uint8_t command, uint8_t* pread_data_buffer, size_t buffer_size);
+    esp_err_t write_data(const uint8_t command, uint8_t* pwrite_data_buffer, size_t buffer_size);
+
   public:
     typedef struct{
       float temperature = 0.0;
       double humidity = 0;
       float pressure = 0.0;
-    } results_data_t;
-
-    BME280();
+    }results_data_t;
 
     results_data_t results_data;
+    
+    BME280();
 
-    esp_err_t init(const uint8_t humidity_oversampling = humidityOversamplingX1,
+    esp_err_t init(
+        i2c_base::I2C* pi2c, 
+        const uint8_t humidity_oversampling = humidityOversamplingX1,
         const uint8_t temperature_oversampling = temperatureOversamplingX1,
         const uint8_t pressure_oversampling = pressureOversamplingX1,
         const uint8_t sensor_mode = sensorForcedMode);
     //esp_err_t Close(void);
-    int get_deviceID(void);
+    esp_err_t get_deviceID(uint8_t* pdeviceID);
+    esp_err_t check_deviceID(void);
     esp_err_t set_config(const uint8_t config);
     esp_err_t set_config_standby_time(const uint8_t standby);   // config bits 7, 6, 5  page 30
     esp_err_t set_config_filter(const uint8_t filter);      // config bits 4, 3, 2
@@ -141,17 +165,4 @@ class BME280{
     bool check_status_measuring_busy(void); // check status (0xF3) bit 3
     bool check_imUpdate_busy(void);        // check status (0xF3) bit 0
     esp_err_t reset(void);                // write 0xB6 into reset (0xE0)
-
-  private:
-    i2c_base::I2C *pmi2c;
-    uint8_t mdevice_address{};
-
-  protected:
-    esp_err_t write_byte_data(const uint8_t reg, const uint8_t value);
-    int read_byte_data(const uint8_t reg);
-    int read_word_data(const uint8_t reg);
-    esp_err_t read_block_data(const uint8_t reg, uint8_t *buf, const int length);
-
-  public:
-    esp_err_t init_i2c(i2c_base::I2C *pi2c, const uint8_t device_address = 0x76);
 };
