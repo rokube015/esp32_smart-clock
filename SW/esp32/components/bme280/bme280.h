@@ -8,8 +8,9 @@
 class BME280{
   private:
     constexpr static char* BME280_TAG = "bme280";
-    i2c_base::I2C *pmi2c;
-
+    i2c_base::I2C* pmi2c;
+    i2c_master_dev_handle_t mi2c_device_handle;
+    
     // Device addrs
     constexpr static uint8_t DEVICE_ADDRS = 0x76;
     
@@ -78,18 +79,17 @@ class BME280{
     constexpr static uint8_t status_update_busy = 0x01;
     constexpr static uint8_t status_update_done = 0x00;
 
+    uint8_t msensor_mode_value = sensorForcedMode;              // Default to forced mode
+    
     typedef struct {
       long mtemperature = 0;
       unsigned long mhumidity = 0;
       unsigned long mpressure = 0;
     }sensor_raw_data_t;
-    
-    i2c_master_dev_handle_t mi2c_device_handle;
 
     uint8_t mhumidity_oversampling_value = humidityOversamplingX1;    // Default to 1X over sampling
     uint8_t mpressure_oversampling_value = pressureOversamplingX1;    // Default to 1X over sampling
     uint8_t mtemperature_oversampling_value = temperatureOversamplingX1; // Default to 1X over sampling
-    uint8_t msensor_mode_value = sensorForcedMode;              // Default to forced mode
                                                                 
     // Calibration Data
     uint16_t  dig_t1 = 0;

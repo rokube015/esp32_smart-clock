@@ -4,8 +4,8 @@
 #include "esp_log.h"
 
 BME280::BME280(){
-  esp_log_level_set(BME280_TAG, ESP_LOG_DEBUG);
-  ESP_LOGI(BME280_TAG, "set BME280_TAG error level: %d", ESP_LOG_DEBUG);
+  esp_log_level_set(BME280_TAG, ESP_LOG_ERROR);
+  ESP_LOGI(BME280_TAG, "set BME280_TAG log level: %d", ESP_LOG_DEBUG);
 }
 
 esp_err_t BME280::init_i2c(void){
@@ -624,7 +624,7 @@ esp_err_t BME280::read_int16_t(const uint8_t command, int16_t* pread_data){
   uint8_t read_data_buffer[2] {0, 0};
 
   if(r == ESP_OK){
-    pmi2c->read_data(mi2c_device_handle, command, &read_data_buffer[0], 2);
+    pmi2c->read_data(mi2c_device_handle, &command, 1, &read_data_buffer[0], 2);
     if(r != ESP_OK){
       ESP_LOGE(BME280_TAG, "fail to read data.");
     }
@@ -642,7 +642,7 @@ esp_err_t BME280::read_uint16_t(const uint8_t command, uint16_t* pread_data){
   uint8_t read_data_buffer[2] {0, 0};
 
   if(r == ESP_OK){
-    pmi2c->read_data(mi2c_device_handle, command, &read_data_buffer[0], 2);
+    pmi2c->read_data(mi2c_device_handle, &command, 1, &read_data_buffer[0], 2);
     if(r != ESP_OK){
       ESP_LOGE(BME280_TAG, "fail to read data.");
     }
@@ -660,7 +660,8 @@ int BME280::read_data(const uint8_t command,
   esp_err_t r = ESP_OK;
 
   if(r == ESP_OK){
-    r = pmi2c->read_data(mi2c_device_handle, command, pread_data_buffer, buffer_size);
+    r = pmi2c->read_data(mi2c_device_handle, &command, 1, 
+        pread_data_buffer, buffer_size);
   }
   return r;
 }
