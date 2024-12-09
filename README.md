@@ -1,1 +1,1 @@
-# CO2_Sensor
+# ESP32-CO2_Sensor
