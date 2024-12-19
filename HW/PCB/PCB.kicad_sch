@@ -10512,7 +10512,7 @@
 	(symbol
 		(lib_name "MountHole_M3_1")
 		(lib_id "Mylib:MountHole_M3")
-		(at 38.1 180.34 0)
+		(at 30.48 179.07 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -10521,7 +10521,7 @@
 		(fields_autoplaced yes)
 		(uuid "3da3bb40-e7dd-44de-a594-dfc6b550ef63")
 		(property "Reference" "H1"
-			(at 34.29 173.99 0)
+			(at 26.67 172.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10530,7 +10530,7 @@
 			)
 		)
 		(property "Value" "M3_MountHoll"
-			(at 34.29 176.53 0)
+			(at 26.67 175.26 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10539,7 +10539,7 @@
 			)
 		)
 		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3"
-			(at 35.56 177.8 0)
+			(at 27.94 176.53 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10548,7 +10548,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 35.56 177.8 0)
+			(at 27.94 176.53 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10557,7 +10557,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 35.56 177.8 0)
+			(at 27.94 176.53 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13266,7 +13266,7 @@
 	(symbol
 		(lib_name "MountHole_M3_1")
 		(lib_id "Mylib:MountHole_M3")
-		(at 52.07 180.34 0)
+		(at 44.45 179.07 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -13275,7 +13275,7 @@
 		(fields_autoplaced yes)
 		(uuid "96a29055-d7f3-495c-8099-20b2dcedfb58")
 		(property "Reference" "H2"
-			(at 48.26 173.99 0)
+			(at 40.64 172.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13284,7 +13284,7 @@
 			)
 		)
 		(property "Value" "M3_MountHoll"
-			(at 48.26 176.53 0)
+			(at 40.64 175.26 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13293,7 +13293,7 @@
 			)
 		)
 		(property "Footprint" "MountingHole:MountingHole_3.2mm_M3"
-			(at 49.53 177.8 0)
+			(at 41.91 176.53 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13302,7 +13302,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 49.53 177.8 0)
+			(at 41.91 176.53 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13311,7 +13311,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 49.53 177.8 0)
+			(at 41.91 176.53 0)
 			(effects
 				(font
 					(size 1.27 1.27)
