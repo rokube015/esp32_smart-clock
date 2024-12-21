@@ -23,16 +23,19 @@ namespace i2c_base{
           gpio_num_t scl_io_num,
           bool pullup_enable = true);
       i2c_master_bus_handle_t get_i2c_master_bus_handle();
+
       esp_err_t read_byte(i2c_master_dev_handle_t dev_handle, 
-          uint8_t command, uint8_t* pread_data_buffer);
+          const uint8_t* pcommand, size_t command_size, uint8_t* pread_data_buffer);
       
       esp_err_t write_byte(i2c_master_dev_handle_t dev_handle, 
-          uint8_t command, const uint8_t write_data);
+          const uint8_t* pcommand, size_t command_size, const uint8_t write_data);
       
       esp_err_t read_data(i2c_master_dev_handle_t dev_handle, 
-          uint8_t command, uint8_t* pread_data_buffer, size_t buffer_size);
+          const uint8_t* pcommand, size_t command_size, 
+          uint8_t* pread_data_buffer, size_t read_buffer_size);
       
       esp_err_t write_data(i2c_master_dev_handle_t dev_handle, 
-          uint8_t command, uint8_t* pwrite_data_buffer, size_t buffer_size);
+          const uint8_t* pcommand, size_t command_size, 
+          const uint8_t* pwrite_data_buffer, size_t write_buffer_size);
   };
 }

@@ -572,11 +572,11 @@ esp_err_t BME280::reset(void){ // write 0xB6 into reset (0xE0)
   return write_byte(RESET, 0xB6);
 }
 
-esp_err_t BME280::write_byte(const uint8_t command, const uint8_t value){
+esp_err_t BME280::write_byte(uint8_t command, const uint8_t value){
   esp_err_t r = ESP_OK;
 
   if(r == ESP_OK){
-    r = pmi2c->write_byte(mi2c_device_handle, command, value);
+    r = pmi2c->write_byte(mi2c_device_handle, &command, 1, value);
     if(r != ESP_OK){
       ESP_LOGE(BME280_TAG, "fail to write_data");
     }
@@ -588,7 +588,7 @@ esp_err_t BME280::write_data(const uint8_t command, uint8_t* pwrite_data_buffer,
   esp_err_t r = ESP_OK;
 
   if(r == ESP_OK){
-    r = pmi2c->write_data(mi2c_device_handle, command, pwrite_data_buffer, buffer_size);
+    r = pmi2c->write_data(mi2c_device_handle, &command, 1, pwrite_data_buffer, buffer_size);
   }
 
   return r;
@@ -598,7 +598,7 @@ esp_err_t BME280::read_byte(const uint8_t command, uint8_t* pread_data){
   esp_err_t r = ESP_OK;
   
   if(r == ESP_OK){
-    r = pmi2c->read_byte(mi2c_device_handle, command, pread_data);    if(r != ESP_OK){
+    r = pmi2c->read_byte(mi2c_device_handle, &command, 1, pread_data);    if(r != ESP_OK){
       ESP_LOGE(BME280_TAG, "fail to read data");
     }
   }
@@ -611,7 +611,7 @@ uint8_t BME280::read_byte(const uint8_t command){
   uint8_t data = 0;
 
   if(r == ESP_OK){
-    r = pmi2c->read_byte(mi2c_device_handle, command, &data);
+    r = pmi2c->read_byte(mi2c_device_handle, &command, 1, &data);
     if(r != ESP_OK){
      ESP_LOGE(BME280_TAG, "fail to read data");
     } 
