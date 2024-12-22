@@ -1,5 +1,6 @@
 #include <math.h>
 #include "esp_log.h"
+#include "esp_check.h"
 
 #include "i2c_base.h"
 #include "scd40.h"
@@ -19,11 +20,12 @@ esp_err_t SCD40::init_i2c(void){
     .scl_speed_hz = 100000,
     .scl_wait_us = 0,
    };
+   i2c_device_config.flags.disable_ack_check = true;
    r = i2c_master_bus_add_device(pmi2c->get_i2c_master_bus_handle(),
        &i2c_device_config, &mi2c_device_handle); 
   }
   if(r != ESP_OK){
-    ESP_LOGE(SCD40_TAG, "fail to add bme280 to i2c port");
+    ESP_LOGE(SCD40_TAG, "fail to add SCD40 to i2c port");
   }
 
   return r;
@@ -65,7 +67,10 @@ esp_err_t SCD40::init(i2c_base::I2C* pi2c){
   if(r == ESP_OK){
     r = check_serial_number();
     if(r != ESP_OK){
+      ESP_LOGE(SCD40_TAG, "fail to get SCD40 serial number.");
       r = stop_periodic_measurement();
+      ESP_LOGI(SCD40_TAG, "send stop_periodic_measurement command.");
+      vTaskDelay(pdMS_TO_TICKS(50));
       if(r == ESP_OK){
         r = check_serial_number();
       }
@@ -90,6 +95,9 @@ esp_err_t SCD40::get_serial_number(uint64_t* pserial_number){
   
   if(r == ESP_OK){
     r = read_data(GET_SERIAL_NUMBER_COMMAND, serial_number.arr, sizeof(serial_number.arr));
+    if(r != ESP_OK){
+      ESP_LOGE(SCD40_TAG, "fail to read SCD40 serial number");
+    }
   }
 
   if(r == ESP_OK){
@@ -136,7 +144,7 @@ esp_err_t SCD40::check_serial_number(){
   
   r = get_serial_number(&serial_number);
   if(r != ESP_OK){
-      ESP_LOGE(SCD40_TAG, "Faild to read serial number");
+      ESP_LOGE(SCD40_TAG, "faild to read serial number");
   }
   return r;
 }
@@ -169,6 +177,7 @@ esp_err_t SCD40::get_sensor_data(uint16_t* pco2, double* ptemperature, double* p
     if(r != ESP_OK) {
       ESP_LOGE(SCD40_TAG, "fail to get sensor data");
       r = stop_periodic_measurement();
+
       if(r == ESP_OK){
         r = read_data(READ_MEASUREMENT_COMMAND, 
           measurement_data.arr, sizeof(measurement_data.arr));

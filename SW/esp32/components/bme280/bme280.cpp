@@ -18,6 +18,7 @@ esp_err_t BME280::init_i2c(void){
     .scl_speed_hz = 100000,
     .scl_wait_us = 0,
    };
+   i2c_device_config.flags.disable_ack_check = true;
    r = i2c_master_bus_add_device(pmi2c->get_i2c_master_bus_handle(),
        &i2c_device_config, &mi2c_device_handle); 
    if(r != ESP_OK){

@@ -86,8 +86,10 @@ namespace i2c_base{
     esp_err_t r = ESP_OK;
     
     if(r == ESP_OK){
-      r = i2c_master_transmit_receive(dev_handle, pcommand, command_size, 
-          pread_data_buffer, read_buffer_size, pdMS_TO_TICKS(1000));
+      r = i2c_master_transmit_receive(dev_handle, pcommand, command_size, pread_data_buffer, read_buffer_size, pdMS_TO_TICKS(1000));
+      if(r != ESP_OK){
+        ESP_LOGE(I2C_BASE_TAG, "fail to read data. I2C Error:%s", esp_err_to_name(r));
+      }
     }
     return r;
   }
