@@ -323,7 +323,7 @@ float BME280::compensate_pressure(const unsigned long adc_P){
     pressure = pressure_min;
   }
 
-  return static_cast<float>(pressure) / 100;
+  return static_cast<float>(pressure) / 10000.0;
 }
 
 double BME280::compensate_humidity(const unsigned long adc_H){

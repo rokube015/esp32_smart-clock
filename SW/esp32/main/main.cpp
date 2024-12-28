@@ -121,7 +121,7 @@ extern "C" void app_main(void){
   char sd_card_write_data_buffer[400];
   const char file_path[] = "/sensor_log.csv";
   if(r == ESP_OK){
-    snprintf(sd_card_write_data_buffer, sizeof(sd_card_write_data_buffer), "YYYY/MM/DD, week, HH:MM:SS, CO2[rpm], Temperature[\u2103], Humidity[%%RH], Pressure[Pa]\n");
+    snprintf(sd_card_write_data_buffer, sizeof(sd_card_write_data_buffer), "YYYY/MM/DD, week, HH:MM:SS, CO2[rpm], Temperature[\u2103], Humidity[%%RH], Pressure[hPa]\n");
     r = Sd_card.write_data(file_path, sizeof(file_path), sd_card_write_data_buffer, 'w');
     if(r != ESP_OK){
       ESP_LOGE(MAIN_TAG, "fail to write data to sd_card.");
@@ -150,7 +150,7 @@ extern "C" void app_main(void){
     }
     if(r == ESP_OK){
       snprintf(sd_card_write_data_buffer, sizeof(sd_card_write_data_buffer), "%s, %d, %.2lf, %.2lf, %.2lf\n", time_info, scd40_co2, bme280_temperature, bme280_humidity, bme280_pressure);
-      r = Sd_card.write_data(file_path, sizeof(file_path), sd_card_write_data_buffer, 'w');
+      r = Sd_card.write_data(file_path, sizeof(file_path), sd_card_write_data_buffer, 'a');
       if(r != ESP_OK){
         ESP_LOGE(MAIN_TAG, "fail to write sensor log to sd_card.");
       }
@@ -160,7 +160,7 @@ extern "C" void app_main(void){
       std::cout << "Time              : " << time_info << std::endl;
       std::cout << "BME280 Temperature: " << bme280_temperature << "\u2103" << std::endl;
       std::cout << "BME280 Humidity   : " << bme280_humidity << "%" << std::endl;
-      std::cout << "BME280 Pressure   : " << bme280_pressure << "Pa" << std::endl;
+      std::cout << "BME280 Pressure   : " << bme280_pressure << "hPa" << std::endl;
       std::cout << "SCD40  CO2        : " << scd40_co2 << "ppm" << std::endl;
       std::cout << "==================================================" << std::endl;;
     }
