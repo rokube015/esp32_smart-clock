@@ -1,4 +1,6 @@
 #include <cstring>
+#include <errno.h>
+#include <unistd.h>
 
 #include "esp_log.h"
 #include "esp_vfs_fat.h"
@@ -15,7 +17,7 @@ esp_err_t SD_CARD::init(){
   esp_err_t r = ESP_OK;
   esp_vfs_fat_sdmmc_mount_config_t mount_config = {
     .format_if_mount_failed = true,
-    .max_files = 5,
+    .max_files = 10,
     .allocation_unit_size = 16 * 1024
   };
 
@@ -64,38 +66,48 @@ esp_err_t SD_CARD::init(){
 
 esp_err_t SD_CARD::write_data(const char* pfile_path, size_t file_path_size, char* data, char mode){
   esp_err_t r = ESP_OK;
-  ESP_LOGI(SD_CARD_TAG, "opening sd_card file: %s", pfile_path);
-  char write_file_path[50];
+  char write_file_path[100] = {};
   FILE* pfile = NULL;
   
   if((sizeof(MOUNT_POINT) + file_path_size) < sizeof(write_file_path)){
     strncat(write_file_path, MOUNT_POINT, sizeof(write_file_path)-strlen(write_file_path)-1);
     strncat(write_file_path, pfile_path, sizeof(write_file_path)-strlen(write_file_path)-1);
+    ESP_LOGI(SD_CARD_TAG, "opening sd_card file:%s", write_file_path);
   }
   else{
     r  = ESP_FAIL;
     ESP_LOGW(SD_CARD_TAG, "file path is too large.");
   }
-  
-  switch(mode){
-    case 'a': 
-      pfile = fopen(write_file_path, "a");
+
+  for(uint8_t retry_count = 0; retry_count < 5; retry_count++){  
+    switch(mode){
+      case 'a': 
+        pfile = fopen(write_file_path, "a");
+        break;
+      case 'w':
+        pfile = fopen(write_file_path, "w");
+        break;
+      default:
+        ESP_LOGW(SD_CARD_TAG, "invalid write mode: %c", mode);
+        r = ESP_FAIL;
+    }
+    if(pfile != NULL){
+      r = ESP_OK;
+      ESP_LOGI(SD_CARD_TAG, "success to open sd_card file.");
       break;
-    case 'w':
-      pfile = fopen(write_file_path, "w");
-      break;
-    default:
-      ESP_LOGW(SD_CARD_TAG, "invalid write mode: %c", mode);
+    }
+    else if(pfile == NULL){
+      ESP_LOGE(SD_CARD_TAG, "fail to open file for writing.");
+      ESP_LOGE(SD_CARD_TAG, "errno=%d: %s", errno, strerror(errno));
       r = ESP_FAIL;
+    }
+    vTaskDelay(pdMS_TO_TICKS(50));
   }
-  if((r != ESP_OK) || (pfile == NULL)){
-    ESP_LOGE(SD_CARD_TAG, "fail to open file for writing.");
-    r = ESP_FAIL;
-  }
+
   if(r == ESP_OK){
     fprintf(pfile, data);
     fclose(pfile);
-    ESP_LOGI(SD_CARD_TAG, "file to write data to sd card.");
+    ESP_LOGI(SD_CARD_TAG, "write data to sd card:%s", data );
   }
   
   return r;

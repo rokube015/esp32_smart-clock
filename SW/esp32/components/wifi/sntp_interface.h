@@ -15,7 +15,7 @@
 class SNTP : private WIFI{
   private: 
     constexpr static char* SNTP_TAG = "SNTP"; 
-    
+
     static std::chrono::_V2::system_clock::time_point mlast_update;
     static bool mis_running;
     static void callback_on_ntp_update(timeval *tv);
@@ -37,6 +37,8 @@ class SNTP : private WIFI{
     [[nodiscard]] static const char* time_now_ascii(void);
 
     [[nodiscard]] static std::chrono::seconds epoch_seconds(void);
+
+    static esp_err_t get_logtime(char* ptimestamp, size_t timestamp_size);
     
 };
 
