@@ -6,6 +6,7 @@
 #include "i2c_base.h"
 #include "bme280.h"
 #include "scd40.h"
+#include "sd_card.h"
 
 #include "main.h"
 #include "wifi_pass.h"
@@ -75,6 +76,9 @@ extern "C" void app_main(void){
   //initialize sensor compornent
   BME280 Bme280;
   SCD40 Scd40;
+  
+  //initialize sd card compornent
+  SD_CARD Sd_card;
 
   // Initialize the I2C
   if(r == ESP_OK){ 
@@ -109,6 +113,17 @@ extern "C" void app_main(void){
     r = Scd40.init(&i2c);
   }
   
+  // initialize sd card 
+  if(r == ESP_OK){ 
+    r = Sd_card.init();
+    if(r != ESP_OK){
+      ESP_LOGE(MAIN_TAG, "fail to initialize SD_CARD compernent.");
+    }
+  }
+  if(r == ESP_OK){
+    const char file_path[] = "/hello.txt";
+    Sd_card.write_data(file_path, sizeof(file_path), "Hello world!", 'w');
+  }
   while(true){
     app.run();
 
