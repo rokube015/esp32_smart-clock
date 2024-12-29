@@ -58,34 +58,36 @@ void MAIN::setup(void){
   wifi.init();
 }
 
-constexpr static gpio_num_t I2C_SDA = GPIO_NUM_18;
-constexpr static gpio_num_t I2C_SCL = GPIO_NUM_17;
-constexpr static uint32_t I2C_CLK_SPEED_HZ = 800000;
 
 MAIN app;
 
-i2c_base::I2C i2c;
-
 extern "C" void app_main(void){ 
-  esp_log_level_set(MAIN_TAG, ESP_LOG_INFO); 
+  esp_log_level_set(MAIN_TAG, ESP_LOG_DEBUG); 
   esp_err_t r = ESP_OK;  
   ESP_LOGI(MAIN_TAG, "Start main"); 
-
   app.setup();
+  
 
   //instance compornent class
+  i2c_base::I2C i2c;
   BME280 Bme280;
   SCD40 Scd40;
   SD_CARD Sd_card;
 
   // Initialize the I2C
   if(r == ESP_OK){ 
-    r = i2c.init(I2C_SDA, I2C_SCL);
+    r = i2c.init();
+    if(r != ESP_OK){
+      ESP_LOGE(MAIN_TAG, "fail to init i2c port.");
+    }
   }
   
   // Initialize the BME280 I2C device
   if(r == ESP_OK){ 
     r = Bme280.init(&i2c);
+    if(r != ESP_OK){ 
+      ESP_LOGE(MAIN_TAG, "fail to init bme280.");
+    }
   }
   if(r == ESP_OK){ 
     Bme280.set_config_filter(1);

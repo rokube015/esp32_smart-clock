@@ -7,13 +7,13 @@
 
 class BME280{
   private:
-    constexpr static char* BME280_TAG = "bme280";
+    constexpr static const char* BME280_TAG = "bme280";
     i2c_base::I2C* pmi2c;
     i2c_master_dev_handle_t mi2c_device_handle;
     
-    // Device addrs
+    // device settings
     constexpr static uint8_t DEVICE_ADDRS = 0x76;
-    
+    constexpr static uint32_t CLK_SPEED_HZ = 800000;
     // Registers
     constexpr static uint8_t HUM_LSB = 0xFE;
     constexpr static uint8_t HUM_MSB = 0xFD;

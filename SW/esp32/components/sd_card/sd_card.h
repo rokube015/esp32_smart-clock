@@ -3,7 +3,7 @@
 
 class SD_CARD{
   private:
-    constexpr static char* SD_CARD_TAG = "sd_card";
+    constexpr static const char* SD_CARD_TAG = "sd_card";
     
     constexpr static char MOUNT_POINT[]= "/sdcard";
     constexpr static int SPI_MISO_PIN         = GPIO_NUM_13;

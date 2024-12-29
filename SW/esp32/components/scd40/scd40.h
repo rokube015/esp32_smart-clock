@@ -7,13 +7,13 @@
 
 class SCD40{
   private:
-    constexpr static char* SCD40_TAG = "scd40"; 
+    constexpr static const char* SCD40_TAG = "scd40"; 
     i2c_base::I2C* pmi2c;
     
     i2c_master_dev_handle_t mi2c_device_handle;
-    // Device addrs
+    // Device settings
     constexpr static uint8_t DEVICE_ADDRS = 0x62;
-
+    constexpr static uint32_t CLK_SPEED_HZ = 100000;
     // commands
     constexpr static uint8_t GET_SERIAL_NUMBER_COMMAND[2]           {0x36, 0x82};
     constexpr static uint8_t START_PERIODIC_MEASUREMENT_COMMAND[2]  {0x21, 0xb1};

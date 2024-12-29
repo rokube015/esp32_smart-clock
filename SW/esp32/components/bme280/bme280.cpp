@@ -15,7 +15,7 @@ esp_err_t BME280::init_i2c(void){
    i2c_device_config_t i2c_device_config = { 
     .dev_addr_length = I2C_ADDR_BIT_LEN_7,
     .device_address = DEVICE_ADDRS,
-    .scl_speed_hz = 100000,
+    .scl_speed_hz = CLK_SPEED_HZ,
     .scl_wait_us = 0,
    };
    i2c_device_config.flags.disable_ack_check = true;

@@ -35,14 +35,14 @@ esp_err_t SNTP::init(void){
       setenv("TZ", "JST-9", 1); // Asia/Tokyo Time JST-9
       tzset();
 
-      sntp_setoperatingmode(SNTP_OPMODE_POLL);
-      sntp_setservername(0, "time.google.com");
-      sntp_setservername(1, "pool.ntp.com");
+      esp_sntp_setoperatingmode(SNTP_OPMODE_POLL);
+      esp_sntp_setservername(0, "time.google.com");
+      esp_sntp_setservername(1, "pool.ntp.com");
 
       sntp_set_time_sync_notification_cb(&callback_on_ntp_update);
       sntp_set_sync_interval(60 * 60 * 1000); // Update time every hour
 
-      sntp_init();
+      esp_sntp_init();
 
       ESP_LOGI(SNTP_TAG, "SNTP Initialised");
 

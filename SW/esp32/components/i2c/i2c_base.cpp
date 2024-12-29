@@ -7,6 +7,9 @@
 namespace i2c_base{
   
   I2C::I2C(i2c_port_num_t port, i2c_mode_t mode){
+    esp_log_level_set(I2C_BASE_TAG, ESP_LOG_DEBUG);
+    ESP_LOGI(I2C_BASE_TAG, "set I2C_BASE_TAG log level: %d", ESP_LOG_DEBUG);
+
     mport = port;
     mmode = mode;
   }
@@ -15,20 +18,22 @@ namespace i2c_base{
     i2c_del_master_bus(mi2c_bus_handle);
   }
 
-  esp_err_t I2C::init(gpio_num_t sda_io_num, gpio_num_t scl_io_num, bool pullup_enable){
+  esp_err_t I2C::init(bool pullup_enable){
     esp_err_t r = ESP_OK;
     
     if(mmode == I2C_MODE_MASTER){
       mi2c_bus_config.i2c_port = mport;
-      mi2c_bus_config.sda_io_num = sda_io_num;
-      mi2c_bus_config.scl_io_num = scl_io_num;
+      mi2c_bus_config.sda_io_num = SDA_PIN;
+      mi2c_bus_config.scl_io_num = SCL_PIN;
       mi2c_bus_config.clk_source = I2C_CLK_SRC_DEFAULT;
       mi2c_bus_config.glitch_ignore_cnt = 7;
+      mi2c_bus_config.intr_priority = 0;
+      mi2c_bus_config.trans_queue_depth = 0; 
       mi2c_bus_config.flags.enable_internal_pullup = pullup_enable;
-      
+      mi2c_bus_config.flags.allow_pd = 0;      
       r = i2c_new_master_bus(&mi2c_bus_config, &mi2c_bus_handle);
       if(r != ESP_OK){
-        ESP_LOGE(I2C_BASE_TAG, "fail to set i2c port to master mode.");
+        ESP_LOGE(I2C_BASE_TAG, "fail to set i2c port to master mode. error code:%s", esp_err_to_name(r));
       }
     }
     else{

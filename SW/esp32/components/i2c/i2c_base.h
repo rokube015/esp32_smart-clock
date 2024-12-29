@@ -7,7 +7,10 @@
 namespace i2c_base{
   class I2C{
     private:
-      constexpr static char* I2C_BASE_TAG = "i2c_base";
+      constexpr static const char* I2C_BASE_TAG = "i2c_base";
+      constexpr static gpio_num_t SDA_PIN = GPIO_NUM_18;
+      constexpr static gpio_num_t SCL_PIN = GPIO_NUM_17;
+
       i2c_master_bus_handle_t mi2c_bus_handle; 
       i2c_master_bus_config_t mi2c_bus_config;
       uint16_t mslave_addrs{};
@@ -16,13 +19,11 @@ namespace i2c_base{
 
     public:
       I2C(i2c_port_num_t port = -1, 
-          i2c_mode_t mode =I2C_MODE_MASTER);
+          i2c_mode_t mode = I2C_MODE_MASTER);
       
       ~I2C();
 
-      esp_err_t init(gpio_num_t sda_io_num,
-          gpio_num_t scl_io_num,
-          bool pullup_enable = true);
+      esp_err_t init(bool pullup_enable = true);
       i2c_master_bus_handle_t get_i2c_master_bus_handle();
 
       esp_err_t read_byte(i2c_master_dev_handle_t dev_handle, 
