@@ -58,8 +58,8 @@ void MAIN::setup(void){
   wifi.init();
 }
 
-constexpr static gpio_num_t I2C_SDA = GPIO_NUM_21;
-constexpr static gpio_num_t I2C_SCL = GPIO_NUM_22;
+constexpr static gpio_num_t I2C_SDA = GPIO_NUM_18;
+constexpr static gpio_num_t I2C_SCL = GPIO_NUM_17;
 constexpr static uint32_t I2C_CLK_SPEED_HZ = 800000;
 
 MAIN app;
