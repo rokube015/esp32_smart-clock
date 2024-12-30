@@ -1,15 +1,18 @@
 #pragma once
+#include "freertos/FreeRTOS.h"
+#include "freertos/semphr.h"
 
 #include "driver/i2c_master.h"
-
 #include "esp_intr_alloc.h"
 
 namespace i2c_base{
   class I2C{
     private:
       constexpr static const char* I2C_BASE_TAG = "i2c_base";
-      constexpr static gpio_num_t SDA_PIN = GPIO_NUM_18;
-      constexpr static gpio_num_t SCL_PIN = GPIO_NUM_17;
+      constexpr static gpio_num_t SDA_PIN {GPIO_NUM_18};
+      constexpr static gpio_num_t SCL_PIN {GPIO_NUM_17};
+
+      SemaphoreHandle_t i2c_port_semaphore {NULL};
 
       i2c_master_bus_handle_t mi2c_bus_handle; 
       i2c_master_bus_config_t mi2c_bus_config;
