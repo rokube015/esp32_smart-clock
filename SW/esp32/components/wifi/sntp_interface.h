@@ -14,7 +14,7 @@
 
 class SNTP : private WIFI{
   private: 
-    constexpr static char* SNTP_TAG = "SNTP"; 
+    constexpr static const char* SNTP_TAG = "SNTP"; 
 
     static std::chrono::_V2::system_clock::time_point mlast_update;
     static bool mis_running;
