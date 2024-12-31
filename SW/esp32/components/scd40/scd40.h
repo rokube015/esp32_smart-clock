@@ -55,4 +55,5 @@ class SCD40{
     esp_err_t start_periodic_measurement();
     esp_err_t stop_periodic_measurement();
     esp_err_t get_sensor_data(uint16_t* pco2, double* ptemperature, double* prelative_humidity);
+    esp_err_t get_co2_data(uint16_t* pco2);
 };

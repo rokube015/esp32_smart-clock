@@ -17,7 +17,10 @@
 class SMART_CLOCK final{
   private:
     constexpr static const char* SMART_CLOCK_TAG = "smart_clock"; 
+    const char file_path[50] = "/sensor_log.csv";
   public:
+    WIFI::state_e wifi_state {WIFI::state_e::NOT_INITIALIZED};
+    
     i2c_base::I2C i2c;
     BME280 bme280;
     SCD40 scd40;
@@ -25,8 +28,13 @@ class SMART_CLOCK final{
     WIFI wifi;
     SNTP sntp;
 
-    void setup(void);
+    float temperature {0.0};  //[degree Celsius]
+    float pressure    {0.0};  //[hPa]
+    double humidity   {0.0};  //[%]
+    uint16_t co2      {0};    //[ppm]
+    
+    void init(void);
     void wifi_run(void);
+    void run(void);
 
-    WIFI::state_e wifi_state {WIFI::state_e::NOT_INITIALIZED};
     }; 

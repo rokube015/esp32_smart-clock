@@ -189,9 +189,38 @@ esp_err_t SCD40::get_sensor_data(uint16_t* pco2, double* ptemperature, double* p
     *ptemperature = (double) (175.0 * (((measurement_data.results.temperature.data.value[0] << 8) + measurement_data.results.temperature.data.value[1]) / 65535.0)) - 45.0;
     *prelative_humidity = 100.0 * ((measurement_data.results.relative_humidity.data.value[0] << 8) + measurement_data.results.relative_humidity.data.value[1]) / 65535.0;
   }
-  
   return r;
 }
+
+esp_err_t SCD40::get_co2_data(uint16_t* pco2){
+  esp_err_t r = ESP_OK;  
+  union{
+    uint8_t arr[9];
+    struct{
+      scd40_data_t co2;
+      scd40_data_t temperature;
+      scd40_data_t relative_humidity;
+    }results;
+  }measurement_data;
+  *pco2 = 0;
+  if(r == ESP_OK){
+    r = read_data(READ_MEASUREMENT_COMMAND, 
+        measurement_data.arr, sizeof(measurement_data.arr));
+    if(r != ESP_OK) {
+      ESP_LOGE(SCD40_TAG, "fail to get sensor data");
+      esp_err_t r2 = ESP_OK; 
+      r2 = stop_periodic_measurement();
+      if(r2 == ESP_OK){
+        r = read_data(READ_MEASUREMENT_COMMAND, 
+          measurement_data.arr, sizeof(measurement_data.arr));
+      }
+    }
+  }
+  if(r == ESP_OK){
+    *pco2 = (measurement_data.results.co2.data.value[0] << 8) + measurement_data.results.co2.data.value[1];
+  }
+  return r;
+ }
 
 esp_err_t SCD40::stop_periodic_measurement(){
   esp_err_t r = ESP_OK;

@@ -3,7 +3,7 @@
 #include "smart_clock.h"
 #include "wifi_pass.h"
 
-void SMART_CLOCK::setup(void){
+void SMART_CLOCK::init(void){
   esp_err_t r = ESP_OK;
 
   esp_event_loop_create_default();
@@ -27,6 +27,15 @@ void SMART_CLOCK::setup(void){
   // initialize sd card 
   if(r == ESP_OK){ 
     r = sd_card.init();
+  }
+
+  if(r == ESP_OK){
+    char sd_card_write_data_buffer[400];
+    snprintf(sd_card_write_data_buffer, sizeof(sd_card_write_data_buffer), "YYYY/MM/DD, week, HH:MM:SS, CO2[rpm], Temperature[degree], Humidity[%%], Pressure[hPa]\n");
+    r = sd_card.write_data(file_path, sizeof(file_path), sd_card_write_data_buffer, 'w');
+    if(r != ESP_OK){
+      ESP_LOGE(SMART_CLOCK_TAG, "fail to write data to sd_card.");
+    }
   }
 }
 
@@ -66,3 +75,45 @@ void SMART_CLOCK::wifi_run(void){
       break;
   }
 }
+
+void SMART_CLOCK::run(void){
+  esp_err_t r = ESP_OK;
+  char time_info[100] = "time";
+  char sd_card_write_data_buffer[400];
+
+  if(r == ESP_OK){
+    bme280.get_all_results(&temperature, &humidity, &pressure);
+  }
+  if(r == ESP_OK){
+    scd40.start_periodic_measurement();
+    vTaskDelay(pdMS_TO_TICKS(5000));
+  }
+  if(r == ESP_OK){
+    r = scd40.get_co2_data(&co2);
+    vTaskDelay(pdMS_TO_TICKS(5));
+  }
+  if(r == ESP_OK){
+    scd40.stop_periodic_measurement();
+  }
+  if(r == ESP_OK){
+    r = sntp.get_logtime(time_info, sizeof(time_info));
+  }
+  if(r == ESP_OK){
+    snprintf(sd_card_write_data_buffer, sizeof(sd_card_write_data_buffer), "%s, %d, %.2lf, %.2lf, %.2lf\n", time_info, co2, temperature, humidity, pressure);
+    r = sd_card.write_data(file_path, sizeof(file_path), sd_card_write_data_buffer, 'a');
+    if(r != ESP_OK){
+      ESP_LOGE(SMART_CLOCK_TAG, "fail to write sensor log to sd_card.");
+    }
+  }
+  if(r == ESP_OK){
+    std::cout << "==================================================" << std::endl;
+    std::cout << "Time              : " << time_info << std::endl;
+    std::cout << "BME280 Temperature: " << temperature << "\u2103" << std::endl;
+    std::cout << "BME280 Humidity   : " << humidity << "%" << std::endl;
+    std::cout << "BME280 Pressure   : " << pressure << "hPa" << std::endl;
+    std::cout << "SCD40  CO2        : " << co2 << "ppm" << std::endl;
+    std::cout << "==================================================" << std::endl;;
+  }
+  vTaskDelay(pdMS_TO_TICKS(5000));
+}
+
