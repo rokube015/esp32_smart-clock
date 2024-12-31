@@ -18,6 +18,30 @@ namespace i2c_base{
     i2c_del_master_bus(mi2c_bus_handle);
   }
 
+  esp_err_t I2C::take_i2c_port_semaphore(){
+    esp_err_t r = ESP_OK;
+    if(xSemaphoreTake(i2c_port_semaphore, pdMS_TO_TICKS(I2C_TIMEOUT)) == pdTRUE){
+      r = ESP_OK;
+    }
+    else{
+      ESP_LOGE(I2C_BASE_TAG, "fail to take i2c_port_semaphore.");
+      r = ESP_FAIL;
+    }
+    return r;
+  }
+
+  esp_err_t I2C::release_i2c_port_semaphore(){
+    esp_err_t r = ESP_OK;
+    if(xSemaphoreGive(i2c_port_semaphore) == pdTRUE){
+      r = ESP_OK;
+    }
+    else{
+      ESP_LOGE(I2C_BASE_TAG, "fail to release i2c_port_semaphore.");
+      r = ESP_FAIL;
+    }
+    return r; 
+  }
+
   esp_err_t I2C::init(bool pullup_enable){
     esp_err_t r = ESP_OK;
     if(r == ESP_OK){ 
@@ -28,7 +52,7 @@ namespace i2c_base{
     }
     
     if(r == ESP_OK){
-      if(xSemaphoreTake(i2c_port_semaphore, pdMS_TO_TICKS(1000)) == pdTRUE){
+      if(take_i2c_port_semaphore() == ESP_OK){
         if(mmode == I2C_MODE_MASTER){
           mi2c_bus_config.i2c_port = mport;
           mi2c_bus_config.sda_io_num = SDA_PIN;
@@ -47,16 +71,9 @@ namespace i2c_base{
         else{
           ESP_LOGE(I2C_BASE_TAG, "fail to set i2c port to slave mode");
         }
+        r |= release_i2c_port_semaphore(); 
       }
     }
-
-    BaseType_t r2 = pdTRUE;
-    r2 = xSemaphoreGive(i2c_port_semaphore);
-    if(r2 != pdTRUE){
-      ESP_LOGE(I2C_BASE_TAG, "fail to release i2c_port_semaphore.");
-      r = ESP_FAIL;
-    }
-
     return r;
   }
   
@@ -68,26 +85,16 @@ namespace i2c_base{
       const uint8_t* pcommand, size_t command_size,
       uint8_t* pread_data_buffer){
     esp_err_t r = ESP_OK;
-    BaseType_t r2 = pdTRUE;
 
     if(r == ESP_OK){
-      if(xSemaphoreTake(i2c_port_semaphore, pdMS_TO_TICKS(1000)) == pdTRUE){ 
+      if(take_i2c_port_semaphore() == ESP_OK){ 
         r = i2c_master_transmit_receive(dev_handle, pcommand, command_size, 
             pread_data_buffer, 1, pdMS_TO_TICKS(1000));
         if(r != ESP_OK){
           ESP_LOGE(I2C_BASE_TAG, "fail to read data.");
         }
+        r |= release_i2c_port_semaphore(); 
       }
-      else{
-        ESP_LOGE(I2C_BASE_TAG, "fail to take i2c_port_semaphore.");
-        r = ESP_FAIL; 
-      }
-    }
-
-    r2 = xSemaphoreGive(i2c_port_semaphore);
-    if(r2 != pdTRUE){
-      ESP_LOGE(I2C_BASE_TAG, "fail to release i2c_port_semaphore.");
-      r = ESP_FAIL; 
     }
     return r; 
   }
@@ -96,33 +103,23 @@ namespace i2c_base{
       const uint8_t* pcommand, size_t command_size, 
       const uint8_t write_data){
     esp_err_t r = ESP_OK;
-    BaseType_t r2 = pdTRUE;
     
     uint8_t* send_buffer = (uint8_t*)malloc(command_size + 1);
     if(send_buffer == NULL){
       r = ESP_FAIL;
       ESP_LOGE(I2C_BASE_TAG, "fail to alloc buffer.");
     }
-    
 
     if(r == ESP_OK){
       memcpy(send_buffer, pcommand, command_size); 
       memcpy(send_buffer + command_size, &write_data, 1); 
-      if(xSemaphoreTake(i2c_port_semaphore, pdMS_TO_TICKS(1000)) == pdTRUE){ 
-        r = i2c_master_transmit(dev_handle, send_buffer, 2, pdMS_TO_TICKS(1000));
+      if(take_i2c_port_semaphore() == ESP_OK){ 
+        r = i2c_master_transmit(dev_handle, send_buffer, 2, pdMS_TO_TICKS(I2C_TIMEOUT));
         if(r != ESP_OK){
           ESP_LOGE(I2C_BASE_TAG, "fail to send data.");
         }
+        r |= release_i2c_port_semaphore();
       }
-      else{
-        ESP_LOGE(I2C_BASE_TAG, "fail to take i2c_port_semaphore.");
-        r = ESP_FAIL;
-      }
-    }
-    r2 = xSemaphoreGive(i2c_port_semaphore);
-    if(r2 != pdTRUE){
-      ESP_LOGE(I2C_BASE_TAG, "fail to release i2c_port_semaphore.");
-      r = ESP_FAIL; 
     }
     return r;
   }
@@ -131,24 +128,15 @@ namespace i2c_base{
           const uint8_t* pcommand, size_t command_size, 
           uint8_t* pread_data_buffer, size_t read_buffer_size){
     esp_err_t r = ESP_OK;
-    BaseType_t r2 = pdTRUE;
 
     if(r == ESP_OK){
-      if(xSemaphoreTake(i2c_port_semaphore, pdMS_TO_TICKS(1000)) == pdTRUE){ 
-        r = i2c_master_transmit_receive(dev_handle, pcommand, command_size, pread_data_buffer, read_buffer_size, pdMS_TO_TICKS(1000));
+      if(take_i2c_port_semaphore() == ESP_OK){ 
+        r = i2c_master_transmit_receive(dev_handle, pcommand, command_size, pread_data_buffer, read_buffer_size, pdMS_TO_TICKS(I2C_TIMEOUT));
         if(r != ESP_OK){
           ESP_LOGE(I2C_BASE_TAG, "fail to read data. I2C Error:%s", esp_err_to_name(r));
         }
+        r |= release_i2c_port_semaphore();
       }
-      else{
-        ESP_LOGE(I2C_BASE_TAG, "fail to take i2c_port_semaphore.");
-        r = ESP_FAIL; 
-      }
-    }
-    r2 = xSemaphoreGive(i2c_port_semaphore);
-    if(r2 != pdTRUE){
-      ESP_LOGE(I2C_BASE_TAG, "fail to release i2c_port_semaphore.");
-      r = ESP_FAIL; 
     }
     return r;
   }
@@ -157,7 +145,6 @@ namespace i2c_base{
       const uint8_t* pcommand, size_t command_size, 
       const uint8_t* pwrite_data_buffer, size_t buffer_size){
     esp_err_t r = ESP_OK;
-    BaseType_t r2 = pdTRUE;
     
     size_t send_buffer_size = command_size + buffer_size;
     uint8_t* send_buffer = (uint8_t*) malloc(send_buffer_size);
@@ -171,21 +158,13 @@ namespace i2c_base{
       if(buffer_size != 0){
         memcpy(send_buffer + command_size, pwrite_data_buffer, buffer_size);
       } 
-      if(xSemaphoreTake(i2c_port_semaphore, pdMS_TO_TICKS(1000)) == pdTRUE){ 
-        r = i2c_master_transmit(dev_handle, send_buffer, send_buffer_size, pdMS_TO_TICKS(1000));
+      if(take_i2c_port_semaphore() == ESP_OK){ 
+        r = i2c_master_transmit(dev_handle, send_buffer, send_buffer_size, pdMS_TO_TICKS(I2C_TIMEOUT));
         if(r != ESP_OK){
           ESP_LOGE(I2C_BASE_TAG, "fail to send data.");
         }
+        r |= release_i2c_port_semaphore();
       } 
-      else{
-        ESP_LOGE(I2C_BASE_TAG, "fail to take i2c_port_semaphore.");
-        r = ESP_FAIL; 
-      }
-    }
-    r2 = xSemaphoreGive(i2c_port_semaphore);
-    if(r2 != pdTRUE){
-      ESP_LOGE(I2C_BASE_TAG, "fail to release i2c_port_semaphore.");
-      r = ESP_FAIL; 
     }
     free(send_buffer);
     return r;

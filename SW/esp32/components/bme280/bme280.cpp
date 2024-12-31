@@ -5,7 +5,7 @@
 
 BME280::BME280(){
   esp_log_level_set(BME280_TAG, ESP_LOG_ERROR);
-  ESP_LOGI(BME280_TAG, "set BME280_TAG log level: %d", ESP_LOG_DEBUG);
+  ESP_LOGI(BME280_TAG, "set BME280_TAG log level: %d", ESP_LOG_ERROR);
 }
 
 esp_err_t BME280::init_i2c(void){
@@ -61,6 +61,12 @@ esp_err_t BME280::init(
   ESP_LOGI(BME280_TAG, "set CONFIG register to %x", config_data); 
   ESP_LOGI(BME280_TAG, "ser CTRL_MEAS register to %x", ctrl_meas_data);
 
+  if(r == ESP_OK){
+    r = check_deviceID();
+  }
+  if(r == ESP_OK){
+    r = set_config_filter(1);
+  }
   if(r == ESP_OK){
     r |= write_byte(CONFIG, config_data); 
     r |= get_calibration_data();
@@ -362,6 +368,7 @@ esp_err_t BME280::check_deviceID(void){
 
   if(r == ESP_OK){
     r = get_deviceID(&device_id);
+    ESP_LOGI(BME280_TAG, "BME280 DeviceID: %x", device_id);
   }
   if(r == ESP_OK){
     if(device_id != 0x60){

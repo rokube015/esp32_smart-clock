@@ -1,4 +1,4 @@
-set(SOURCES main.cpp)
+set(SOURCES main.cpp smart_clock.cpp)
 idf_component_register(SRCS ${SOURCES}
                     INCLUDE_DIRS .
                     REQUIRES bme280 scd40 i2c wifi sd_card)

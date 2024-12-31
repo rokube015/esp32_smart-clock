@@ -12,23 +12,23 @@ class BME280{
     i2c_master_dev_handle_t mi2c_device_handle;
     
     // device settings
-    constexpr static uint8_t DEVICE_ADDRS = 0x76;
-    constexpr static uint32_t CLK_SPEED_HZ = 800000;
+    constexpr static uint8_t DEVICE_ADDRS {0x76};
+    constexpr static uint32_t CLK_SPEED_HZ {800000};
     // Registers
-    constexpr static uint8_t HUM_LSB = 0xFE;
-    constexpr static uint8_t HUM_MSB = 0xFD;
-    constexpr static uint8_t TEMP_XLSB = 0xFC;
-    constexpr static uint8_t TEMP_LSB = 0xFB;
-    constexpr static uint8_t TEMP_MSB = 0xFA;
-    constexpr static uint8_t PRESS_XLSB = 0xF9;
-    constexpr static uint8_t PRESS_LSB = 0xF8;
-    constexpr static uint8_t PRESS_MSB = 0xF7;
-    constexpr static uint8_t CONFIG = 0xF5;
-    constexpr static uint8_t CTRL_MEAS = 0xF4;
-    constexpr static uint8_t STATUS = 0xF3;
-    constexpr static uint8_t CTRL_HUM = 0xF2;
-    constexpr static uint8_t RESET = 0xE0;
-    constexpr static uint8_t ID = 0xD0;
+    constexpr static uint8_t HUM_LSB    {0xFE};
+    constexpr static uint8_t HUM_MSB    {0xFD};
+    constexpr static uint8_t TEMP_XLSB  {0xFC};
+    constexpr static uint8_t TEMP_LSB   {0xFB};
+    constexpr static uint8_t TEMP_MSB   {0xFA};
+    constexpr static uint8_t PRESS_XLSB {0xF9};
+    constexpr static uint8_t PRESS_LSB  {0xF8};
+    constexpr static uint8_t PRESS_MSB  {0xF7};
+    constexpr static uint8_t CONFIG     {0xF5};
+    constexpr static uint8_t CTRL_MEAS  {0xF4};
+    constexpr static uint8_t STATUS     {0xF3};
+    constexpr static uint8_t CTRL_HUM   {0xF2};
+    constexpr static uint8_t RESET      {0xE0};
+    constexpr static uint8_t ID         {0xD0};
 
     // Settings
     constexpr static uint8_t pressureSensorDisable = 0x00 << 2;
