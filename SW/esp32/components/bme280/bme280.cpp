@@ -80,6 +80,17 @@ esp_err_t BME280::init(
   return r;
 }
 
+esp_err_t BME280::create_task(const char* pname, uint16_t stack_size, UBaseType_t task_priority){
+  esp_err_t r = ESP_OK;
+  BaseType_t r2 = pdTRUE;
+  r2 = xTaskCreate(get_measure_task_entry_point, pname, stack_size, this, task_priority, &task_handle);
+  if(r2 != pdTRUE){
+    ESP_LOGE(BME280_TAG, "fail to create measure_task.");
+    r = ESP_FAIL;
+  }
+  return r;
+}
+
 uint8_t BME280::get_status(){
   esp_err_t r = ESP_OK; 
   uint8_t read_data {0};
@@ -499,6 +510,24 @@ esp_err_t BME280::set_ctrl_hummidity(const int humidity_oversampling){
   return r;
 }
 
+esp_err_t BME280::update_sensor_data(){
+  esp_err_t r = ESP_OK;
+  sensor_raw_data_t result_raw{};
+  if(r == ESP_OK){
+    r = get_sensor_data(&result_raw);
+    if(r != ESP_OK){
+      ESP_LOGE(BME280_TAG, "fail to get sensor data.");
+    }
+  }
+  if(r == ESP_OK){
+    results_data.temperature = compensate_temperature(result_raw.mtemperature);
+    results_data.humidity = compensate_humidity(result_raw.mhumidity);
+    results_data.pressure = compensate_pressure(result_raw.mpressure);
+  }
+
+  return r;
+}
+
 esp_err_t BME280::get_all_results(results_data_t* results){
   esp_err_t r = ESP_OK;
   sensor_raw_data_t result_raw{};
@@ -565,6 +594,27 @@ int BME280::get_humidity(void){
 
   return results.humidity;
 }
+
+esp_err_t BME280::get_temperature(float* ptemperature){
+  esp_err_t r = ESP_OK; 
+  //ToDo: add mutex
+  *ptemperature = results_data.temperature;
+  return r;
+}
+
+esp_err_t BME280::get_pressure(float* ppressure){
+  esp_err_t r = ESP_OK;
+  //ToDo: add mutex
+  *ppressure = results_data.pressure;
+  return r;
+}
+
+esp_err_t BME280::get_humidity(double* phumidity){
+  esp_err_t r = ESP_OK;
+  //ToDo: add mutex
+  *phumidity = results_data.humidity;
+  return r;
+}  
 
 bool BME280::check_status_measuring_busy(void){ 
   // check status (0xF3) bit 3
@@ -674,3 +724,20 @@ int BME280::read_data(const uint8_t command,
   return r;
 }
 
+void BME280::measure_task(){
+  esp_err_t r = ESP_OK;
+  while(true){
+    ESP_LOGI(BME280_TAG, "start bme280 measure task.");
+    vTaskDelay(pdMS_TO_TICKS(2000));
+    if(r == ESP_OK){
+      r = update_sensor_data(); 
+      vTaskDelay(pdMS_TO_TICKS(5000));
+    }
+  }
+  vTaskDelete(NULL);
+}
+
+void BME280::get_measure_task_entry_point(void* arg){
+  BME280* pinstance = static_cast<BME280*>(arg);
+  pinstance->measure_task();
+}

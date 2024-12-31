@@ -27,6 +27,9 @@ void SMART_CLOCK::init(void){
   if(r == ESP_OK){
     r = scd40.create_task("measure_co2", 2048, 10);
   }
+  if(r == ESP_OK){
+    r = bme280.create_task("measure_bme280", 2048, 10);
+  }
   // initialize sd card 
   if(r == ESP_OK){ 
     r = sd_card.init();
@@ -85,11 +88,16 @@ void SMART_CLOCK::run(void){
   char sd_card_write_data_buffer[400];
  
   if(r == ESP_OK){
-    bme280.get_all_results(&temperature, &humidity, &pressure);
-  } 
-  if(r == ESP_OK){
     r = sntp.get_logtime(time_info, sizeof(time_info));
   }
+  if(r == ESP_OK){
+    r = scd40.get_co2(&co2);
+  }
+  if(r == ESP_OK){
+    r = bme280.get_temperature(&temperature);
+    r |= bme280.get_pressure(&pressure);
+    r |= bme280.get_humidity(&humidity);
+  } 
   if(r == ESP_OK){
     snprintf(sd_card_write_data_buffer, sizeof(sd_card_write_data_buffer), "%s, %d, %.2lf, %.2lf, %.2lf\n", time_info, co2, temperature, humidity, pressure);
     r = sd_card.write_data(file_path, sizeof(file_path), sd_card_write_data_buffer, 'a');
@@ -97,9 +105,7 @@ void SMART_CLOCK::run(void){
       ESP_LOGE(SMART_CLOCK_TAG, "fail to write sensor log to sd_card.");
     }
   }
-  if(r == ESP_OK){
-    r = scd40.get_co2(&co2);
-  }
+  
   if(r == ESP_OK){
     std::cout << "==================================================" << std::endl;
     std::cout << "Time              : " << time_info << std::endl;
