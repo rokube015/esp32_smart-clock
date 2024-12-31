@@ -36,6 +36,9 @@ class SCD40{
       }data;
      }scd40_data_t;
     
+    TaskHandle_t task_handle = NULL;    
+    uint16_t co2;
+
     esp_err_t init_i2c(void);
     uint8_t calculate_crc(const uint8_t* data, uint16_t byte_size);
 
@@ -45,6 +48,10 @@ class SCD40{
     esp_err_t read_data(const uint8_t* pcommand, uint8_t* pread_data_buffer, size_t buffer_size);
     esp_err_t write_data(const uint8_t* pcommand, uint8_t* pwrite_data_buffer, size_t buffer_size);
     esp_err_t send_command(const uint8_t* command);
+
+    void measure_co2_task();
+    static void get_measure_co2_task_entry_point(void* arg);
+
   public:
     SCD40();
     
@@ -52,8 +59,12 @@ class SCD40{
     //esp_err_t Close();
     esp_err_t get_serial_number(uint64_t* pserial_number);
     esp_err_t check_serial_number();
+    // Wait for 5 seconds before sending the next command
     esp_err_t start_periodic_measurement();
     esp_err_t stop_periodic_measurement();
     esp_err_t get_sensor_data(uint16_t* pco2, double* ptemperature, double* prelative_humidity);
     esp_err_t get_co2_data(uint16_t* pco2);
+    esp_err_t get_co2(uint16_t* pco2);
+
+    esp_err_t create_task(const char* pname, uint16_t stack_size, UBaseType_t task_priority);
 };

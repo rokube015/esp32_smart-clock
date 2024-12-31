@@ -24,6 +24,9 @@ void SMART_CLOCK::init(void){
   if(r == ESP_OK){
     r = scd40.init(&i2c);
   }
+  if(r == ESP_OK){
+    r = scd40.create_task("measure_co2", 2048, 10);
+  }
   // initialize sd card 
   if(r == ESP_OK){ 
     r = sd_card.init();
@@ -80,21 +83,10 @@ void SMART_CLOCK::run(void){
   esp_err_t r = ESP_OK;
   char time_info[100] = "time";
   char sd_card_write_data_buffer[400];
-
+ 
   if(r == ESP_OK){
     bme280.get_all_results(&temperature, &humidity, &pressure);
-  }
-  if(r == ESP_OK){
-    scd40.start_periodic_measurement();
-    vTaskDelay(pdMS_TO_TICKS(5000));
-  }
-  if(r == ESP_OK){
-    r = scd40.get_co2_data(&co2);
-    vTaskDelay(pdMS_TO_TICKS(5));
-  }
-  if(r == ESP_OK){
-    scd40.stop_periodic_measurement();
-  }
+  } 
   if(r == ESP_OK){
     r = sntp.get_logtime(time_info, sizeof(time_info));
   }
@@ -106,6 +98,9 @@ void SMART_CLOCK::run(void){
     }
   }
   if(r == ESP_OK){
+    r = scd40.get_co2(&co2);
+  }
+  if(r == ESP_OK){
     std::cout << "==================================================" << std::endl;
     std::cout << "Time              : " << time_info << std::endl;
     std::cout << "BME280 Temperature: " << temperature << "\u2103" << std::endl;
@@ -114,6 +109,6 @@ void SMART_CLOCK::run(void){
     std::cout << "SCD40  CO2        : " << co2 << "ppm" << std::endl;
     std::cout << "==================================================" << std::endl;;
   }
-  vTaskDelay(pdMS_TO_TICKS(5000));
+  vTaskDelay(pdMS_TO_TICKS(10000));
 }
 

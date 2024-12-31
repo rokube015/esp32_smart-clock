@@ -222,11 +222,30 @@ esp_err_t SCD40::get_co2_data(uint16_t* pco2){
   return r;
  }
 
+esp_err_t SCD40::get_co2(uint16_t* pco2){
+  esp_err_t r = ESP_OK;
+  //ToDo: add mutex  
+  *pco2 = co2;
+  
+  return r;
+}
+
 esp_err_t SCD40::stop_periodic_measurement(){
   esp_err_t r = ESP_OK;
   r = send_command(STOP_PERIODIC_MEASUREMENT_COMMAND);
   if(r != ESP_OK){
     ESP_LOGE(SCD40_TAG, "failed to transmit stop periodic measurement command ");
+  }
+  return r;
+}
+
+esp_err_t SCD40::create_task(const char* pname, uint16_t stack_size, UBaseType_t task_priority){
+  esp_err_t r = ESP_OK;
+  BaseType_t r2 = pdTRUE;
+  r2 = xTaskCreate(get_measure_co2_task_entry_point, pname, stack_size, this, task_priority, &task_handle);
+  if(r2 != pdTRUE){
+    ESP_LOGE(SCD40_TAG, "fail to create measure_co2_task.");
+    r = ESP_FAIL;
   }
   return r;
 }
@@ -278,7 +297,6 @@ esp_err_t SCD40::get_temperature_offset(float* ptemperature_offset){
     *ptemperature_offset = round((175 * (((read_temperature_offset.data.value[0] << 8) + 
               read_temperature_offset.data.value[1]) / 65536.0)) * 10.0) / 10.0;
   }
-
   return r;
 }
 
@@ -310,6 +328,32 @@ esp_err_t SCD40::send_command(const uint8_t* pcommand){
   if(r == ESP_OK){
     r = pmi2c->write_data(mi2c_device_handle, pcommand, 2, NULL, 0);
   }
-
   return r;
-} 
+}
+
+void SCD40::measure_co2_task(){
+  esp_err_t r = ESP_OK; 
+  while(true){
+    ESP_LOGI(SCD40_TAG, "start co2 measurement.");
+    if(r == ESP_OK){
+      r = start_periodic_measurement();
+      vTaskDelay(pdMS_TO_TICKS(5000)); 
+    }
+    if(r == ESP_OK){
+      r = get_co2_data(&co2);
+      ESP_LOGI(SCD40_TAG, "get co2:%d[ppm]", co2);
+      vTaskDelay(pdMS_TO_TICKS(1000));
+    }
+    if(r == ESP_OK){
+      r = stop_periodic_measurement();
+      vTaskDelay(pdMS_TO_TICKS(4000));
+    }
+  }
+
+  vTaskDelete(NULL);
+}
+
+void SCD40::get_measure_co2_task_entry_point(void* arg){
+  SCD40* pinstance = static_cast<SCD40*>(arg);
+  pinstance->measure_co2_task();
+}
