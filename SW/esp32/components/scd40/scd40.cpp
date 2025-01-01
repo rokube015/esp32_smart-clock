@@ -6,8 +6,8 @@
 #include "scd40.h"
 
 SCD40::SCD40(){
-  esp_log_level_set(SCD40_TAG, ESP_LOG_INFO);
-  ESP_LOGI(SCD40_TAG, "set SCD40_TAG log level: %d", ESP_LOG_INFO);
+  esp_log_level_set(SCD40_TAG, ESP_LOG_ERROR);
+  ESP_LOGI(SCD40_TAG, "set SCD40_TAG log level: %d", ESP_LOG_ERROR);
 }
 
 esp_err_t SCD40::init_i2c(void){
@@ -242,10 +242,19 @@ esp_err_t SCD40::stop_periodic_measurement(){
 esp_err_t SCD40::create_task(const char* pname, uint16_t stack_size, UBaseType_t task_priority){
   esp_err_t r = ESP_OK;
   BaseType_t r2 = pdTRUE;
-  r2 = xTaskCreate(get_measure_co2_task_entry_point, pname, stack_size, this, task_priority, &task_handle);
-  if(r2 != pdTRUE){
-    ESP_LOGE(SCD40_TAG, "fail to create measure_co2_task.");
-    r = ESP_FAIL;
+  if(r == ESP_OK){ 
+    r2 = xTaskCreate(get_measure_co2_task_entry_point, pname, stack_size, this, task_priority, &task_handle);
+    if(r2 != pdTRUE){
+      ESP_LOGE(SCD40_TAG, "fail to create measure_co2_task.");
+      r = ESP_FAIL;
+    }
+  }
+  if(r == ESP_OK){
+    co2_buffer = xQueueCreate(co2_buffer_size, sizeof(co2));
+    if(co2_buffer == NULL){
+      ESP_LOGE(SCD40_TAG, "fail to create co2_buffer");
+      r = ESP_ERR_NO_MEM; 
+    }
   }
   return r;
 }
@@ -333,24 +342,34 @@ esp_err_t SCD40::send_command(const uint8_t* pcommand){
 
 void SCD40::measure_co2_task(){
   esp_err_t r = ESP_OK; 
+  BaseType_t r2 = pdTRUE;
+
   while(true){
     ESP_LOGI(SCD40_TAG, "start co2 measurement.");
     if(r == ESP_OK){
       r = start_periodic_measurement();
-      vTaskDelay(pdMS_TO_TICKS(5000)); 
+      vTaskDelay(pdMS_TO_TICKS(6000)); 
     }
     if(r == ESP_OK){
       r = get_co2_data(&co2);
       ESP_LOGI(SCD40_TAG, "get co2:%d[ppm]", co2);
+      r2 = xQueueSendToBack(co2_buffer, &co2, pdMS_TO_TICKS(10000));
+      if(r2 != pdTRUE){
+        ESP_LOGE(SCD40_TAG, "fail to send to co2_buffer");
+        r = ESP_FAIL; 
+      }
       vTaskDelay(pdMS_TO_TICKS(1000));
     }
     if(r == ESP_OK){
       r = stop_periodic_measurement();
-      vTaskDelay(pdMS_TO_TICKS(4000));
+      vTaskDelay(pdMS_TO_TICKS(3000));
     }
   }
-
   vTaskDelete(NULL);
+}
+
+QueueHandle_t SCD40::get_co2_buffer_handle(){
+  return co2_buffer;
 }
 
 void SCD40::get_measure_co2_task_entry_point(void* arg){

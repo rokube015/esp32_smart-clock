@@ -3,6 +3,27 @@
 #include "smart_clock.h"
 #include "wifi_pass.h"
 
+void SMART_CLOCK::monitor_sensor_task(){
+  esp_err_t r = ESP_OK;
+  BaseType_t r2 = pdTRUE;
+  
+  while(true){
+    if(uxQueueMessagesWaiting(co2_buffer) != 0){
+      r2 = xQueueReceive(co2_buffer, &co2, pdMS_TO_TICKS(10000));
+      if(r2 != pdTRUE){
+        ESP_LOGW(SMART_CLOCK_TAG, "fail to receive data from co2 buffer");
+      }
+    }
+    vTaskDelay(pdMS_TO_TICKS(1000));
+  }
+  vTaskDelete(NULL);
+}
+
+void SMART_CLOCK::get_monitor_sensor_task_entry_point(void* arg){
+  SMART_CLOCK* pinstance = static_cast<SMART_CLOCK*>(arg);
+  pinstance->monitor_sensor_task();
+}
+
 void SMART_CLOCK::init(void){
   esp_err_t r = ESP_OK;
 
@@ -24,11 +45,18 @@ void SMART_CLOCK::init(void){
   if(r == ESP_OK){
     r = scd40.init(&i2c);
   }
+  vTaskDelay(pdMS_TO_TICKS(3000));
   if(r == ESP_OK){
     r = scd40.create_task("measure_co2", 2048, 10);
   }
   if(r == ESP_OK){
     r = bme280.create_task("measure_bme280", 2048, 10);
+  }
+  if(r == ESP_OK){
+    r = create_monitor_sensor_task("monitor_sensor", 2048, 10);
+    if(r != ESP_OK){
+      ESP_LOGE(SMART_CLOCK_TAG, "fail to create monitor_sensor task");
+    }
   }
   // initialize sd card 
   if(r == ESP_OK){ 
@@ -91,9 +119,6 @@ void SMART_CLOCK::run(void){
     r = sntp.get_logtime(time_info, sizeof(time_info));
   }
   if(r == ESP_OK){
-    r = scd40.get_co2(&co2);
-  }
-  if(r == ESP_OK){
     r = bme280.get_temperature(&temperature);
     r |= bme280.get_pressure(&pressure);
     r |= bme280.get_humidity(&humidity);
@@ -118,3 +143,16 @@ void SMART_CLOCK::run(void){
   vTaskDelay(pdMS_TO_TICKS(10000));
 }
 
+esp_err_t SMART_CLOCK::create_monitor_sensor_task(const char* pname, uint16_t stack_size, UBaseType_t task_priority){
+  esp_err_t r = ESP_OK;
+  BaseType_t r2 = pdTRUE;
+  co2_buffer = scd40.get_co2_buffer_handle();
+  if(r == ESP_OK){ 
+    r2 = xTaskCreate(get_monitor_sensor_task_entry_point, pname, stack_size, this, task_priority, &sensor_task_handle);
+    if(r2 != pdTRUE){
+      ESP_LOGE(SMART_CLOCK_TAG, "fail to create monitor_sensor_data_task.");
+      r = ESP_FAIL;
+    }
+  }
+  return r;
+}

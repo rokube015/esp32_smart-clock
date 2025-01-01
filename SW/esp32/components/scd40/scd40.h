@@ -37,6 +37,8 @@ class SCD40{
      }scd40_data_t;
     
     TaskHandle_t task_handle = NULL;    
+    QueueHandle_t co2_buffer = NULL;
+    UBaseType_t co2_buffer_size = 5; 
     uint16_t co2;
 
     esp_err_t init_i2c(void);
@@ -65,6 +67,6 @@ class SCD40{
     esp_err_t get_sensor_data(uint16_t* pco2, double* ptemperature, double* prelative_humidity);
     esp_err_t get_co2_data(uint16_t* pco2);
     esp_err_t get_co2(uint16_t* pco2);
-
+    QueueHandle_t get_co2_buffer_handle();
     esp_err_t create_task(const char* pname, uint16_t stack_size, UBaseType_t task_priority);
 };
