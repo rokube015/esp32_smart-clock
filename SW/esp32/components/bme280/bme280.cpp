@@ -762,3 +762,7 @@ void BME280::get_measure_task_entry_point(void* arg){
   BME280* pinstance = static_cast<BME280*>(arg);
   pinstance->measure_task();
 }
+
+void BME280::notify_measurement_start(){
+  xTaskNotifyGive(task_handle);
+}

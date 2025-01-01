@@ -114,7 +114,7 @@ class BME280{
 
     TaskHandle_t task_handle {NULL};
     QueueHandle_t results_buffer {NULL};
-    UBaseType_t results_buffer_size {5};
+    UBaseType_t results_buffer_size {1};
 
     esp_err_t init_i2c(void);
     uint8_t get_status();
@@ -155,6 +155,7 @@ class BME280{
     //esp_err_t Close(void);
     QueueHandle_t get_results_buffer(); 
     esp_err_t create_task(const char* pname, uint16_t stack_size, UBaseType_t task_priority);
+    void notify_measurement_start();
 
     esp_err_t get_deviceID(uint8_t* pdeviceID);
     esp_err_t check_deviceID(void);

@@ -4,28 +4,25 @@
 #include "wifi_pass.h"
 
 void SMART_CLOCK::monitor_sensor_task(){
-  esp_err_t r = ESP_OK;
   BaseType_t r2 = pdTRUE;
 
   while(true){
-    if(uxQueueMessagesWaiting(co2_buffer) != 0){
-      r2 = xQueueReceive(co2_buffer, &co2, pdMS_TO_TICKS(10000));
-      if(r2 != pdTRUE){
-        ESP_LOGW(SMART_CLOCK_TAG, "fail to receive data from co2 buffer");
-      }
+    scd40.notify_measurement_start();
+    bme280.notify_measurement_start();
+    r2 = xQueueReceive(co2_buffer, &co2, pdMS_TO_TICKS(300000));
+    if(r2 != pdTRUE){
+      ESP_LOGW(SMART_CLOCK_TAG, "fail to receive data from co2 buffer");
     }
-    if(uxQueueMessagesWaiting(bme280_results_buffer) != 0){
-      r2 = xQueueReceive(bme280_results_buffer, &results_data, pdMS_TO_TICKS(100000));
-      if(r2 == pdTRUE){
-        temperature = results_data.temperature;
-        pressure = results_data.pressure;
-        humidity = results_data.humidity;
-      }
-      else{
-        ESP_LOGW(SMART_CLOCK_TAG, "fail to receive data from bme280 buffer.");
-      }
+    r2 = xQueueReceive(bme280_results_buffer, &results_data, pdMS_TO_TICKS(300000));
+    if(r2 == pdTRUE){
+      temperature = results_data.temperature;
+      pressure = results_data.pressure;
+      humidity = results_data.humidity;
     }
-    vTaskDelay(pdMS_TO_TICKS(1000));
+    else{
+      ESP_LOGW(SMART_CLOCK_TAG, "fail to receive data from bme280 buffer.");
+    }
+    vTaskDelay(pdMS_TO_TICKS(5000));
   }
   vTaskDelete(NULL);
 }

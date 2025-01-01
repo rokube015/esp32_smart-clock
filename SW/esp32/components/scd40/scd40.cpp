@@ -345,6 +345,7 @@ void SCD40::measure_co2_task(){
   BaseType_t r2 = pdTRUE;
 
   while(true){
+    ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(100000)); 
     ESP_LOGI(SCD40_TAG, "start co2 measurement.");
     if(r == ESP_OK){
       r = start_periodic_measurement();
@@ -358,11 +359,11 @@ void SCD40::measure_co2_task(){
         ESP_LOGE(SCD40_TAG, "fail to send to co2_buffer");
         r = ESP_FAIL; 
       }
-      vTaskDelay(pdMS_TO_TICKS(1000));
+      vTaskDelay(pdMS_TO_TICKS(500));
     }
     if(r == ESP_OK){
       r = stop_periodic_measurement();
-      vTaskDelay(pdMS_TO_TICKS(3000));
+      vTaskDelay(pdMS_TO_TICKS(500));
     }
   }
   vTaskDelete(NULL);
@@ -375,4 +376,8 @@ QueueHandle_t SCD40::get_co2_buffer_handle(){
 void SCD40::get_measure_co2_task_entry_point(void* arg){
   SCD40* pinstance = static_cast<SCD40*>(arg);
   pinstance->measure_co2_task();
+}
+
+void SCD40::notify_measurement_start(){
+  xTaskNotifyGive(task_handle);
 }
