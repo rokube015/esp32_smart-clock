@@ -21,6 +21,7 @@ class SMART_CLOCK final{
 
     TaskHandle_t sensor_task_handle {NULL};
     QueueHandle_t co2_buffer {NULL};
+    QueueHandle_t bme280_results_buffer {NULL};
     void monitor_sensor_task();
     static void get_monitor_sensor_task_entry_point(void* arg);
   public:
@@ -32,7 +33,8 @@ class SMART_CLOCK final{
     SD_CARD sd_card;
     WIFI wifi;
     SNTP sntp;
-
+    
+    BME280::results_data_t results_data {0.0, 0.0, 0.0};
     float temperature {0.0};  //[degree Celsius]
     float pressure    {0.0};  //[hPa]
     double humidity   {0.0};  //[%]

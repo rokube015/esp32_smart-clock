@@ -6,12 +6,23 @@
 void SMART_CLOCK::monitor_sensor_task(){
   esp_err_t r = ESP_OK;
   BaseType_t r2 = pdTRUE;
-  
+
   while(true){
     if(uxQueueMessagesWaiting(co2_buffer) != 0){
       r2 = xQueueReceive(co2_buffer, &co2, pdMS_TO_TICKS(10000));
       if(r2 != pdTRUE){
         ESP_LOGW(SMART_CLOCK_TAG, "fail to receive data from co2 buffer");
+      }
+    }
+    if(uxQueueMessagesWaiting(bme280_results_buffer) != 0){
+      r2 = xQueueReceive(bme280_results_buffer, &results_data, pdMS_TO_TICKS(100000));
+      if(r2 == pdTRUE){
+        temperature = results_data.temperature;
+        pressure = results_data.pressure;
+        humidity = results_data.humidity;
+      }
+      else{
+        ESP_LOGW(SMART_CLOCK_TAG, "fail to receive data from bme280 buffer.");
       }
     }
     vTaskDelay(pdMS_TO_TICKS(1000));
@@ -118,11 +129,7 @@ void SMART_CLOCK::run(void){
   if(r == ESP_OK){
     r = sntp.get_logtime(time_info, sizeof(time_info));
   }
-  if(r == ESP_OK){
-    r = bme280.get_temperature(&temperature);
-    r |= bme280.get_pressure(&pressure);
-    r |= bme280.get_humidity(&humidity);
-  } 
+  
   if(r == ESP_OK){
     snprintf(sd_card_write_data_buffer, sizeof(sd_card_write_data_buffer), "%s, %d, %.2lf, %.2lf, %.2lf\n", time_info, co2, temperature, humidity, pressure);
     r = sd_card.write_data(file_path, sizeof(file_path), sd_card_write_data_buffer, 'a');
@@ -147,6 +154,7 @@ esp_err_t SMART_CLOCK::create_monitor_sensor_task(const char* pname, uint16_t st
   esp_err_t r = ESP_OK;
   BaseType_t r2 = pdTRUE;
   co2_buffer = scd40.get_co2_buffer_handle();
+  bme280_results_buffer = bme280.get_results_buffer(); 
   if(r == ESP_OK){ 
     r2 = xTaskCreate(get_monitor_sensor_task_entry_point, pname, stack_size, this, task_priority, &sensor_task_handle);
     if(r2 != pdTRUE){

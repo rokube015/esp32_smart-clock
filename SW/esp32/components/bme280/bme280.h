@@ -112,7 +112,9 @@ class BME280{
     int16_t   dig_h5 = 0;
     int8_t    dig_h6 = 0;
 
-    TaskHandle_t task_handle = NULL;
+    TaskHandle_t task_handle {NULL};
+    QueueHandle_t results_buffer {NULL};
+    UBaseType_t results_buffer_size {5};
 
     esp_err_t init_i2c(void);
     uint8_t get_status();
@@ -151,6 +153,7 @@ class BME280{
         const uint8_t pressure_oversampling = pressureOversamplingX1,
         const uint8_t sensor_mode = sensorForcedMode);
     //esp_err_t Close(void);
+    QueueHandle_t get_results_buffer(); 
     esp_err_t create_task(const char* pname, uint16_t stack_size, UBaseType_t task_priority);
 
     esp_err_t get_deviceID(uint8_t* pdeviceID);

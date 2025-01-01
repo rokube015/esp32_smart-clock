@@ -80,13 +80,26 @@ esp_err_t BME280::init(
   return r;
 }
 
+QueueHandle_t BME280::get_results_buffer(){
+  return results_buffer;
+}
+
 esp_err_t BME280::create_task(const char* pname, uint16_t stack_size, UBaseType_t task_priority){
   esp_err_t r = ESP_OK;
   BaseType_t r2 = pdTRUE;
-  r2 = xTaskCreate(get_measure_task_entry_point, pname, stack_size, this, task_priority, &task_handle);
-  if(r2 != pdTRUE){
-    ESP_LOGE(BME280_TAG, "fail to create measure_task.");
-    r = ESP_FAIL;
+  if(r == ESP_OK){
+    results_buffer = xQueueCreate(results_buffer_size, sizeof(results_data));
+    if(results_buffer == NULL){
+      ESP_LOGE(BME280_TAG, "fail to create bme280 results_buffer");
+      r = ESP_ERR_NO_MEM;
+    }
+  } 
+  if(r == ESP_OK){
+    r2 = xTaskCreate(get_measure_task_entry_point, pname, stack_size, this, task_priority, &task_handle);
+    if(r2 != pdTRUE){
+      ESP_LOGE(BME280_TAG, "fail to create measure_task.");
+      r = ESP_FAIL;
+    }
   }
   return r;
 }
@@ -726,13 +739,21 @@ int BME280::read_data(const uint8_t command,
 
 void BME280::measure_task(){
   esp_err_t r = ESP_OK;
+  BaseType_t r2 = pdTRUE; 
   while(true){
     ESP_LOGI(BME280_TAG, "start bme280 measure task.");
-    vTaskDelay(pdMS_TO_TICKS(2000));
+    vTaskDelay(pdMS_TO_TICKS(1000));
     if(r == ESP_OK){
       r = update_sensor_data(); 
-      vTaskDelay(pdMS_TO_TICKS(5000));
     }
+    if(r == ESP_OK){
+      r2 = xQueueSendToBack(results_buffer, &results_data, pdMS_TO_TICKS(100000));
+      if(r2 != pdTRUE){
+        ESP_LOGE(BME280_TAG, "fail to send to bme280 results_buffer");
+        r = ESP_FAIL;
+      } 
+    }
+    vTaskDelay(pdMS_TO_TICKS(5000));
   }
   vTaskDelete(NULL);
 }
