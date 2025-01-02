@@ -7,8 +7,8 @@
 namespace i2c_base{
   
   I2C::I2C(i2c_port_num_t port, i2c_mode_t mode){
-    esp_log_level_set(I2C_BASE_TAG, ESP_LOG_DEBUG);
-    ESP_LOGI(I2C_BASE_TAG, "set I2C_BASE_TAG log level: %d", ESP_LOG_DEBUG);
+    esp_log_level_set(I2C_BASE_TAG, ESP_LOG_INFO);
+    ESP_LOGI(I2C_BASE_TAG, "set I2C_BASE_TAG log level: %d", ESP_LOG_INFO);
 
     mport = port;
     mmode = mode;

@@ -45,6 +45,16 @@ void SMART_CLOCK::init(void){
   if(r == ESP_OK){ 
     r = i2c.init();
   }
+  // Initialize the AQM0802A I2C device
+  if(r == ESP_OK){
+    r = aqm0802a.init(&i2c);
+  }
+  if(r == ESP_OK){
+    r = aqm0802a.print_string("Hello");
+    if(r != ESP_OK){
+      ESP_LOGE(SMART_CLOCK_TAG, "fail to print string.");
+    }
+  }
   // Initialize the BME280 I2C device
   if(r == ESP_OK){ 
     r = bme280.init(&i2c);
@@ -134,7 +144,19 @@ void SMART_CLOCK::run(void){
       ESP_LOGE(SMART_CLOCK_TAG, "fail to write sensor log to sd_card.");
     }
   }
-  
+  if(r == ESP_OK){
+    r = aqm0802a.clear_display();
+  }
+  if(r == ESP_OK){
+    char send_buf[32];
+    snprintf(send_buf, sizeof(send_buf), "CO2:");
+    r = aqm0802a.return_cursor_home();
+    r |= aqm0802a.print_string(send_buf);
+
+    snprintf(send_buf, sizeof(send_buf), "%4dppm",co2);
+    r |= aqm0802a.set_cursor_pos(1, 0);
+    r |= aqm0802a.print_string(send_buf);
+  }  
   if(r == ESP_OK){
     std::cout << "==================================================" << std::endl;
     std::cout << "Time              : " << time_info << std::endl;
