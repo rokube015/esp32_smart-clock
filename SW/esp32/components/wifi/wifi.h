@@ -20,7 +20,7 @@ class WIFI{
     };
 
   private:
-    constexpr static char* WIFI_TAG = "wifi"; 
+    constexpr static const char* WIFI_TAG = "wifi"; 
     
     static esp_err_t mwifi_init();
     static wifi_init_config_t mwifi_init_cfg;

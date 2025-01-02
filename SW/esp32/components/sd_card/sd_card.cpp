@@ -9,8 +9,8 @@
 #include "sd_card.h"
 
 SD_CARD::SD_CARD(){
-  esp_log_level_set(SD_CARD_TAG, ESP_LOG_INFO);
-  ESP_LOGI(SD_CARD_TAG, "set SD_CARD_TAG log level: %d", ESP_LOG_INFO);
+  esp_log_level_set(SD_CARD_TAG, ESP_LOG_ERROR);
+  ESP_LOGI(SD_CARD_TAG, "set SD_CARD_TAG log level: %d", ESP_LOG_ERROR);
 }
 
 esp_err_t SD_CARD::init(){
