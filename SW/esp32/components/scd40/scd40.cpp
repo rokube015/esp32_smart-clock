@@ -6,8 +6,8 @@
 #include "scd40.h"
 
 SCD40::SCD40(){
-  esp_log_level_set(SCD40_TAG, ESP_LOG_INFO);
-  ESP_LOGI(SCD40_TAG, "set SCD40_TAG log level: %d", ESP_LOG_INFO);
+  esp_log_level_set(SCD40_TAG, ESP_LOG_ERROR);
+  ESP_LOGI(SCD40_TAG, "set SCD40_TAG log level: %d", ESP_LOG_ERROR);
 }
 
 esp_err_t SCD40::init_i2c(void){
@@ -189,6 +189,43 @@ esp_err_t SCD40::get_sensor_data(uint16_t* pco2, double* ptemperature, double* p
     *ptemperature = (double) (175.0 * (((measurement_data.results.temperature.data.value[0] << 8) + measurement_data.results.temperature.data.value[1]) / 65535.0)) - 45.0;
     *prelative_humidity = 100.0 * ((measurement_data.results.relative_humidity.data.value[0] << 8) + measurement_data.results.relative_humidity.data.value[1]) / 65535.0;
   }
+  return r;
+}
+
+esp_err_t SCD40::get_co2_data(uint16_t* pco2){
+  esp_err_t r = ESP_OK;  
+  union{
+    uint8_t arr[9];
+    struct{
+      scd40_data_t co2;
+      scd40_data_t temperature;
+      scd40_data_t relative_humidity;
+    }results;
+  }measurement_data;
+  *pco2 = 0;
+  if(r == ESP_OK){
+    r = read_data(READ_MEASUREMENT_COMMAND, 
+        measurement_data.arr, sizeof(measurement_data.arr));
+    if(r != ESP_OK) {
+      ESP_LOGE(SCD40_TAG, "fail to get sensor data");
+      esp_err_t r2 = ESP_OK; 
+      r2 = stop_periodic_measurement();
+      if(r2 == ESP_OK){
+        r = read_data(READ_MEASUREMENT_COMMAND, 
+          measurement_data.arr, sizeof(measurement_data.arr));
+      }
+    }
+  }
+  if(r == ESP_OK){
+    *pco2 = (measurement_data.results.co2.data.value[0] << 8) + measurement_data.results.co2.data.value[1];
+  }
+  return r;
+ }
+
+esp_err_t SCD40::get_co2(uint16_t* pco2){
+  esp_err_t r = ESP_OK;
+  //ToDo: add mutex  
+  *pco2 = co2;
   
   return r;
 }
@@ -198,6 +235,26 @@ esp_err_t SCD40::stop_periodic_measurement(){
   r = send_command(STOP_PERIODIC_MEASUREMENT_COMMAND);
   if(r != ESP_OK){
     ESP_LOGE(SCD40_TAG, "failed to transmit stop periodic measurement command ");
+  }
+  return r;
+}
+
+esp_err_t SCD40::create_task(const char* pname, uint16_t stack_size, UBaseType_t task_priority){
+  esp_err_t r = ESP_OK;
+  BaseType_t r2 = pdTRUE;
+  if(r == ESP_OK){ 
+    r2 = xTaskCreate(get_measure_co2_task_entry_point, pname, stack_size, this, task_priority, &task_handle);
+    if(r2 != pdTRUE){
+      ESP_LOGE(SCD40_TAG, "fail to create measure_co2_task.");
+      r = ESP_FAIL;
+    }
+  }
+  if(r == ESP_OK){
+    co2_buffer = xQueueCreate(co2_buffer_size, sizeof(co2));
+    if(co2_buffer == NULL){
+      ESP_LOGE(SCD40_TAG, "fail to create co2_buffer");
+      r = ESP_ERR_NO_MEM; 
+    }
   }
   return r;
 }
@@ -249,7 +306,6 @@ esp_err_t SCD40::get_temperature_offset(float* ptemperature_offset){
     *ptemperature_offset = round((175 * (((read_temperature_offset.data.value[0] << 8) + 
               read_temperature_offset.data.value[1]) / 65536.0)) * 10.0) / 10.0;
   }
-
   return r;
 }
 
@@ -281,6 +337,47 @@ esp_err_t SCD40::send_command(const uint8_t* pcommand){
   if(r == ESP_OK){
     r = pmi2c->write_data(mi2c_device_handle, pcommand, 2, NULL, 0);
   }
-
   return r;
-} 
+}
+
+void SCD40::measure_co2_task(){
+  esp_err_t r = ESP_OK; 
+  BaseType_t r2 = pdTRUE;
+
+  while(true){
+    ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(100000)); 
+    ESP_LOGI(SCD40_TAG, "start co2 measurement.");
+    if(r == ESP_OK){
+      r = start_periodic_measurement();
+      vTaskDelay(pdMS_TO_TICKS(6000)); 
+    }
+    if(r == ESP_OK){
+      r = get_co2_data(&co2);
+      ESP_LOGI(SCD40_TAG, "get co2:%d[ppm]", co2);
+      r2 = xQueueSendToBack(co2_buffer, &co2, pdMS_TO_TICKS(10000));
+      if(r2 != pdTRUE){
+        ESP_LOGE(SCD40_TAG, "fail to send to co2_buffer");
+        r = ESP_FAIL; 
+      }
+      vTaskDelay(pdMS_TO_TICKS(500));
+    }
+    if(r == ESP_OK){
+      r = stop_periodic_measurement();
+      vTaskDelay(pdMS_TO_TICKS(500));
+    }
+  }
+  vTaskDelete(NULL);
+}
+
+QueueHandle_t SCD40::get_co2_buffer_handle(){
+  return co2_buffer;
+}
+
+void SCD40::get_measure_co2_task_entry_point(void* arg){
+  SCD40* pinstance = static_cast<SCD40*>(arg);
+  pinstance->measure_co2_task();
+}
+
+void SCD40::notify_measurement_start(){
+  xTaskNotifyGive(task_handle);
+}

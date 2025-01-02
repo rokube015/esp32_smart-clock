@@ -12,23 +12,23 @@ class BME280{
     i2c_master_dev_handle_t mi2c_device_handle;
     
     // device settings
-    constexpr static uint8_t DEVICE_ADDRS = 0x76;
-    constexpr static uint32_t CLK_SPEED_HZ = 800000;
+    constexpr static uint8_t DEVICE_ADDRS {0x76};
+    constexpr static uint32_t CLK_SPEED_HZ {800000};
     // Registers
-    constexpr static uint8_t HUM_LSB = 0xFE;
-    constexpr static uint8_t HUM_MSB = 0xFD;
-    constexpr static uint8_t TEMP_XLSB = 0xFC;
-    constexpr static uint8_t TEMP_LSB = 0xFB;
-    constexpr static uint8_t TEMP_MSB = 0xFA;
-    constexpr static uint8_t PRESS_XLSB = 0xF9;
-    constexpr static uint8_t PRESS_LSB = 0xF8;
-    constexpr static uint8_t PRESS_MSB = 0xF7;
-    constexpr static uint8_t CONFIG = 0xF5;
-    constexpr static uint8_t CTRL_MEAS = 0xF4;
-    constexpr static uint8_t STATUS = 0xF3;
-    constexpr static uint8_t CTRL_HUM = 0xF2;
-    constexpr static uint8_t RESET = 0xE0;
-    constexpr static uint8_t ID = 0xD0;
+    constexpr static uint8_t HUM_LSB    {0xFE};
+    constexpr static uint8_t HUM_MSB    {0xFD};
+    constexpr static uint8_t TEMP_XLSB  {0xFC};
+    constexpr static uint8_t TEMP_LSB   {0xFB};
+    constexpr static uint8_t TEMP_MSB   {0xFA};
+    constexpr static uint8_t PRESS_XLSB {0xF9};
+    constexpr static uint8_t PRESS_LSB  {0xF8};
+    constexpr static uint8_t PRESS_MSB  {0xF7};
+    constexpr static uint8_t CONFIG     {0xF5};
+    constexpr static uint8_t CTRL_MEAS  {0xF4};
+    constexpr static uint8_t STATUS     {0xF3};
+    constexpr static uint8_t CTRL_HUM   {0xF2};
+    constexpr static uint8_t RESET      {0xE0};
+    constexpr static uint8_t ID         {0xD0};
 
     // Settings
     constexpr static uint8_t pressureSensorDisable = 0x00 << 2;
@@ -112,6 +112,10 @@ class BME280{
     int16_t   dig_h5 = 0;
     int8_t    dig_h6 = 0;
 
+    TaskHandle_t task_handle {NULL};
+    QueueHandle_t results_buffer {NULL};
+    UBaseType_t results_buffer_size {1};
+
     esp_err_t init_i2c(void);
     uint8_t get_status();
     esp_err_t get_calibration_data();
@@ -127,6 +131,9 @@ class BME280{
     esp_err_t read_uint16_t(const uint8_t command, uint16_t* pread_data);
     esp_err_t read_data(const uint8_t command, uint8_t* pread_data_buffer, size_t buffer_size);
     esp_err_t write_data(const uint8_t command, uint8_t* pwrite_data_buffer, size_t buffer_size);
+    
+    void measure_task();
+    static void get_measure_task_entry_point(void* arg);
 
   public:
     typedef struct{
@@ -146,6 +153,10 @@ class BME280{
         const uint8_t pressure_oversampling = pressureOversamplingX1,
         const uint8_t sensor_mode = sensorForcedMode);
     //esp_err_t Close(void);
+    QueueHandle_t get_results_buffer(); 
+    esp_err_t create_task(const char* pname, uint16_t stack_size, UBaseType_t task_priority);
+    void notify_measurement_start();
+
     esp_err_t get_deviceID(uint8_t* pdeviceID);
     esp_err_t check_deviceID(void);
     esp_err_t set_config(const uint8_t config);
@@ -157,11 +168,16 @@ class BME280{
     esp_err_t set_oversampling(const uint8_t temperature_oversampling, const uint8_t pressure_oversampling);
     esp_err_t set_mode(const uint8_t mode);                                    // ctrl_meas bits 1, 0
     esp_err_t set_ctrl_hummidity(const int humididty_oversampling);                    // ctrl_hum bits 2, 1, 0    page 28
+    esp_err_t update_sensor_data(); 
     esp_err_t get_all_results(results_data_t *results);
     esp_err_t get_all_results(float *temperature, double *humidity, float *pressure);
-    float get_temperature(void);    // Preferable to use GetAllResults()
+    float get_temperature(void);    
     float get_pressure(void);       
     int get_humidity(void);       
+    esp_err_t get_temperature(float* ptemperature);    
+    esp_err_t get_pressure(float* ppressure);       
+    esp_err_t get_humidity(double* humidity);       
+
     bool check_status_measuring_busy(void); // check status (0xF3) bit 3
     bool check_imUpdate_busy(void);        // check status (0xF3) bit 0
     esp_err_t reset(void);                // write 0xB6 into reset (0xE0)

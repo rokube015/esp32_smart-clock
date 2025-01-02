@@ -5,7 +5,7 @@
 
 BME280::BME280(){
   esp_log_level_set(BME280_TAG, ESP_LOG_ERROR);
-  ESP_LOGI(BME280_TAG, "set BME280_TAG log level: %d", ESP_LOG_DEBUG);
+  ESP_LOGI(BME280_TAG, "set BME280_TAG log level: %d", ESP_LOG_ERROR);
 }
 
 esp_err_t BME280::init_i2c(void){
@@ -62,6 +62,12 @@ esp_err_t BME280::init(
   ESP_LOGI(BME280_TAG, "ser CTRL_MEAS register to %x", ctrl_meas_data);
 
   if(r == ESP_OK){
+    r = check_deviceID();
+  }
+  if(r == ESP_OK){
+    r = set_config_filter(1);
+  }
+  if(r == ESP_OK){
     r |= write_byte(CONFIG, config_data); 
     r |= get_calibration_data();
     r |= write_byte(CTRL_HUM, mhumidity_oversampling_value);
@@ -69,6 +75,30 @@ esp_err_t BME280::init(
 
     if(r != ESP_OK){
       ESP_LOGE(BME280_TAG, "fail to initialize bme280.");
+    }
+  }
+  return r;
+}
+
+QueueHandle_t BME280::get_results_buffer(){
+  return results_buffer;
+}
+
+esp_err_t BME280::create_task(const char* pname, uint16_t stack_size, UBaseType_t task_priority){
+  esp_err_t r = ESP_OK;
+  BaseType_t r2 = pdTRUE;
+  if(r == ESP_OK){
+    results_buffer = xQueueCreate(results_buffer_size, sizeof(results_data));
+    if(results_buffer == NULL){
+      ESP_LOGE(BME280_TAG, "fail to create bme280 results_buffer");
+      r = ESP_ERR_NO_MEM;
+    }
+  } 
+  if(r == ESP_OK){
+    r2 = xTaskCreate(get_measure_task_entry_point, pname, stack_size, this, task_priority, &task_handle);
+    if(r2 != pdTRUE){
+      ESP_LOGE(BME280_TAG, "fail to create measure_task.");
+      r = ESP_FAIL;
     }
   }
   return r;
@@ -362,6 +392,7 @@ esp_err_t BME280::check_deviceID(void){
 
   if(r == ESP_OK){
     r = get_deviceID(&device_id);
+    ESP_LOGI(BME280_TAG, "BME280 DeviceID: %x", device_id);
   }
   if(r == ESP_OK){
     if(device_id != 0x60){
@@ -492,6 +523,24 @@ esp_err_t BME280::set_ctrl_hummidity(const int humidity_oversampling){
   return r;
 }
 
+esp_err_t BME280::update_sensor_data(){
+  esp_err_t r = ESP_OK;
+  sensor_raw_data_t result_raw{};
+  if(r == ESP_OK){
+    r = get_sensor_data(&result_raw);
+    if(r != ESP_OK){
+      ESP_LOGE(BME280_TAG, "fail to get sensor data.");
+    }
+  }
+  if(r == ESP_OK){
+    results_data.temperature = compensate_temperature(result_raw.mtemperature);
+    results_data.humidity = compensate_humidity(result_raw.mhumidity);
+    results_data.pressure = compensate_pressure(result_raw.mpressure);
+  }
+
+  return r;
+}
+
 esp_err_t BME280::get_all_results(results_data_t* results){
   esp_err_t r = ESP_OK;
   sensor_raw_data_t result_raw{};
@@ -558,6 +607,27 @@ int BME280::get_humidity(void){
 
   return results.humidity;
 }
+
+esp_err_t BME280::get_temperature(float* ptemperature){
+  esp_err_t r = ESP_OK; 
+  //ToDo: add mutex
+  *ptemperature = results_data.temperature;
+  return r;
+}
+
+esp_err_t BME280::get_pressure(float* ppressure){
+  esp_err_t r = ESP_OK;
+  //ToDo: add mutex
+  *ppressure = results_data.pressure;
+  return r;
+}
+
+esp_err_t BME280::get_humidity(double* phumidity){
+  esp_err_t r = ESP_OK;
+  //ToDo: add mutex
+  *phumidity = results_data.humidity;
+  return r;
+}  
 
 bool BME280::check_status_measuring_busy(void){ 
   // check status (0xF3) bit 3
@@ -667,3 +737,32 @@ int BME280::read_data(const uint8_t command,
   return r;
 }
 
+void BME280::measure_task(){
+  esp_err_t r = ESP_OK;
+  BaseType_t r2 = pdTRUE; 
+  while(true){
+    ESP_LOGI(BME280_TAG, "start bme280 measure task.");
+    vTaskDelay(pdMS_TO_TICKS(1000));
+    if(r == ESP_OK){
+      r = update_sensor_data(); 
+    }
+    if(r == ESP_OK){
+      r2 = xQueueSendToBack(results_buffer, &results_data, pdMS_TO_TICKS(100000));
+      if(r2 != pdTRUE){
+        ESP_LOGE(BME280_TAG, "fail to send to bme280 results_buffer");
+        r = ESP_FAIL;
+      } 
+    }
+    vTaskDelay(pdMS_TO_TICKS(5000));
+  }
+  vTaskDelete(NULL);
+}
+
+void BME280::get_measure_task_entry_point(void* arg){
+  BME280* pinstance = static_cast<BME280*>(arg);
+  pinstance->measure_task();
+}
+
+void BME280::notify_measurement_start(){
+  xTaskNotifyGive(task_handle);
+}
