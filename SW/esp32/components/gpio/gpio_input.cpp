@@ -70,7 +70,11 @@ namespace GpioInterface{
   }
 
   int GpioInput::read(void){
-    return mactive_low ? !gpio_get_level(minterrupt_args.mpin) : gpio_get_level(minterrupt_args.mpin);
+    int gpio_level = gpio_get_level(minterrupt_args.mpin);
+    gpio_level = (mactive_low ? !gpio_level : gpio_level);
+    ESP_LOGI(GPIO_TAG, "read gpio %d pin: %d, active_low: %d", 
+        minterrupt_args.mpin, gpio_level, mactive_low);
+    return gpio_level;
   }
 
   esp_err_t GpioInput::enable_pull_up(void){

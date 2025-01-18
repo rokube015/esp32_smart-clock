@@ -41,12 +41,18 @@ namespace GpioInterface{
 
   esp_err_t GpioOutput::on(void){
     mlevel = true;
-    return gpio_set_level(mpin, (mactive_low ? 0 : 1));
+    int gpio_level = (mactive_low ? 0 : 1);
+    ESP_LOGI(GPIO_TAG, "set gpio %d pin: %d, active_low: %d", 
+        mpin, gpio_level, mactive_low);
+    return gpio_set_level(mpin, gpio_level);
   }
 
   esp_err_t GpioOutput::off(void){
     mlevel = false;
-    return gpio_set_level(mpin, (mactive_low ? 1 : 0));
+    int gpio_level = (mactive_low ? 1 : 0);
+    ESP_LOGI(GPIO_TAG, "set gpio %d pin: %d, active_low: %d", 
+        mpin, gpio_level, mactive_low);
+    return gpio_set_level(mpin, gpio_level);
   }
 
   esp_err_t GpioOutput::toggle(void){

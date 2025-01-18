@@ -35,6 +35,15 @@ void SMART_CLOCK::get_monitor_sensor_task_entry_point(void* arg){
 void SMART_CLOCK::init(void){
   esp_err_t r = ESP_OK;
 
+  // initialize e-paper
+  if(r == ESP_OK){
+    r = e_paper.init();
+    vTaskDelay(pdMS_TO_TICKS(50));
+  }
+  if(r == ESP_OK){
+    r = e_paper.clear_screen();
+  }
+
   esp_event_loop_create_default();
   nvs_flash_init();
 
@@ -44,16 +53,6 @@ void SMART_CLOCK::init(void){
   // Initialize the I2C
   if(r == ESP_OK){ 
     r = i2c.init();
-  }
-  // Initialize the AQM0802A I2C device
-  if(r == ESP_OK){
-    r = aqm0802a.init(&i2c);
-  }
-  if(r == ESP_OK){
-    r = aqm0802a.print_string("Hello");
-    if(r != ESP_OK){
-      ESP_LOGE(SMART_CLOCK_TAG, "fail to print string.");
-    }
   }
   // Initialize the BME280 I2C device
   if(r == ESP_OK){ 
@@ -80,7 +79,6 @@ void SMART_CLOCK::init(void){
   if(r == ESP_OK){ 
     r = sd_card.init();
   }
-
   if(r == ESP_OK){
     char sd_card_write_data_buffer[400];
     snprintf(sd_card_write_data_buffer, sizeof(sd_card_write_data_buffer), "YYYY/MM/DD, week, HH:MM:SS, CO2[rpm], Temperature[degree], Humidity[%%], Pressure[hPa]\n");
@@ -136,7 +134,7 @@ void SMART_CLOCK::run(void){
   if(r == ESP_OK){
     r = sntp.get_logtime(time_info, sizeof(time_info));
   }
-  
+#if 0
   if(r == ESP_OK){
     snprintf(sd_card_write_data_buffer, sizeof(sd_card_write_data_buffer), "%s, %d, %.2lf, %.2lf, %.2lf\n", time_info, co2, temperature, humidity, pressure);
     r = sd_card.write_data(file_path, sizeof(file_path), sd_card_write_data_buffer, 'a');
@@ -144,19 +142,7 @@ void SMART_CLOCK::run(void){
       ESP_LOGE(SMART_CLOCK_TAG, "fail to write sensor log to sd_card.");
     }
   }
-  if(r == ESP_OK){
-    r = aqm0802a.clear_display();
-  }
-  if(r == ESP_OK){
-    char send_buf[32];
-    snprintf(send_buf, sizeof(send_buf), "CO2:");
-    r = aqm0802a.return_cursor_home();
-    r |= aqm0802a.print_string(send_buf);
-
-    snprintf(send_buf, sizeof(send_buf), "%4dppm",co2);
-    r |= aqm0802a.set_cursor_pos(1, 0);
-    r |= aqm0802a.print_string(send_buf);
-  }  
+#endif
   if(r == ESP_OK){
     std::cout << "==================================================" << std::endl;
     std::cout << "Time              : " << time_info << std::endl;
