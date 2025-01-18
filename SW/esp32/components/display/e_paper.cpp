@@ -235,7 +235,7 @@ esp_err_t EPAPER::turn_on_display(){
   }
   if(r == ESP_OK){
     while(is_busy()){
-      vTaskDelay(pdMS_TO_TICKS(50));
+      vTaskDelay(pdMS_TO_TICKS(500));
     }
   }
 
