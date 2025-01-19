@@ -59,6 +59,7 @@ void SMART_CLOCK::init(void){
   }
   if(r == ESP_OK){
     black_sprite.setColorDepth(1);
+    black_sprite.setRotation(1);
     black_sprite.createSprite(e_paper.get_display_resolution_width(), e_paper.get_display_resolution_height());
     black_sprite.setTextWrap(true);
     black_sprite.fillScreen(WHITE);
@@ -68,6 +69,7 @@ void SMART_CLOCK::init(void){
     black_sprite.setTextSize(1);
     
     red_sprite.setColorDepth(1);
+    red_sprite.setRotation(1);
     red_sprite.createSprite(e_paper.get_display_resolution_width(), e_paper.get_display_resolution_height());
     red_sprite.setTextWrap(false);
     red_sprite.fillScreen(WHITE);
@@ -77,23 +79,12 @@ void SMART_CLOCK::init(void){
     red_sprite.setTextSize(1);
     
     black_sprite.print("hello world!");
-    red_sprite.fillRect(50, 200, 150, 160, BLACK);
     ESP_LOG_BUFFER_HEX_LEVEL(SMART_CLOCK_TAG, black_sprite.getBuffer(), e_paper.get_display_bytes(), ESP_LOG_INFO);
     ESP_LOG_BUFFER_HEX_LEVEL(SMART_CLOCK_TAG, red_sprite.getBuffer(), e_paper.get_display_bytes(), ESP_LOG_INFO);
     r = e_paper.display((uint8_t*)black_sprite.getBuffer(), 
         e_paper.get_display_bytes(),
         (uint8_t*)red_sprite.getBuffer(), 
         e_paper.get_display_bytes());
-    ESP_LOGI(SMART_CLOCK_TAG, "print hello world.");
-    /*
-    vTaskDelay(pdMS_TO_TICKS(10000));
-    red_sprite.fillRect(0, 200, 200, 160, BLACK);
-    r = e_paper.display((uint8_t*)black_sprite.getBuffer(), 
-        e_paper.get_display_bytes(),
-        (uint8_t*)red_sprite.getBuffer(), 
-        e_paper.get_display_bytes());
-    ESP_LOGI(SMART_CLOCK_TAG, "print hello world.");
-    */
   }
  
   wifi.set_credentials(ESP_WIFI_SSID, ESP_WIFI_PASS);
@@ -199,7 +190,22 @@ void SMART_CLOCK::run(void){
     std::cout << "SCD40  CO2        : " << co2 << "ppm" << std::endl;
     std::cout << "==================================================" << std::endl;;
   }
-  vTaskDelay(pdMS_TO_TICKS(10000));
+  if(r == ESP_OK){
+    black_sprite.fillScreen(WHITE);
+    black_sprite.setCursor(0, 0);
+    red_sprite.fillScreen(WHITE);
+    
+    black_sprite.printf("Time:%s\n", time_info);
+    black_sprite.printf("CO2: %dppm\n", co2);
+    black_sprite.printf("Temperature: %.2lfdeg \n", temperature);
+    black_sprite.printf("Humidity: %.2lf%% \n", humidity);
+    black_sprite.printf("Pressure: %.2lfhpa\n", pressure);
+    r = e_paper.display((uint8_t*)black_sprite.getBuffer(), 
+        e_paper.get_display_bytes(),
+        (uint8_t*)red_sprite.getBuffer(), 
+        e_paper.get_display_bytes());
+  }
+  vTaskDelay(pdMS_TO_TICKS(60000));
 }
 
 esp_err_t SMART_CLOCK::create_monitor_sensor_task(const char* pname, uint16_t stack_size, UBaseType_t task_priority){
