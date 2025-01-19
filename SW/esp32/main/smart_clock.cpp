@@ -3,6 +3,14 @@
 #include "smart_clock.h"
 #include "wifi_pass.h"
 
+LGFX_Sprite SMART_CLOCK::black_sprite;
+LGFX_Sprite SMART_CLOCK::red_sprite;
+
+SMART_CLOCK::SMART_CLOCK(){
+  esp_log_level_set(SMART_CLOCK_TAG, ESP_LOG_INFO);
+  ESP_LOGI(SMART_CLOCK_TAG, "set SMART_CLOCK_TAG log level: %d", ESP_LOG_INFO);
+}
+
 void SMART_CLOCK::monitor_sensor_task(){
   BaseType_t r2 = pdTRUE;
 
@@ -34,6 +42,8 @@ void SMART_CLOCK::get_monitor_sensor_task_entry_point(void* arg){
 
 void SMART_CLOCK::init(void){
   esp_err_t r = ESP_OK;
+  esp_event_loop_create_default();
+  nvs_flash_init();
 
   // initialize e-paper
   if(r == ESP_OK){
@@ -42,11 +52,38 @@ void SMART_CLOCK::init(void){
   }
   if(r == ESP_OK){
     r = e_paper.clear_screen();
+    if(r != ESP_OK){
+      ESP_LOGE(SMART_CLOCK_TAG, "fail to clear display.");
+    }
+    vTaskDelay(pdMS_TO_TICKS(10000));
   }
-
-  esp_event_loop_create_default();
-  nvs_flash_init();
-
+  if(r == ESP_OK){
+    black_sprite.setColorDepth(1);
+    black_sprite.createSprite(e_paper.get_display_resolution_width(), e_paper.get_display_resolution_height());
+    black_sprite.setTextWrap(false);
+    black_sprite.fillScreen(BLACK);
+    black_sprite.setCursor(0, 0);
+    black_sprite.setFont(&fonts::Font4);
+    black_sprite.setTextColor(BLACK);
+    black_sprite.setTextSize(1);
+    
+    red_sprite.setColorDepth(1);
+    red_sprite.createSprite(e_paper.get_display_resolution_width(), e_paper.get_display_resolution_height());
+    red_sprite.setTextWrap(false);
+    red_sprite.fillScreen(WHITE);
+    red_sprite.setCursor(0, 0);
+    red_sprite.setFont(&fonts::Font4);
+    red_sprite.setTextColor(BLACK);
+    red_sprite.setTextSize(1);
+   
+    ESP_LOGI(SMART_CLOCK_TAG, "print hello world.");
+    r = e_paper.display((uint8_t*)black_sprite.getBuffer(), 
+        e_paper.get_display_bytes(),
+        (uint8_t*)red_sprite.getBuffer(), 
+        e_paper.get_display_bytes());
+  }
+  
+  vTaskDelay(pdMS_TO_TICKS(10000));
   wifi.set_credentials(ESP_WIFI_SSID, ESP_WIFI_PASS);
   wifi.init();
 
@@ -134,7 +171,6 @@ void SMART_CLOCK::run(void){
   if(r == ESP_OK){
     r = sntp.get_logtime(time_info, sizeof(time_info));
   }
-#if 0
   if(r == ESP_OK){
     snprintf(sd_card_write_data_buffer, sizeof(sd_card_write_data_buffer), "%s, %d, %.2lf, %.2lf, %.2lf\n", time_info, co2, temperature, humidity, pressure);
     r = sd_card.write_data(file_path, sizeof(file_path), sd_card_write_data_buffer, 'a');
@@ -142,7 +178,6 @@ void SMART_CLOCK::run(void){
       ESP_LOGE(SMART_CLOCK_TAG, "fail to write sensor log to sd_card.");
     }
   }
-#endif
   if(r == ESP_OK){
     std::cout << "==================================================" << std::endl;
     std::cout << "Time              : " << time_info << std::endl;

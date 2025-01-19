@@ -5,7 +5,6 @@
 
 #include "gpio_interface.h"
 
-#include "LovyanGFX.hpp"
 
 class EPAPER{
   private:
@@ -53,8 +52,6 @@ class EPAPER{
     GpioInterface::GpioOutput rst_pin;  
     GpioInterface::GpioInput  busy_pin;
     
-    DMA_ATTR static LGFX_Sprite black_sprite;
-    
     //function
     esp_err_t init_spi_bus();
     esp_err_t init_gpio();
@@ -65,7 +62,10 @@ class EPAPER{
     esp_err_t wait_until_ready();
   public:
     EPAPER();
-
+    const uint16_t get_display_resolution_height(){return DISPLAY_RESOLUTION_HEIGHT;}
+    const uint16_t get_display_resolution_width(){return DISPLAY_RESOLUTION_WIDTH;}
+    const uint16_t get_display_row_length(){return DISPLAY_ROW_LENGTH;}
+    const int      get_display_bytes(){return DISPLAY_DISP_BYTES;}        
     esp_err_t init();
     esp_err_t execute_hw_reset(); 
     esp_err_t turn_on_display();
@@ -73,5 +73,6 @@ class EPAPER{
         const uint8_t* pred_image, size_t red_image_size);
     esp_err_t display_number(const uint8_t *pimage, uint8_t num);
     esp_err_t clear_screen();
+    esp_err_t display_black();
     esp_err_t set_sleep_mode();
 };

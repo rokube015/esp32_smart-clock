@@ -72,7 +72,7 @@ namespace GpioInterface{
   int GpioInput::read(void){
     int gpio_level = gpio_get_level(minterrupt_args.mpin);
     gpio_level = (mactive_low ? !gpio_level : gpio_level);
-    ESP_LOGI(GPIO_TAG, "read gpio %d pin: %d, active_low: %d", 
+    ESP_LOGD(GPIO_TAG, "read gpio %d pin: %d, active_low: %d", 
         minterrupt_args.mpin, gpio_level, mactive_low);
     return gpio_level;
   }

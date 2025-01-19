@@ -42,7 +42,7 @@ namespace GpioInterface{
   esp_err_t GpioOutput::on(void){
     mlevel = true;
     int gpio_level = (mactive_low ? 0 : 1);
-    ESP_LOGI(GPIO_TAG, "set gpio %d pin: %d, active_low: %d", 
+    ESP_LOGD(GPIO_TAG, "set gpio %d pin: %d, active_low: %d", 
         mpin, gpio_level, mactive_low);
     return gpio_set_level(mpin, gpio_level);
   }
@@ -50,7 +50,7 @@ namespace GpioInterface{
   esp_err_t GpioOutput::off(void){
     mlevel = false;
     int gpio_level = (mactive_low ? 1 : 0);
-    ESP_LOGI(GPIO_TAG, "set gpio %d pin: %d, active_low: %d", 
+    ESP_LOGD(GPIO_TAG, "set gpio %d pin: %d, active_low: %d", 
         mpin, gpio_level, mactive_low);
     return gpio_set_level(mpin, gpio_level);
   }

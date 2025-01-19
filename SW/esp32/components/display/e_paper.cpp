@@ -4,7 +4,6 @@
 #include "e_paper.h"
 
 uint8_t EPAPER::transffer_buffer[DISPLAY_DISP_BYTES];
-LGFX_Sprite EPAPER::black_sprite;
 
 EPAPER::EPAPER(){
   esp_log_level_set(EPAPER_TAG, ESP_LOG_INFO);
@@ -216,10 +215,6 @@ esp_err_t EPAPER::init(){
     r = init_epaper();
   }
 
-  black_sprite.setColorDepth(1);
-  black_sprite.createSprite(DISPLAY_RESOLUTION_WIDTH, DISPLAY_RESOLUTION_HEIGHT);
-  black_sprite.setTextWrap(false);
-  
   return r;
 }
 
@@ -257,6 +252,32 @@ esp_err_t EPAPER::display(const uint8_t* pblack_image, size_t black_image_size,
     const uint8_t* pred_image, size_t red_image_size){
   esp_err_t r = ESP_OK;
   
+  static spi_transaction_t spi_transaction = {
+    .flags = SPI_TRANS_USE_TXDATA,
+    .length = 8,
+  };
+  if(r == ESP_OK){
+    while(is_busy()){
+      vTaskDelay(pdMS_TO_TICKS(5));
+      ESP_LOGI(EPAPER_TAG, "waiting for epaper is ready.");
+    }
+  }
+  if(r == ESP_OK){
+    r = send_command(DISPLAY_START_TRANSMISSION_1, NULL, 0);
+  }
+  if(r == ESP_OK){
+    r = send_frame(pblack_image, black_image_size);
+  }
+  if(r == ESP_OK){
+    r = send_command(DISPLAY_START_TRANSMISSION_2, NULL, 0);
+  }
+  if(r == ESP_OK){
+    r = send_frame(pred_image, red_image_size);
+  }
+  if(r == ESP_OK){
+    r = turn_on_display();
+  }
+
   return r;
 }
 
@@ -288,6 +309,7 @@ esp_err_t EPAPER::clear_screen(){
     }
   }
   if(r == ESP_OK){
+    memset(transffer_buffer, 0x00, sizeof(transffer_buffer));
     r = send_frame(transffer_buffer, sizeof(transffer_buffer));
   }
   
@@ -318,5 +340,33 @@ esp_err_t EPAPER::clear_screen(){
   if(r == ESP_OK){
     r = turn_on_display();
   }
+  return r;
+}
+
+esp_err_t EPAPER::display_black(){
+  esp_err_t r = ESP_OK;
+  
+  static spi_transaction_t spi_transaction = {
+    .flags = SPI_TRANS_USE_TXDATA,
+    .length = 8,
+  };
+  if(r == ESP_OK){
+    while(is_busy()){
+      vTaskDelay(pdMS_TO_TICKS(5));
+      ESP_LOGI(EPAPER_TAG, "waiting for epaper is ready.");
+    }
+  }
+  if(r == ESP_OK){
+    r = send_command(DISPLAY_START_TRANSMISSION_1, NULL, 0);
+  }
+  if(r == ESP_OK){
+    memset(transffer_buffer, 0xFF, sizeof(transffer_buffer));
+    r = send_frame(transffer_buffer, sizeof(transffer_buffer));
+    memset(transffer_buffer, 0x00, sizeof(transffer_buffer)); 
+  }
+  if(r == ESP_OK){
+    r = turn_on_display();
+  }
+
   return r;
 }

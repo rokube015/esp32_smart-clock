@@ -15,10 +15,14 @@
 #include "sd_card.h"
 #include "sntp_interface.h"
 
+#include "LovyanGFX.hpp"
+
 class SMART_CLOCK final{
   private:
     constexpr static const char* SMART_CLOCK_TAG = "smart_clock"; 
     const char file_path[50] = "/sensor_log.csv";
+    constexpr static uint8_t WHITE  {0};
+    constexpr static uint8_t BLACK  {255};
 
     TaskHandle_t sensor_task_handle {NULL};
     QueueHandle_t co2_buffer {NULL};
@@ -36,12 +40,17 @@ class SMART_CLOCK final{
     WIFI wifi;
     SNTP sntp;
     
+    DMA_ATTR static LGFX_Sprite black_sprite;
+    DMA_ATTR static LGFX_Sprite red_sprite;
+    
+    
     BME280::results_data_t results_data {0.0, 0.0, 0.0};
     float temperature {0.0};  //[degree Celsius]
     float pressure    {0.0};  //[hPa]
     double humidity   {0.0};  //[%]
     uint16_t co2      {0};    //[ppm]
 
+    SMART_CLOCK();
     void init(void);
     void wifi_run(void);
     void run(void);
