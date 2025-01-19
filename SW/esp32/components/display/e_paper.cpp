@@ -4,6 +4,7 @@
 #include "e_paper.h"
 
 uint8_t EPAPER::transffer_buffer[DISPLAY_DISP_BYTES];
+LGFX_Sprite EPAPER::black_sprite;
 
 EPAPER::EPAPER(){
   esp_log_level_set(EPAPER_TAG, ESP_LOG_INFO);
@@ -53,6 +54,9 @@ esp_err_t EPAPER::init_gpio(){
     r = dc_pin.init(EPAPER_DC_PIN); 
     r |= rst_pin.init(EPAPER_RST_PIN, true); // set active low 
     r |= busy_pin.init(EPAPER_BUSY_PIN, true); // set active low 
+    if(r != ESP_OK){
+      ESP_LOGE(EPAPER_TAG, "fail to initialize gpio.");
+    }
   }
   if(r == ESP_OK){
     r = dc_pin.on();
@@ -60,6 +64,71 @@ esp_err_t EPAPER::init_gpio(){
     if(r != ESP_OK){
       ESP_LOGE(EPAPER_TAG, "fail to gpio level setting.");
     }
+  }
+  return r;
+}
+
+esp_err_t EPAPER::init_epaper(){
+  esp_err_t r = ESP_OK;
+  
+  ESP_LOGI(EPAPER_TAG, "start to initialize e-paper.");
+
+  if(r == ESP_OK){
+    r = init_gpio();
+  }  
+  if(r == ESP_OK){
+    r = init_spi_bus();
+  }
+  if(r == ESP_OK){
+    r = execute_hw_reset();
+  }
+  if(r == ESP_OK){
+    uint8_t send_data_buffer[3] = {0x17, 0x17, 0x17};
+    r = send_command(BOOSTER_SOFT_START_COMMAND, send_data_buffer, sizeof(send_data_buffer));
+    if(r != ESP_OK){
+     ESP_LOGE(EPAPER_TAG, "fail to send BOOSTER_SOFT_START_COMMAND.");
+    }
+  }
+  if(r == ESP_OK){
+    r = send_command(POWER_ON_COMMAND, NULL, 0);
+    vTaskDelay(pdMS_TO_TICKS(500)); 
+    if(r != ESP_OK){
+     ESP_LOGE(EPAPER_TAG, "fail to send POWER_ON_COMMAND.");
+    }
+  } 
+  if(r == ESP_OK){
+    r = wait_until_ready(); 
+  }
+  if(r == ESP_OK){
+    r = send_command(PANEL_SETTING_COMMAND, PANEL_SETTINGS, sizeof(PANEL_SETTINGS));
+    vTaskDelay(pdMS_TO_TICKS(5)); 
+    if(r != ESP_OK){
+      ESP_LOGE(EPAPER_TAG, "fail to send PANEL_SETTING_COMMAND.");
+    }
+  }
+  if(r == ESP_OK){
+    r = send_command(SET_DISPLAY_RESOLUTION_COMMAND, DISPLAY_RESOLUTION_SETTINGS, sizeof(DISPLAY_RESOLUTION_SETTINGS));
+    vTaskDelay(pdMS_TO_TICKS(5)); 
+    if(r != ESP_OK){
+      ESP_LOGE(EPAPER_TAG, "fail to send SET_DISPLAY_RESOLUTION_COMMAND.");
+    }
+  }
+  if(r == ESP_OK){
+    r = send_command(STARTING_DATA_TRANSMISSION_COMMAND, 
+        STARTING_DATA_TRANSMISSION_SETTINGS, sizeof(STARTING_DATA_TRANSMISSION_SETTINGS));
+    vTaskDelay(pdMS_TO_TICKS(5));
+    if(r != ESP_OK){
+      ESP_LOGE(EPAPER_TAG, "fail to send STARTING_DATA_TRANSMISSION_COMMAND.");
+    }
+  }
+  if(r == ESP_OK){
+    while(is_busy()){
+      vTaskDelay(pdMS_TO_TICKS(5));
+    }
+    ESP_LOGI(EPAPER_TAG, "initialization completed successfully.");
+  } 
+  if(r != ESP_OK){
+    ESP_LOGE(EPAPER_TAG, "fail to initialization.");
   }
   return r;
 }
@@ -143,72 +212,14 @@ esp_err_t EPAPER::wait_until_ready(){
 esp_err_t EPAPER::init(){
   esp_err_t r = ESP_OK;
   
-  ESP_LOGI(EPAPER_TAG, "start to initialize e-paper.");
+  if(r == ESP_OK){
+    r = init_epaper();
+  }
 
-  if(r == ESP_OK){
-    r = init_gpio();
-    if(r != ESP_OK){
-      ESP_LOGE(EPAPER_TAG, "fail to init gpio.");
-    }
-  }  
-  if(r == ESP_OK){
-    r = init_spi_bus();
-    if(r != ESP_OK){
-      ESP_LOGE(EPAPER_TAG, "fail to init spi bus.");
-    }
-  }
+  black_sprite.setColorDepth(1);
+  black_sprite.createSprite(DISPLAY_RESOLUTION_WIDTH, DISPLAY_RESOLUTION_HEIGHT);
+  black_sprite.setTextWrap(false);
   
-  if(r == ESP_OK){
-    r = execute_hw_reset();
-  }
-  if(r == ESP_OK){
-    uint8_t send_data_buffer[3] = {0x17, 0x17, 0x17};
-    r = send_command(BOOSTER_SOFT_START_COMMAND, send_data_buffer, sizeof(send_data_buffer));
-    if(r != ESP_OK){
-     ESP_LOGE(EPAPER_TAG, "fail to send BOOSTER_SOFT_START_COMMAND.");
-    }
-  }
-  if(r == ESP_OK){
-    r = send_command(POWER_ON_COMMAND, NULL, 0);
-    vTaskDelay(pdMS_TO_TICKS(500)); 
-    if(r != ESP_OK){
-     ESP_LOGE(EPAPER_TAG, "fail to send POWER_ON_COMMAND.");
-    }
-  } 
-  if(r == ESP_OK){
-    r = wait_until_ready(); 
-  }
-  if(r == ESP_OK){
-    r = send_command(PANEL_SETTING_COMMAND, PANEL_SETTINGS, sizeof(PANEL_SETTINGS));
-    vTaskDelay(pdMS_TO_TICKS(5)); 
-    if(r != ESP_OK){
-      ESP_LOGE(EPAPER_TAG, "fail to send PANEL_SETTING_COMMAND.");
-    }
-  }
-  if(r == ESP_OK){
-    r = send_command(SET_DISPLAY_RESOLUTION_COMMAND, DISPLAY_RESOLUTION_SETTINGS, sizeof(DISPLAY_RESOLUTION_SETTINGS));
-    vTaskDelay(pdMS_TO_TICKS(5)); 
-    if(r != ESP_OK){
-      ESP_LOGE(EPAPER_TAG, "fail to send SET_DISPLAY_RESOLUTION_COMMAND.");
-    }
-  }
-  if(r == ESP_OK){
-    r = send_command(STARTING_DATA_TRANSMISSION_COMMAND, 
-        STARTING_DATA_TRANSMISSION_SETTINGS, sizeof(STARTING_DATA_TRANSMISSION_SETTINGS));
-    vTaskDelay(pdMS_TO_TICKS(5));
-    if(r != ESP_OK){
-      ESP_LOGE(EPAPER_TAG, "fail to send STARTING_DATA_TRANSMISSION_COMMAND.");
-    }
-  }
-  if(r == ESP_OK){
-    while(is_busy()){
-      vTaskDelay(pdMS_TO_TICKS(5));
-    }
-    ESP_LOGI(EPAPER_TAG, "initialization completed successfully.");
-  } 
-  if(r != ESP_OK){
-    ESP_LOGE(EPAPER_TAG, "fail to initialization.");
-  }
   return r;
 }
 

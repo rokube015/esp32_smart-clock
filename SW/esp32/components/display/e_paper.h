@@ -5,6 +5,8 @@
 
 #include "gpio_interface.h"
 
+#include "LovyanGFX.hpp"
+
 class EPAPER{
   private:
     constexpr static const char* EPAPER_TAG = "e-papaer";
@@ -26,7 +28,6 @@ class EPAPER{
     constexpr static uint16_t DISPLAY_RESOLUTION_WIDTH   {240};
     constexpr static uint16_t DISPLAY_ROW_LENGTH         {DISPLAY_RESOLUTION_WIDTH / 8};
     constexpr static int      DISPLAY_DISP_BYTES         {DISPLAY_ROW_LENGTH * DISPLAY_RESOLUTION_HEIGHT};
-    
     
     // E-paper command
     constexpr static uint8_t PANEL_SETTING_COMMAND              {0x00};
@@ -51,10 +52,13 @@ class EPAPER{
     GpioInterface::GpioOutput dc_pin;
     GpioInterface::GpioOutput rst_pin;  
     GpioInterface::GpioInput  busy_pin;
-
+    
+    DMA_ATTR static LGFX_Sprite black_sprite;
+    
     //function
     esp_err_t init_spi_bus();
     esp_err_t init_gpio();
+    esp_err_t init_epaper(); 
     esp_err_t send_command(const uint8_t addr, const uint8_t* pdata_buffer, size_t buffer_size);
     esp_err_t send_frame(const uint8_t* pdata_buffer, size_t buffer_size);
     uint8_t  is_busy(); // Returns: 0: Host side can send data to driver. 1: Driver is busy.
