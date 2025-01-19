@@ -45,7 +45,6 @@ class EPAPER{
 
     // valiables
     spi_device_handle_t spi_handle;
-    DMA_ATTR static uint8_t transffer_buffer[DISPLAY_DISP_BYTES];
     
     //class
     GpioInterface::GpioOutput dc_pin;
@@ -61,11 +60,13 @@ class EPAPER{
     uint8_t  is_busy(); // Returns: 0: Host side can send data to driver. 1: Driver is busy.
     esp_err_t wait_until_ready();
   public:
+    DMA_ATTR static uint8_t transffer_buffer[DISPLAY_DISP_BYTES];
+    
     EPAPER();
-    const uint16_t get_display_resolution_height(){return DISPLAY_RESOLUTION_HEIGHT;}
-    const uint16_t get_display_resolution_width(){return DISPLAY_RESOLUTION_WIDTH;}
-    const uint16_t get_display_row_length(){return DISPLAY_ROW_LENGTH;}
-    const int      get_display_bytes(){return DISPLAY_DISP_BYTES;}        
+    uint16_t get_display_resolution_height(){return DISPLAY_RESOLUTION_HEIGHT;}
+    uint16_t get_display_resolution_width(){return DISPLAY_RESOLUTION_WIDTH;}
+    uint16_t get_display_row_length(){return DISPLAY_ROW_LENGTH;}
+    int      get_display_bytes(){return DISPLAY_DISP_BYTES;}        
     esp_err_t init();
     esp_err_t execute_hw_reset(); 
     esp_err_t turn_on_display();
