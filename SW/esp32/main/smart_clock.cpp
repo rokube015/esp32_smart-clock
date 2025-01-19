@@ -197,7 +197,7 @@ void SMART_CLOCK::run(void){
     
     black_sprite.printf("Time:%s\n", time_info);
     black_sprite.printf("CO2: %dppm\n", co2);
-    black_sprite.printf("Temperature: %.2lfdeg \n", temperature);
+    black_sprite.printf("Temperature: %.1lfC\n", temperature);
     black_sprite.printf("Humidity: %.2lf%% \n", humidity);
     black_sprite.printf("Pressure: %.2lfhpa\n", pressure);
     r = e_paper.display((uint8_t*)black_sprite.getBuffer(), 
