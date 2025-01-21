@@ -1,4 +1,4 @@
-# ESP32-CO2_Sensor
+# ESP32-smart-clock
 
 This repository provides firmware and PCB for a CO2 sensor project using the ESP-IDF framework.
 
