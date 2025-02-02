@@ -3,15 +3,15 @@
 
 #include "e_paper.h"
 
-uint8_t EPAPER::transffer_buffer[DISPLAY_DISP_BYTES];
+uint8_t EPAPER3IN52::transffer_buffer[DISPLAY_DISP_BYTES];
 
-EPAPER::EPAPER(){
+EPAPER3IN52::EPAPER3IN52(){
   esp_log_level_set(EPAPER_TAG, ESP_LOG_INFO);
   ESP_LOGI(EPAPER_TAG, "set EPAPER_TAG log level: %d", ESP_LOG_INFO);
   memset(transffer_buffer, 0x00, sizeof(transffer_buffer));
 }
 
-esp_err_t EPAPER::init_spi_bus(){
+esp_err_t EPAPER3IN52::init_spi_bus(){
   esp_err_t r = ESP_OK;
   spi_bus_config_t bus_cfg = {
     .mosi_io_num = SPI_MOSI_PIN,
@@ -47,7 +47,7 @@ esp_err_t EPAPER::init_spi_bus(){
   return r;
 }
 
-esp_err_t EPAPER::init_gpio(){
+esp_err_t EPAPER3IN52::init_gpio(){
   esp_err_t r = ESP_OK;
   if(r == ESP_OK){
     r = dc_pin.init(EPAPER_DC_PIN); 
@@ -67,7 +67,7 @@ esp_err_t EPAPER::init_gpio(){
   return r;
 }
 
-esp_err_t EPAPER::init_epaper(){
+esp_err_t EPAPER3IN52::init_epaper(){
   esp_err_t r = ESP_OK;
   
   ESP_LOGI(EPAPER_TAG, "start to initialize e-paper.");
@@ -132,7 +132,7 @@ esp_err_t EPAPER::init_epaper(){
   return r;
 }
 
-esp_err_t EPAPER::send_command(const uint8_t addr, const uint8_t* pdata_buffer, size_t buffer_size){
+esp_err_t EPAPER3IN52::send_command(const uint8_t addr, const uint8_t* pdata_buffer, size_t buffer_size){
   esp_err_t r = ESP_OK;
   static spi_transaction_t spi_transaction;
   memset(&spi_transaction, 0, sizeof(spi_transaction));
@@ -177,7 +177,7 @@ esp_err_t EPAPER::send_command(const uint8_t addr, const uint8_t* pdata_buffer, 
   return r;
 }
 
-esp_err_t EPAPER::send_frame(const uint8_t* pdata_buffer, size_t buffer_size){
+esp_err_t EPAPER3IN52::send_frame(const uint8_t* pdata_buffer, size_t buffer_size){
   esp_err_t r = ESP_OK;
   static spi_transaction_t spi_transaction = {
     .flags = SPI_TRANS_DMA_BUFFER_ALIGN_MANUAL,
@@ -194,11 +194,11 @@ esp_err_t EPAPER::send_frame(const uint8_t* pdata_buffer, size_t buffer_size){
   return r;
 }
 
-uint8_t EPAPER::is_busy(){
+uint8_t EPAPER3IN52::is_busy(){
   return busy_pin.read();
 }
 
-esp_err_t EPAPER::wait_until_ready(){
+esp_err_t EPAPER3IN52::wait_until_ready(){
   esp_err_t r = ESP_OK;
   while(is_busy()){
     ESP_LOGI(EPAPER_TAG, "wait until e-paper is ready");
@@ -208,7 +208,7 @@ esp_err_t EPAPER::wait_until_ready(){
   return r;
 }
 
-esp_err_t EPAPER::init(){
+esp_err_t EPAPER3IN52::init(){
   esp_err_t r = ESP_OK;
   
   if(r == ESP_OK){
@@ -218,7 +218,7 @@ esp_err_t EPAPER::init(){
   return r;
 }
 
-esp_err_t EPAPER::execute_hw_reset(){
+esp_err_t EPAPER3IN52::execute_hw_reset(){
   esp_err_t r = ESP_OK;
   if(r == ESP_OK){
     r = rst_pin.off();
@@ -231,7 +231,7 @@ esp_err_t EPAPER::execute_hw_reset(){
   return r;
 }
 
-esp_err_t EPAPER::turn_on_display(){
+esp_err_t EPAPER3IN52::turn_on_display(){
   esp_err_t r = ESP_OK;
   if(r == ESP_OK){
     r = send_command(DISPLAY_REFRESH_COMMAND, NULL, 0);
@@ -248,7 +248,7 @@ esp_err_t EPAPER::turn_on_display(){
   return r;
 }
 
-esp_err_t EPAPER::display(const uint8_t* pblack_image, size_t black_image_size,
+esp_err_t EPAPER3IN52::display(const uint8_t* pblack_image, size_t black_image_size,
     const uint8_t* pred_image, size_t red_image_size){
   esp_err_t r = ESP_OK;
   
@@ -281,7 +281,7 @@ esp_err_t EPAPER::display(const uint8_t* pblack_image, size_t black_image_size,
   return r;
 }
 
-esp_err_t EPAPER::clear_screen(){
+esp_err_t EPAPER3IN52::clear_screen(){
   esp_err_t r = ESP_OK;
   static spi_transaction_t spi_transaction = {
     .flags = SPI_TRANS_USE_TXDATA,
@@ -343,7 +343,7 @@ esp_err_t EPAPER::clear_screen(){
   return r;
 }
 
-esp_err_t EPAPER::display_black(){
+esp_err_t EPAPER3IN52::display_black(){
   esp_err_t r = ESP_OK;
   
   static spi_transaction_t spi_transaction = {

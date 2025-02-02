@@ -21,8 +21,8 @@ class SMART_CLOCK final{
   private:
     constexpr static const char* SMART_CLOCK_TAG = "smart_clock"; 
     const char file_path[50] = "/sensor_log.csv";
-    constexpr static uint8_t WHITE  {0};
-    constexpr static uint8_t BLACK  {255};
+    constexpr static uint8_t WHITE  {255};
+    constexpr static uint8_t BLACK  {0};
 
     TaskHandle_t sensor_task_handle {NULL};
     QueueHandle_t co2_buffer {NULL};
@@ -35,14 +35,12 @@ class SMART_CLOCK final{
     i2c_base::I2C i2c;
     BME280 bme280;
     SCD40 scd40;
-    EPAPER e_paper;
+    EPAPER4IN26 e_paper;
     SD_CARD sd_card;
     WIFI wifi;
     SNTP sntp;
     
     DMA_ATTR static LGFX_Sprite black_sprite;
-    DMA_ATTR static LGFX_Sprite red_sprite;
-    
     
     BME280::results_data_t results_data {0.0, 0.0, 0.0};
     float temperature {0.0};  //[degree Celsius]

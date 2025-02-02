@@ -37,6 +37,10 @@ class SNTP : private WIFI{
     [[nodiscard]] static const char* time_now_ascii(void);
 
     [[nodiscard]] static std::chrono::seconds epoch_seconds(void);
+    
+    static esp_err_t get_daytime(char* ptime_string, size_t time_string_size);
+    
+    static esp_err_t get_time(char* ptime_string, size_t time_string_size);
 
     static esp_err_t get_logtime(char* ptimestamp, size_t timestamp_size);
     
