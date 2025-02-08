@@ -10,9 +10,11 @@ extern "C" void app_main(void){
   ESP_LOGI(MAIN_TAG, "Start main"); 
   SMART_CLOCK smart_clock; 
   smart_clock.init();
-
+  smart_clock.wifi_run();
+  smart_clock.run();
+ 
   while(true){
     smart_clock.wifi_run();
-    smart_clock.run();
+    vTaskDelay(pdMS_TO_TICKS(1000));
   }
 }

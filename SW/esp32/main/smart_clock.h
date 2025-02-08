@@ -24,11 +24,26 @@ class SMART_CLOCK final{
     constexpr static uint8_t WHITE  {255};
     constexpr static uint8_t BLACK  {0};
 
-    TaskHandle_t sensor_task_handle {NULL};
+    TimerHandle_t update_display_timer_handle {NULL}; 
+    TaskHandle_t  sensor_task_handle {NULL};
+    TaskHandle_t  update_display_handle {NULL};
+    
     QueueHandle_t co2_buffer {NULL};
     QueueHandle_t bme280_results_buffer {NULL};
+    
+    esp_err_t display_epaper(char* pday_info, char* ptime_info); 
+    
+    void update_display_timer_task();
+    void update_display_task(); 
     void monitor_sensor_task();
+
+    esp_err_t create_update_display_timer_task(const char* pname);
+    esp_err_t create_update_display_task(const char* pname, uint16_t stack_size, UBaseType_t task_priority);
+
+    static void get_update_display_timer_task_entry_point(TimerHandle_t timer_handle);
+    static void get_update_display_task_entry_point(void* arg);
     static void get_monitor_sensor_task_entry_point(void* arg);
+  
   public:
     WIFI::state_e wifi_state {WIFI::state_e::NOT_INITIALIZED};
 
@@ -51,7 +66,7 @@ class SMART_CLOCK final{
     SMART_CLOCK();
     void init(void);
     void wifi_run(void);
-    void run(void);
-
+    esp_err_t run(void);
+  
     esp_err_t create_monitor_sensor_task(const char* pname, uint16_t stack_size, UBaseType_t task_priority);
 }; 
