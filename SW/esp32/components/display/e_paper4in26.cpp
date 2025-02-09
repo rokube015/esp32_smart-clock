@@ -282,6 +282,7 @@ esp_err_t EPAPER4IN26::turn_on_display(){
     while(is_busy()){
       vTaskDelay(pdMS_TO_TICKS(500));
     }
+    vTaskDelay(pdMS_TO_TICKS(5000));
   }
   return r;
 }
