@@ -210,10 +210,10 @@ void SMART_CLOCK::init(void){
     black_sprite.print("smart clock initializing...");
     r = e_paper.display((uint8_t*)black_sprite.getBuffer(), e_paper.get_display_bytes());
   }
- 
-  wifi.set_credentials(ESP_WIFI_SSID, ESP_WIFI_PASS);
-  wifi.init();
-
+  if(r == ESP_OK){
+    wifi.set_credentials(ESP_WIFI_SSID, ESP_WIFI_PASS);
+    r = wifi.init();
+  }
   // Initialize the I2C
   if(r == ESP_OK){ 
     r = i2c.init();

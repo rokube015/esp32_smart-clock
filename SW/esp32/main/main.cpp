@@ -15,6 +15,6 @@ extern "C" void app_main(void){
  
   while(true){
     smart_clock.wifi_run();
-    vTaskDelay(pdMS_TO_TICKS(1000));
+    vTaskDelay(pdMS_TO_TICKS(30*1000));
   }
 }
