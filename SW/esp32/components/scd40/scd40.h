@@ -12,8 +12,11 @@ class SCD40{
     
     i2c_master_dev_handle_t mi2c_device_handle;
     // Device settings
-    constexpr static uint8_t DEVICE_ADDRS = 0x62;
-    constexpr static uint32_t CLK_SPEED_HZ = 100000;
+    constexpr static uint8_t DEVICE_ADDRS {0x62};
+    constexpr static uint32_t CLK_SPEED_HZ {100000};
+    constexpr static uint16_t TIMEOUT_SETTING {10 * 1000};
+    constexpr static uint16_t MEASUREMENT_INTERVAL {6 * 1000};
+    constexpr static uint16_t COMMAND_INTERVAL {500};
     // commands
     constexpr static uint8_t GET_SERIAL_NUMBER_COMMAND[2]           {0x36, 0x82};
     constexpr static uint8_t START_PERIODIC_MEASUREMENT_COMMAND[2]  {0x21, 0xb1};
