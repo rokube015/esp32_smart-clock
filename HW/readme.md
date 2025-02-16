@@ -8,3 +8,4 @@ The `PCB/` folder contains KiCad project files for the ESP32 Smart Clock.
 ## Files Description
 - **PCB_layout.pdf**: PCB design layout.
 - **schematic.pdf**: Circuit schematic diagram.
+- **Bom.csv**: List of components required to build the SmartClock.
