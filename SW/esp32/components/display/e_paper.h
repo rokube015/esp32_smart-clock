@@ -20,12 +20,12 @@ class EPAPER4IN26{
     // periperal settings
     constexpr static spi_host_device_t EPAPER_SPI_HOST {SPI3_HOST};
 
-    constexpr static gpio_num_t SPI_SCK_PIN      {GPIO_NUM_14}; // SCL
-    constexpr static gpio_num_t SPI_MOSI_PIN     {GPIO_NUM_13}; // SDA
-    constexpr static gpio_num_t SPI_CS_PIN       {GPIO_NUM_21}; // output
-    constexpr static gpio_num_t EPAPER_RST_PIN   {GPIO_NUM_35}; // output
-    constexpr static gpio_num_t EPAPER_DC_PIN    {GPIO_NUM_48}; // output
-    constexpr static gpio_num_t EPAPER_BUSY_PIN  {GPIO_NUM_47}; // input
+    constexpr static gpio_num_t SPI_SCK_PIN      {GPIO_NUM_13}; // SCL
+    constexpr static gpio_num_t SPI_MOSI_PIN     {GPIO_NUM_12}; // SDA
+    constexpr static gpio_num_t SPI_CS_PIN       {GPIO_NUM_14}; // output
+    constexpr static gpio_num_t EPAPER_RST_PIN   {GPIO_NUM_47}; // output
+    constexpr static gpio_num_t EPAPER_DC_PIN    {GPIO_NUM_21}; // output
+    constexpr static gpio_num_t EPAPER_BUSY_PIN  {GPIO_NUM_48}; // input
 
     constexpr static int SPI_CLOCK_SPEED  {5 * 1000 * 1000};
 
