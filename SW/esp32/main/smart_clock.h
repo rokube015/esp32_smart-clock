@@ -65,7 +65,7 @@ class SMART_CLOCK final{
     WIFI::state_e wifi_state {WIFI::state_e::NOT_INITIALIZED};
     
     SMART_CLOCK();
-    void init(void);
+    esp_err_t init(void);
     void wifi_run(void);
     esp_err_t run(void);
 }; 

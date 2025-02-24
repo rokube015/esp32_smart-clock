@@ -63,6 +63,9 @@ esp_err_t BME280::init(
 
   if(r == ESP_OK){
     r = check_deviceID();
+    if(r != ESP_OK){
+      ESP_LOGE(BME280_TAG, "fail to check device id.");
+    }
   }
   if(r == ESP_OK){
     r = set_config_filter(1);
@@ -393,10 +396,14 @@ esp_err_t BME280::check_deviceID(void){
   if(r == ESP_OK){
     r = get_deviceID(&device_id);
     ESP_LOGI(BME280_TAG, "BME280 DeviceID: %x", device_id);
+    if(r != ESP_OK){
+      ESP_LOGE(BME280_TAG, "fail to get device id.");
+    }
   }
   if(r == ESP_OK){
     if(device_id != 0x60){
       r = ESP_FAIL;
+      ESP_LOGE(BME280_TAG, "device id is not correct.");
     }
   }
   

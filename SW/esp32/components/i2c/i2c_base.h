@@ -30,12 +30,12 @@ namespace i2c_base {
       /**
        * @brief GPIO number used for the SDA pin.
        */
-      constexpr static gpio_num_t SDA_PIN {GPIO_NUM_18};
+      constexpr static gpio_num_t SDA_PIN {GPIO_NUM_2};
 
       /**
        * @brief GPIO number used for the SCL pin.
        */
-      constexpr static gpio_num_t SCL_PIN {GPIO_NUM_17};
+      constexpr static gpio_num_t SCL_PIN {GPIO_NUM_1};
 
       /**
        * @brief I2C timeout in milliseconds.

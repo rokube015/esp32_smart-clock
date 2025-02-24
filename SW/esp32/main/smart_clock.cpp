@@ -26,17 +26,23 @@ void SMART_CLOCK::update_display_task(){
     ESP_LOGI(SMART_CLOCK_TAG, "execute update_display_task");
     if(r == ESP_OK){
       r = sntp.get_logtime(timestamp, sizeof(timestamp));
+      if(r != ESP_OK){
+        ESP_LOGE(SMART_CLOCK_TAG, "fail to get timestamp.");
+      }
     }
     
     if(r == ESP_OK){
       snprintf(sd_card_write_data_buffer, sizeof(sd_card_write_data_buffer), "%s, %d, %.2lf, %.2lf, %.2lf\n", timestamp, co2, temperature, humidity, pressure);
       r2 = sd_card.write_data(file_path, sizeof(file_path), sd_card_write_data_buffer, 'a');
-      if(r != ESP_OK){
+      if(r2 != ESP_OK){
         ESP_LOGE(SMART_CLOCK_TAG, "fail to write sensor log to sd_card.");
       }
     }
     if(r == ESP_OK){
       r = display_epaper();
+      if(r != ESP_OK){
+        ESP_LOGE(SMART_CLOCK_TAG, "fail to display epaper.");
+      }
     }
   }
 }
@@ -183,7 +189,7 @@ void SMART_CLOCK::get_monitor_sensor_task_entry_point(void* arg){
   pinstance->monitor_sensor_task();
 }
 
-void SMART_CLOCK::init(void){
+esp_err_t SMART_CLOCK::init(void){
   esp_err_t r = ESP_OK;
   esp_event_loop_create_default();
   nvs_flash_init();
@@ -191,6 +197,9 @@ void SMART_CLOCK::init(void){
   // initialize e-paper
   if(r == ESP_OK){
     r = e_paper.init();
+    if(r != ESP_OK){
+      ESP_LOGE(SMART_CLOCK_TAG, "fail to initialize e-paper.");
+    }
   }
   if(r == ESP_OK){
     r = e_paper.clear_screen();
@@ -209,28 +218,49 @@ void SMART_CLOCK::init(void){
     black_sprite.setTextSize(2);
     black_sprite.print("smart clock initializing...");
     r = e_paper.display((uint8_t*)black_sprite.getBuffer(), e_paper.get_display_bytes());
+    if(r != ESP_OK){
+      ESP_LOGE(SMART_CLOCK_TAG, "fail to display initializing message.");
+    } 
   }
   if(r == ESP_OK){
     wifi.set_credentials(ESP_WIFI_SSID, ESP_WIFI_PASS);
     r = wifi.init();
+    if(r != ESP_OK){
+      ESP_LOGE(SMART_CLOCK_TAG, "fail to initialize wifi component.");
+    }
   }
   // Initialize the I2C
   if(r == ESP_OK){ 
     r = i2c.init();
+    if(r != ESP_OK){
+      ESP_LOGE(SMART_CLOCK_TAG, "fail to initialize i2c.");
+    }
   }
   // Initialize the BME280 I2C device
   if(r == ESP_OK){ 
     r = bme280.init(&i2c);
+    if(r != ESP_OK){
+      ESP_LOGE(SMART_CLOCK_TAG, "fail to initialize bme280.");
+    }
   }
   // Initialize the SCD40 I2C device
   if(r == ESP_OK){
     r = scd40.init(&i2c);
+    if(r != ESP_OK){
+      ESP_LOGE(SMART_CLOCK_TAG, "fail to initialize scd40.");
+    }
   }
   if(r == ESP_OK){
     r = scd40.create_task("measure_co2", 2048, 10);
+    if(r != ESP_OK){
+      ESP_LOGE(SMART_CLOCK_TAG, "fail to create scd40 measure_co2 task");
+    }
   }
   if(r == ESP_OK){
     r = bme280.create_task("measure_bme280", 2048, 10);
+    if(r != ESP_OK){
+      ESP_LOGE(SMART_CLOCK_TAG, "fail to create bme280 measure_bme280 task");
+    }
   }
   if(r == ESP_OK){
     r = create_monitor_sensor_task("monitor_sensor", 2048, 10);
@@ -241,6 +271,9 @@ void SMART_CLOCK::init(void){
   // initialize sd card 
   if(r == ESP_OK){ 
     r = sd_card.init();
+    if(r != ESP_OK){
+      ESP_LOGE(SMART_CLOCK_TAG, "fail to initialize sd_card component.");
+    }
   }
   if(r == ESP_OK){
     char sd_card_write_data_buffer[400];
@@ -252,10 +285,17 @@ void SMART_CLOCK::init(void){
   }
   if(r == ESP_OK){
     r = create_update_display_task("update_display", 4096, 10);
+    if(r != ESP_OK){
+      ESP_LOGE(SMART_CLOCK_TAG, "fail to create update_display task");
+    }
   }
   if(r == ESP_OK){
     r = create_update_display_timer_task("update_diplay_timer");
+    if(r != ESP_OK){
+      ESP_LOGE(SMART_CLOCK_TAG, "fail to create update_display_timer task");
+    }
   }
+  return r;
 }
 
 void SMART_CLOCK::wifi_run(void){
