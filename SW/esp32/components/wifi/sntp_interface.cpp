@@ -87,6 +87,32 @@ bool SNTP::set_update_interval(uint32_t ms, const bool immediate){
   return std::asctime(std::localtime(&time_now));
 }
 
+esp_err_t SNTP::get_daytime(char* ptime_string, size_t time_string_size){
+  esp_err_t r = ESP_OK;
+  const std::time_t time_now{std::chrono::system_clock::to_time_t(time_point_now())};
+  std::tm* plocal_time = std::localtime(&time_now);
+  
+  if(std::strftime(ptime_string, time_string_size, "%A %b %d", plocal_time) == 0){
+    r = ESP_FAIL;
+    ESP_LOGW(SNTP_TAG, "time_string buffer size is too small.");
+  }
+
+  return r;
+}
+
+esp_err_t SNTP::get_time(char* ptime_string, size_t time_string_size){
+  esp_err_t r = ESP_OK;
+  const std::time_t time_now{std::chrono::system_clock::to_time_t(time_point_now())};
+  std::tm* plocal_time = std::localtime(&time_now);
+  
+  if(std::strftime(ptime_string, time_string_size, "%H:%M", plocal_time) == 0){
+    r = ESP_FAIL;
+    ESP_LOGW(SNTP_TAG, "time_string buffer size is too small.");
+  }
+
+  return r;
+}
+
 esp_err_t SNTP::get_logtime(char* time_string, size_t time_string_size){
   esp_err_t r = ESP_OK;
   const std::time_t time_now{std::chrono::system_clock::to_time_t(time_point_now())};
@@ -99,7 +125,4 @@ esp_err_t SNTP::get_logtime(char* time_string, size_t time_string_size){
 
   return r;
 }
-
-
-
 

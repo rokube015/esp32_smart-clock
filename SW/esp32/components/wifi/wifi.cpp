@@ -176,8 +176,12 @@ void WIFI::set_credentials(const char* ssid, const char* password){
 
 esp_err_t WIFI::init(){
   esp_err_t r = ESP_OK;
-
-  r = mwifi_init();
+  if(r == ESP_OK){
+    r = mwifi_init();
+    if(r != ESP_OK){
+      ESP_LOGE(WIFI_TAG, "fail to initialize wifi components.");
+    }
+  }
 
   return r;
 }

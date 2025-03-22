@@ -5,6 +5,7 @@
 #include "freertos/queue.h"
 #include "esp_event.h"
 #include "driver/gpio.h"
+#include "esp_log.h"
 
 namespace GpioInterface{
   ESP_EVENT_DECLARE_BASE(INTPUT_EVENTS);
@@ -12,6 +13,7 @@ namespace GpioInterface{
   class GpioBase{
     protected:
       bool mactive_low = false;
+      constexpr static const char* GPIO_TAG = "gpio_interface";
   }; //GpioBase Class
 
   class GpioInput : public GpioBase{

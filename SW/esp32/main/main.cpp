@@ -9,10 +9,23 @@ extern "C" void app_main(void){
   esp_err_t r = ESP_OK;  
   ESP_LOGI(MAIN_TAG, "Start main"); 
   SMART_CLOCK smart_clock; 
-  smart_clock.init();
-
+  if(r == ESP_OK){ 
+    r = smart_clock.init();
+    if(r != ESP_OK){
+      ESP_LOGE(MAIN_TAG, "fail to initialize smart_clock.");
+    }
+  }
+  if(r == ESP_OK){ 
+    smart_clock.wifi_run();
+  }
+  if(r == ESP_OK){ 
+    r = smart_clock.run();
+    if(r != ESP_OK){
+      ESP_LOGE(MAIN_TAG, "fail to run smart_clock.");
+    }
+  }
   while(true){
     smart_clock.wifi_run();
-    smart_clock.run();
+    vTaskDelay(pdMS_TO_TICKS(30*1000));
   }
 }
