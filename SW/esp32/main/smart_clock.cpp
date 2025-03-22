@@ -269,17 +269,18 @@ esp_err_t SMART_CLOCK::init(void){
     }
   }
   // initialize sd card 
+  esp_err_t r2 = ESP_OK;
   if(r == ESP_OK){ 
-    r = sd_card.init();
-    if(r != ESP_OK){
+    r2 = sd_card.init();
+    if(r2 != ESP_OK){
       ESP_LOGE(SMART_CLOCK_TAG, "fail to initialize sd_card component.");
     }
   }
-  if(r == ESP_OK){
+  if(r2 == ESP_OK){
     char sd_card_write_data_buffer[400];
     snprintf(sd_card_write_data_buffer, sizeof(sd_card_write_data_buffer), "YYYY/MM/DD, week, HH:MM:SS, CO2[rpm], Temperature[degree], Humidity[%%], Pressure[hPa]\n");
-    r = sd_card.write_data(file_path, sizeof(file_path), sd_card_write_data_buffer, 'w');
-    if(r != ESP_OK){
+    r2 = sd_card.write_data(file_path, sizeof(file_path), sd_card_write_data_buffer, 'w');
+    if(r2 != ESP_OK){
       ESP_LOGE(SMART_CLOCK_TAG, "fail to write data to sd_card.");
     }
   }
