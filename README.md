@@ -5,6 +5,8 @@ This repository provides firmware and PCB design for a clock with environmental 
 ## Features
 - CO2, temperature, humidity and atmosphere pressure monitoring.
 - Custom PCB design for the project.
+  
+<img src="./Photo.JPG" width="300" /> <img src="./Photo_2.JPG" width="300" />
 ## Prerequisites
 
 ### Software Requirements
