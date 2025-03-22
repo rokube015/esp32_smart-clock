@@ -27,7 +27,7 @@ class EPAPER4IN26{
     constexpr static gpio_num_t EPAPER_DC_PIN    {GPIO_NUM_21}; // output
     constexpr static gpio_num_t EPAPER_BUSY_PIN  {GPIO_NUM_48}; // input
 
-    constexpr static int SPI_CLOCK_SPEED  {5 * 1000 * 1000};
+    constexpr static int SPI_CLOCK_SPEED  {500 * 1000};
 
     // display settings
     constexpr static uint16_t DISPLAY_RESOLUTION_HEIGHT  {480};
