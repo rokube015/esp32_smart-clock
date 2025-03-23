@@ -113,6 +113,39 @@ esp_err_t SNTP::get_time(char* ptime_string, size_t time_string_size){
   return r;
 }
 
+esp_err_t SNTP::get_us_week_number(char* pweek_number, size_t week_number_size){
+  esp_err_t r = ESP_OK;
+ 
+  const std::time_t time_now{std::chrono::system_clock::to_time_t(time_point_now())};
+  std::tm* plocal_time = std::localtime(&time_now);
+  std::tm jan1 = *plocal_time;
+  jan1.tm_mon = 0;
+  jan1.tm_mday = 1;
+  std::mktime(&jan1);
+
+  // 1月1日の曜日（日曜 = 0）
+  int jan1_wday = jan1.tm_wday;
+
+  // 1月1日が属する週の日曜日を取得
+  std::tm first_sunday = jan1;
+  first_sunday.tm_mday -= jan1_wday;
+  std::mktime(&first_sunday);
+
+  // 現在との日数差分
+  std::time_t now = std::mktime(const_cast<std::tm*>(plocal_time));
+  std::time_t start = std::mktime(&first_sunday);
+  int days = static_cast<int>(std::difftime(now, start) / (60 * 60 * 24));
+
+  int week_number = (days / 7) + 1;
+  int weekday_number = plocal_time->tm_wday; // 日曜=0, 月曜=1, ..., 土曜=6
+  if (std::snprintf(pweek_number, week_number_size, "W%d.%d", week_number, weekday_number) >= static_cast<int>(week_number_size)) {
+    r = ESP_FAIL;
+    ESP_LOGW(SNTP_TAG, "week_number buffer size is too small.");
+  } 
+  
+  return r;
+}
+
 esp_err_t SNTP::get_logtime(char* time_string, size_t time_string_size){
   esp_err_t r = ESP_OK;
   const std::time_t time_now{std::chrono::system_clock::to_time_t(time_point_now())};

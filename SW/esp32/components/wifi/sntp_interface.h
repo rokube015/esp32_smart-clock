@@ -41,8 +41,9 @@ class SNTP : private WIFI{
     static esp_err_t get_daytime(char* ptime_string, size_t time_string_size);
     
     static esp_err_t get_time(char* ptime_string, size_t time_string_size);
-
-    static esp_err_t get_logtime(char* ptimestamp, size_t timestamp_size);
     
+    static esp_err_t get_us_week_number(char* pweek_number, size_t week_number_size);
+   
+    static esp_err_t get_logtime(char* ptimestamp, size_t timestamp_size);
 };
 

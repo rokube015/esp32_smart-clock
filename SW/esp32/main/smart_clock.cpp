@@ -73,42 +73,46 @@ void SMART_CLOCK::monitor_sensor_task(){
 
 esp_err_t SMART_CLOCK::display_epaper(){
   esp_err_t r = ESP_OK;
-  char day_info[50] = "\0";
-  char time_info[50] = "\0";
-  
+  char day_info[32] = "\0";
+  char time_info[32] = "\0";
+  char week_number_info[32] = "\0";
+
   if(r == ESP_OK){
     r = sntp.get_time(time_info, sizeof(time_info));
   }
   if(r == ESP_OK){
     r = sntp.get_daytime(day_info, sizeof(day_info));
   }
+  if(r == ESP_OK){
+    r = sntp.get_us_week_number(week_number_info, sizeof(week_number_info));
+  }
 
   if(r == ESP_OK){ 
-    char display_buffer[50] = "\0";
+    char display_buffer[128] = "\0";
 
     uint16_t x = 0;
     uint16_t y = 0;
     uint16_t x1 = 0;
-    uint16_t y1 = 0;
     black_sprite.fillScreen(WHITE);
     black_sprite.setCursor(0, 0);
-    black_sprite.setTextSize(2);
+    black_sprite.setTextSize(2.0);
     black_sprite.setFont(&fonts::Font8);
     x = black_sprite.width()/2 - black_sprite.textWidth(time_info)/2;
     y = 10;
     black_sprite.setCursor(x, y);
     black_sprite.printf("%s\n", time_info);
     black_sprite.setFont(&fonts::FreeSans24pt7b);
-    black_sprite.setTextSize(1);
-    x = black_sprite.width()/2 - black_sprite.textWidth(day_info)/2;
-    y = black_sprite.getCursorY() + 30;
+    black_sprite.setTextSize(1.2);
+    std::snprintf(display_buffer, sizeof(display_buffer), "%s  %s", day_info, week_number_info);
+    x = black_sprite.width()/2 - black_sprite.textWidth(display_buffer)/2;
+    y = black_sprite.getCursorY() + 40;
     black_sprite.setCursor(x, y);
-    black_sprite.printf("%s\n", day_info);
+    black_sprite.printf("%s\n", display_buffer);
     black_sprite.setTextSize(1.5);
     snprintf(display_buffer, sizeof(display_buffer), "CO2  %dppm\n", co2);
     x = black_sprite.width()/2 - black_sprite.textWidth(display_buffer)/2;
     y = black_sprite.getCursorY();
-    y += 30; 
+    y += 10; 
     black_sprite.setCursor(x, y);
     black_sprite.printf(display_buffer);
     black_sprite.setTextSize(1);
