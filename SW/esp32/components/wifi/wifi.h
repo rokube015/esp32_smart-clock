@@ -16,6 +16,7 @@ class WIFI{
       WAITING_FOR_IP,
       CONNECTED,
       DISCONNECTED,
+      PROVISIONING,
       ERROR
     };
 
@@ -24,13 +25,18 @@ class WIFI{
     
     static esp_err_t mwifi_init();
     static wifi_init_config_t mwifi_init_cfg;
-    static wifi_config_t mwifi_cfg;
+    static bool mprovisioning;
+    static char mprovisioning_pop[17];
+    static char mprovisioning_ssid[33];
 
     static void wifi_event_handler(void* arg, esp_event_base_t event_base,
                                     int32_t event_id, void* event_data);
 
     static void ip_event_handler(void* arg, esp_event_base_t event_base,
                                   int32_t event_id, void* event_data);
+
+    static void provisioning_event_handler(void* arg, esp_event_base_t event_base,
+                        int32_t event_id, void* event_data);
 
     static state_e mstate;
     static esp_err_t mget_mac_addrs(void);
@@ -40,11 +46,14 @@ class WIFI{
   public:
     WIFI(void);
 
-    void set_credentials(const char* pssid, const char* ppassword);
     esp_err_t init();
     esp_err_t begin(void);
+    esp_err_t start(void);
+    esp_err_t stop(void);
 
     constexpr static const state_e &get_state(void){return mstate;}
     constexpr static const char* get_mac_addrs(void){return mmac_addr_cstr;}
+    constexpr static const char* get_setup_ssid(void){return mprovisioning_ssid;}
+    constexpr static const char* get_provisioning_pop(void){return mprovisioning_pop;}
 };
 

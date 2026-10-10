@@ -1,0 +1,3 @@
+[submodule "SW/esp32/components/LovyanGFX"]
+	path = SW/esp32/components/LovyanGFX
+	url = https://github.com/lovyan03/LovyanGFX.git

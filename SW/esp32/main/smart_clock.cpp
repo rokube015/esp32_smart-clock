@@ -1,7 +1,7 @@
 #include <iostream>
+#include <ctime>
 
 #include "smart_clock.h"
-#include "wifi_pass.h"
 
 LGFX_Sprite SMART_CLOCK::black_sprite;
 
@@ -24,14 +24,15 @@ void SMART_CLOCK::update_display_task(){
     esp_err_t r2 = ESP_OK;
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
     ESP_LOGI(SMART_CLOCK_TAG, "execute update_display_task");
-    if(r == ESP_OK){
+    const bool time_synchronized = sntp.is_time_synchronized();
+    if(r == ESP_OK && time_synchronized){
       r = sntp.get_logtime(timestamp, sizeof(timestamp));
       if(r != ESP_OK){
         ESP_LOGE(SMART_CLOCK_TAG, "fail to get timestamp.");
       }
     }
     
-    if(r == ESP_OK){
+    if(r == ESP_OK && time_synchronized){
       snprintf(sd_card_write_data_buffer, sizeof(sd_card_write_data_buffer), "%s, %d, %.2lf, %.2lf, %.2lf\n", timestamp, co2, temperature, humidity, pressure);
       r2 = sd_card.write_data(file_path, sizeof(file_path), sd_card_write_data_buffer, 'a');
       if(r2 != ESP_OK){
@@ -73,23 +74,63 @@ void SMART_CLOCK::monitor_sensor_task(){
 
 esp_err_t SMART_CLOCK::display_epaper(){
   esp_err_t r = ESP_OK;
-  char day_info[50] = "\0";
-  char time_info[50] = "\0";
-  
-  if(r == ESP_OK){
-    r = sntp.get_time(time_info, sizeof(time_info));
+  if(wifi.get_state() == WIFI::state_e::PROVISIONING){
+    const char* setup_ssid = wifi.get_setup_ssid();
+    const char* provisioning_pop = wifi.get_provisioning_pop();
+    black_sprite.fillScreen(WHITE);
+    black_sprite.setTextWrap(false);
+    black_sprite.setTextColor(BLACK);
+    black_sprite.setFont(&fonts::Font4);
+    black_sprite.setTextSize(2);
+    black_sprite.setCursor(32, 24);
+    black_sprite.println("Wi-Fi setup");
+    black_sprite.setTextSize(1);
+    black_sprite.setCursor(32, 88);
+    black_sprite.println("Connect your phone to this setup network:");
+    black_sprite.setCursor(32, 122);
+    black_sprite.printf("SSID: %s", setup_ssid);
+    black_sprite.setCursor(32, 156);
+    black_sprite.println("AP password: none (open network)");
+    black_sprite.setCursor(32, 205);
+    black_sprite.println("In Espressif Provisioning, select SoftAP.");
+    black_sprite.setCursor(32, 239);
+    black_sprite.println("Enter this proof of possession (PoP):");
+    black_sprite.setTextSize(3);
+    black_sprite.setCursor(32, 278);
+    black_sprite.println(provisioning_pop);
+    black_sprite.setTextSize(1);
+    black_sprite.setCursor(32, 385);
+    black_sprite.println("Then enter your 2.4 GHz Wi-Fi SSID and password.");
   }
-  if(r == ESP_OK){
-    r = sntp.get_daytime(day_info, sizeof(day_info));
+  else if(!sntp.is_time_synchronized()){
+    black_sprite.fillScreen(WHITE);
+    black_sprite.setTextWrap(false);
+    black_sprite.setTextColor(BLACK);
+    black_sprite.setFont(&fonts::Font4);
+    black_sprite.setTextSize(2);
+    black_sprite.setCursor(32, 160);
+    black_sprite.println("Wi-Fi connected");
+    black_sprite.setTextSize(1);
+    black_sprite.setCursor(32, 220);
+    black_sprite.println("Synchronizing time...");
   }
+  else{
+    char day_info[50] = "\0";
+    char time_info[50] = "\0";
 
-  if(r == ESP_OK){ 
-    char display_buffer[50] = "\0";
+    if(r == ESP_OK){
+      r = sntp.get_time(time_info, sizeof(time_info));
+    }
+    if(r == ESP_OK){
+      r = sntp.get_daytime(day_info, sizeof(day_info));
+    }
 
-    uint16_t x = 0;
-    uint16_t y = 0;
-    uint16_t x1 = 0;
-    uint16_t y1 = 0;
+    if(r == ESP_OK){
+      char display_buffer[50] = "\0";
+      uint16_t x = 0;
+      uint16_t y = 0;
+      uint16_t x1 = 0;
+      uint16_t y1 = 0;
     black_sprite.fillScreen(WHITE);
     black_sprite.setCursor(0, 0);
     black_sprite.setTextSize(2);
@@ -138,7 +179,9 @@ esp_err_t SMART_CLOCK::display_epaper(){
     x = black_sprite.getCursorX();
     black_sprite.setCursor(x1, y + black_sprite.fontHeight());
     black_sprite.printf("%.2lfhpa\n", pressure);
+    }
   }
+
   if(r == ESP_OK){
     if(e_paper.get_state() == EPAPER4IN26::state_e::SLEEP){
       r = e_paper.init_epaper();
@@ -189,6 +232,51 @@ void SMART_CLOCK::get_monitor_sensor_task_entry_point(void* arg){
   pinstance->monitor_sensor_task();
 }
 
+void SMART_CLOCK::wifi_connected_event_handler(void* arg, esp_event_base_t event_base,
+                                               int32_t event_id, void* event_data){
+  if(event_base != IP_EVENT || event_id != IP_EVENT_STA_GOT_IP){
+    return;
+  }
+
+  SMART_CLOCK* instance = static_cast<SMART_CLOCK*>(arg);
+  ESP_LOGI(SMART_CLOCK_TAG, "Wi-Fi connected; requesting immediate display update");
+  if(!instance->sntp.is_running()){
+    instance->sntp.init();
+  }
+  else{
+    instance->sntp.set_update_interval(60 * 60 * 1000, true);
+  }
+  notify_display_update(instance);
+}
+
+void SMART_CLOCK::sntp_time_sync_complete(void* arg){
+  SMART_CLOCK* instance = static_cast<SMART_CLOCK*>(arg);
+  const std::time_t now = std::time(nullptr);
+  std::tm local_time{};
+  if(localtime_r(&now, &local_time) != nullptr){
+    instance->last_sync_year.store(local_time.tm_year);
+    instance->last_sync_yday.store(local_time.tm_yday);
+  }
+  instance->daily_wifi_sync_requested.store(false);
+
+  const esp_err_t stop_result = instance->wifi.stop();
+  if(stop_result == ESP_OK){
+    ESP_LOGI(SMART_CLOCK_TAG, "NTP synchronized; Wi-Fi stopped for power saving");
+  }
+  else{
+    ESP_LOGW(SMART_CLOCK_TAG, "Failed to stop Wi-Fi after NTP sync: %s",
+             esp_err_to_name(stop_result));
+  }
+  notify_display_update(instance);
+}
+
+void SMART_CLOCK::notify_display_update(void* arg){
+  SMART_CLOCK* instance = static_cast<SMART_CLOCK*>(arg);
+  if(instance->update_display_handle != NULL){
+    xTaskNotifyGive(instance->update_display_handle);
+  }
+}
+
 esp_err_t SMART_CLOCK::init(void){
   esp_err_t r = ESP_OK;
   esp_event_loop_create_default();
@@ -223,10 +311,19 @@ esp_err_t SMART_CLOCK::init(void){
     } 
   }
   if(r == ESP_OK){
-    wifi.set_credentials(ESP_WIFI_SSID, ESP_WIFI_PASS);
     r = wifi.init();
     if(r != ESP_OK){
       ESP_LOGE(SMART_CLOCK_TAG, "fail to initialize wifi component.");
+    }
+  }
+  if(r == ESP_OK){
+    r = esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP,
+                                   &wifi_connected_event_handler, this);
+  }
+  if(r == ESP_OK && wifi.get_state() == WIFI::state_e::PROVISIONING){
+    r = display_epaper();
+    if(r != ESP_OK){
+      ESP_LOGE(SMART_CLOCK_TAG, "fail to display Wi-Fi setup information.");
     }
   }
   // Initialize the I2C
@@ -291,6 +388,9 @@ esp_err_t SMART_CLOCK::init(void){
     }
   }
   if(r == ESP_OK){
+    sntp.set_time_sync_callback(&sntp_time_sync_complete, this);
+  }
+  if(r == ESP_OK){
     r = create_update_display_timer_task("update_diplay_timer");
     if(r != ESP_OK){
       ESP_LOGE(SMART_CLOCK_TAG, "fail to create update_display_timer task");
@@ -302,6 +402,25 @@ esp_err_t SMART_CLOCK::init(void){
 void SMART_CLOCK::wifi_run(void){
   wifi_state = wifi.get_state();
   bool is_sntp_initialized = sntp.is_running();
+
+  if(wifi_state == WIFI::state_e::INITIALIZED && sntp.is_time_synchronized()){
+    const std::time_t now = std::time(nullptr);
+    std::tm local_time{};
+    if(localtime_r(&now, &local_time) != nullptr &&
+       (local_time.tm_year != last_sync_year.load() ||
+        local_time.tm_yday != last_sync_yday.load()) &&
+       !daily_wifi_sync_requested.exchange(true)){
+      const esp_err_t start_result = wifi.start();
+      if(start_result == ESP_OK){
+        ESP_LOGI(SMART_CLOCK_TAG, "Date changed; Wi-Fi started for daily time sync");
+      }
+      else{
+        daily_wifi_sync_requested.store(false);
+        ESP_LOGW(SMART_CLOCK_TAG, "Failed to start Wi-Fi for daily time sync: %s",
+                 esp_err_to_name(start_result));
+      }
+    }
+  }
 
   switch(wifi_state){
     case WIFI::state_e::READY_TO_CONNECT:
@@ -326,6 +445,9 @@ void SMART_CLOCK::wifi_run(void){
       if(!is_sntp_initialized){
        sntp.init();
       } 
+      break;
+    case WIFI::state_e::PROVISIONING:
+      ESP_LOGI(SMART_CLOCK_TAG, "wifi status: PROVISIONING");
       break;
     case WIFI::state_e::NOT_INITIALIZED:
       ESP_LOGI(SMART_CLOCK_TAG, "wifi status: NOT_INITIALIZED");

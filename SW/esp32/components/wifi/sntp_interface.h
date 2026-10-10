@@ -25,6 +25,8 @@ class SNTP : private WIFI{
     ~SNTP(void);
 
     static esp_err_t init(void);
+    static bool is_time_synchronized(void);
+    static void set_time_sync_callback(void (*callback)(void*), void* context);
 
     static bool set_update_interval(uint32_t ms, bool immediate = false);
 

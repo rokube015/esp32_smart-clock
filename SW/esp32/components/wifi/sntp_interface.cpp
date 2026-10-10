@@ -7,10 +7,15 @@
 std::chrono::_V2::system_clock::time_point SNTP::mlast_update{};
 
 bool SNTP::mis_running{false};
+static void (*sntp_time_sync_callback)(void*) = nullptr;
+static void* sntp_time_sync_context = nullptr;
 
 void SNTP::callback_on_ntp_update(timeval *tv){
   std::cout << "NTP updated, current time is: " << time_now_ascii() << '\n';
   mlast_update = std::chrono::system_clock::now();
+  if(sntp_time_sync_callback != nullptr){
+    sntp_time_sync_callback(sntp_time_sync_context);
+  }
 }
 
 SNTP::SNTP(void){
@@ -56,6 +61,15 @@ esp_err_t SNTP::init(void){
   }
   r = ESP_FAIL;
   return r;
+}
+
+bool SNTP::is_time_synchronized(void){
+  return mlast_update.time_since_epoch().count() != 0;
+}
+
+void SNTP::set_time_sync_callback(void (*callback)(void*), void* context){
+  sntp_time_sync_callback = callback;
+  sntp_time_sync_context = context;
 }
 
 bool SNTP::set_update_interval(uint32_t ms, const bool immediate){

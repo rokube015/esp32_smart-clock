@@ -1,5 +1,7 @@
 #pragma once
 
+#include <atomic>
+
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
@@ -54,6 +56,10 @@ class SMART_CLOCK final{
     static void get_update_display_timer_task_entry_point(TimerHandle_t timer_handle);
     static void get_update_display_task_entry_point(void* arg);
     static void get_monitor_sensor_task_entry_point(void* arg);
+    static void wifi_connected_event_handler(void* arg, esp_event_base_t event_base,
+                         int32_t event_id, void* event_data);
+    static void sntp_time_sync_complete(void* arg);
+    static void notify_display_update(void* arg);
  
     void update_display_timer_task();
     void update_display_task(); 
@@ -63,6 +69,9 @@ class SMART_CLOCK final{
   
   public:
     WIFI::state_e wifi_state {WIFI::state_e::NOT_INITIALIZED};
+    std::atomic<int> last_sync_year {-1};
+    std::atomic<int> last_sync_yday {-1};
+    std::atomic<bool> daily_wifi_sync_requested {false};
     
     SMART_CLOCK();
     esp_err_t init(void);

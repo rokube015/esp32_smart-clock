@@ -261,7 +261,7 @@ esp_err_t EPAPER4IN26::execute_hw_reset(){
     r = rst_pin.off();
     vTaskDelay(pdMS_TO_TICKS(20));
     r |= rst_pin.on();
-    vTaskDelay(pdMS_TO_TICKS(1));
+    vTaskDelay(pdMS_TO_TICKS(10));
     r |= rst_pin.off();
     vTaskDelay(pdMS_TO_TICKS(100));
   }
