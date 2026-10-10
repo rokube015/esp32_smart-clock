@@ -9,14 +9,14 @@
 #include "sd_card.h"
 
 SD_CARD::SD_CARD(){
-  esp_log_level_set(SD_CARD_TAG, ESP_LOG_ERROR);
+  esp_log_level_set(SD_CARD_TAG, ESP_LOG_INFO);
   ESP_LOGI(SD_CARD_TAG, "set SD_CARD_TAG log level: %d", ESP_LOG_ERROR);
 }
 
 esp_err_t SD_CARD::init(){
   esp_err_t r = ESP_OK;
   esp_vfs_fat_sdmmc_mount_config_t mount_config = {
-    .format_if_mount_failed = true,
+    .format_if_mount_failed = false,
     .max_files = 10,
     .allocation_unit_size = 16 * 1024
   };
@@ -65,51 +65,40 @@ esp_err_t SD_CARD::init(){
 }
 
 esp_err_t SD_CARD::write_data(const char* pfile_path, size_t file_path_size, char* data, char mode){
+  if(pfile_path == nullptr || data == nullptr || (mode != 'a' && mode != 'w' && mode != 'h')){
+    return ESP_ERR_INVALID_ARG;
+  }
+  char write_file_path[100] {};
+  const int length = snprintf(write_file_path, sizeof(write_file_path), "%s%s", MOUNT_POINT, pfile_path);
+  if(length < 0 || static_cast<size_t>(length) >= sizeof(write_file_path)){
+    return ESP_ERR_INVALID_SIZE;
+  }
+  FILE* pfile = nullptr;
+  for(unsigned retry = 0; retry < 5 && pfile == nullptr; ++retry){
+    pfile = fopen(write_file_path, mode == 'w' ? "w" : "a+");
+    if(pfile == nullptr){ vTaskDelay(pdMS_TO_TICKS(50)); }
+  }
+  if(pfile == nullptr){
+    ESP_LOGE(SD_CARD_TAG, "Failed to open %s: %s", write_file_path, strerror(errno));
+    return ESP_FAIL;
+  }
   esp_err_t r = ESP_OK;
-  char write_file_path[100] = {};
-  FILE* pfile = NULL;
-  
-  if((sizeof(MOUNT_POINT) + file_path_size) < sizeof(write_file_path)){
-    strncat(write_file_path, MOUNT_POINT, sizeof(write_file_path)-strlen(write_file_path)-1);
-    strncat(write_file_path, pfile_path, sizeof(write_file_path)-strlen(write_file_path)-1);
-    ESP_LOGI(SD_CARD_TAG, "opening sd_card file:%s", write_file_path);
-  }
-  else{
-    r  = ESP_FAIL;
-    ESP_LOGW(SD_CARD_TAG, "file path is too large.");
-  }
-
-  for(uint8_t retry_count = 0; retry_count < 5; retry_count++){  
-    switch(mode){
-      case 'a': 
-        pfile = fopen(write_file_path, "a");
-        break;
-      case 'w':
-        pfile = fopen(write_file_path, "w");
-        break;
-      default:
-        ESP_LOGW(SD_CARD_TAG, "invalid write mode: %c", mode);
-        r = ESP_FAIL;
+  bool write = true;
+  // Header mode preserves existing logs, including after a reboot.
+  if(mode == 'h'){
+    if(fseek(pfile, 0, SEEK_END) != 0){ r = ESP_FAIL; }
+    else{
+      const long size = ftell(pfile);
+      if(size < 0){ r = ESP_FAIL; }
+      write = (size == 0);
+      ESP_LOGI(SD_CARD_TAG, "Sensor log: %ld existing bytes; %s", size, write ? "creating header" : "preserving existing log");
     }
-    if(pfile != NULL){
-      r = ESP_OK;
-      ESP_LOGI(SD_CARD_TAG, "success to open sd_card file.");
-      break;
-    }
-    else if(pfile == NULL){
-      ESP_LOGE(SD_CARD_TAG, "fail to open file for writing.");
-      ESP_LOGE(SD_CARD_TAG, "errno=%d: %s", errno, strerror(errno));
-      r = ESP_FAIL;
-    }
-    vTaskDelay(pdMS_TO_TICKS(50));
   }
-
-  if(r == ESP_OK){
-    fprintf(pfile, data);
-    fclose(pfile);
-    ESP_LOGI(SD_CARD_TAG, "write data to sd card:%s", data );
-  }
-  
+  if(r == ESP_OK && write && fputs(data, pfile) == EOF){ r = ESP_FAIL; }
+  if(fflush(pfile) != 0){ r = ESP_FAIL; }
+  if(fclose(pfile) != 0){ r = ESP_FAIL; }
+  if(r == ESP_OK && write){ ESP_LOGI(SD_CARD_TAG, "Appended sensor log data"); }
+  if(r != ESP_OK){ ESP_LOGE(SD_CARD_TAG, "Failed to write/close %s", write_file_path); }
   return r;
 }
 

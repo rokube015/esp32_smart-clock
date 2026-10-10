@@ -22,10 +22,13 @@ class WIFI{
 
   private:
     constexpr static const char* WIFI_TAG = "wifi"; 
+    constexpr static uint8_t WIFI_CONNECT_FAILURE_LIMIT {5};
     
     static esp_err_t mwifi_init();
+    static esp_err_t mstart_provisioning(bool initialize_manager);
     static wifi_init_config_t mwifi_init_cfg;
     static bool mprovisioning;
+    static uint8_t mconnection_failures;
     static char mprovisioning_pop[17];
     static char mprovisioning_ssid[33];
 
@@ -51,9 +54,15 @@ class WIFI{
     esp_err_t start(void);
     esp_err_t stop(void);
 
-    constexpr static const state_e &get_state(void){return mstate;}
+    static state_e get_state(void){
+      std::lock_guard<std::mutex> guard(mmutex);
+      return mstate;
+    }
     constexpr static const char* get_mac_addrs(void){return mmac_addr_cstr;}
-    constexpr static const char* get_setup_ssid(void){return mprovisioning_ssid;}
-    constexpr static const char* get_provisioning_pop(void){return mprovisioning_pop;}
+    static void get_setup_info(char (&ssid)[33], char (&pop)[17]){
+      std::lock_guard<std::mutex> guard(mmutex);
+      memcpy(ssid, mprovisioning_ssid, sizeof(ssid));
+      memcpy(pop, mprovisioning_pop, sizeof(pop));
+    }
 };
 

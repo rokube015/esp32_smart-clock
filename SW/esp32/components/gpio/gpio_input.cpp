@@ -7,16 +7,15 @@ namespace GpioInterface{
   ESP_EVENT_DEFINE_BASE(INPUT_EVENTS);
 
   void IRAM_ATTR GpioInput::gpio_isr_callback(void *args){
-    int32_t pin = (reinterpret_cast<interrupt_args_t*>(args))->mpin;
-    bool custom_event_handler_set = (reinterpret_cast<interrupt_args_t*>(args))->mcustom_event_handler_set;
-    bool event_handler_set = 
-      (reinterpret_cast<interrupt_args_t*>(args))->mevent_handler_set;
-    bool queue_enabled = 
-      (reinterpret_cast<interrupt_args_t*>(args))->mqueue_enable;
-    esp_event_loop_handle_t custom_event_loop_handle = 
-      (reinterpret_cast<interrupt_args_t*>(args))->mcustom_event_loop_handle;
-    QueueHandle_t queue_handle = 
-      (reinterpret_cast<interrupt_args_t*>(args))->mqueue_handle;
+    taskENTER_CRITICAL_ISR(&mevent_change_mutex);
+    const interrupt_args_t state = *static_cast<interrupt_args_t*>(args);
+    taskEXIT_CRITICAL_ISR(&mevent_change_mutex);
+    const int32_t pin = state.mpin;
+    const bool custom_event_handler_set = state.mcustom_event_handler_set;
+    const bool event_handler_set = state.mevent_handler_set;
+    const bool queue_enabled = state.mqueue_enable;
+    const esp_event_loop_handle_t custom_event_loop_handle = state.mcustom_event_loop_handle;
+    const QueueHandle_t queue_handle = state.mqueue_handle;
 
     if(queue_enabled){
       xQueueSendFromISR(queue_handle, &pin, NULL);
@@ -28,7 +27,6 @@ namespace GpioInterface{
       esp_event_isr_post(INPUT_EVENTS, pin, nullptr, 0, nullptr);
     }
 
-    esp_event_isr_post(INPUT_EVENTS, pin, nullptr, 0, nullptr);
   }
 
   esp_err_t GpioInput::minit(const gpio_num_t pin, const bool activeLow){
@@ -141,66 +139,73 @@ namespace GpioInterface{
     return r;
   }
 
-  esp_err_t GpioInput::set_event_handler(esp_event_handler_t Gpio_e_h){
-    esp_err_t r = ESP_OK;
-    
-    taskENTER_CRITICAL(&mevent_change_mutex);
-    
-    r = mclear_event_handlers();
-    
-    r |= esp_event_handler_instance_register(INPUT_EVENTS, minterrupt_args.mpin, Gpio_e_h, 0, nullptr);
-
+  esp_err_t GpioInput::set_event_handler(esp_event_handler_t handler){
+    if(handler == nullptr){ return ESP_ERR_INVALID_ARG; }
+    std::lock_guard<std::mutex> guard(mregistration_mutex);
+    esp_err_t r = mclear_event_handlers();
+    if(r != ESP_OK){ return r; }
+    r = esp_event_handler_instance_register(INPUT_EVENTS, minterrupt_args.mpin, handler, nullptr, &mevent_instance);
     if(r == ESP_OK){
+      taskENTER_CRITICAL(&mevent_change_mutex);
+      minterrupt_args.mevent_handler_set = true;
       mevent_handler_set = true;
+      mevent_handle = handler;
+      taskEXIT_CRITICAL(&mevent_change_mutex);
     }
-
-    taskENTER_CRITICAL(&mevent_change_mutex);
-
     return r;
   }
 
-  esp_err_t GpioInput::set_event_handler(esp_event_loop_handle_t Gpio_e_l, esp_event_handler_t Gpio_e_h){
-    esp_err_t r = ESP_OK;
-    taskENTER_CRITICAL(&mevent_change_mutex);
-
-    r = mclear_event_handlers();
-    r |= esp_event_handler_instance_register_with(Gpio_e_l, INPUT_EVENTS, minterrupt_args.mpin, Gpio_e_h, 0, nullptr);
-
+  esp_err_t GpioInput::set_event_handler(esp_event_loop_handle_t loop, esp_event_handler_t handler){
+    if(handler == nullptr){ return ESP_ERR_INVALID_ARG; }
+    std::lock_guard<std::mutex> guard(mregistration_mutex);
+    esp_err_t r = mclear_event_handlers();
+    if(r != ESP_OK){ return r; }
+    r = esp_event_handler_instance_register_with(loop, INPUT_EVENTS, minterrupt_args.mpin, handler, nullptr, &mevent_instance);
     if(r == ESP_OK){
-      mevent_handle = Gpio_e_h;
-      minterrupt_args.mcustom_event_loop_handle = Gpio_e_l;
+      taskENTER_CRITICAL(&mevent_change_mutex);
+      mevent_handle = handler;
+      minterrupt_args.mcustom_event_loop_handle = loop;
       minterrupt_args.mcustom_event_handler_set = true;
+      taskEXIT_CRITICAL(&mevent_change_mutex);
     }
-
-    taskEXIT_CRITICAL(&mevent_change_mutex);
-
     return r;
   }
 
-  void GpioInput::set_queue_handle(QueueHandle_t Gpio_e_q){
+  void GpioInput::set_queue_handle(QueueHandle_t queue){
+    std::lock_guard<std::mutex> guard(mregistration_mutex);
+    if(mclear_event_handlers() != ESP_OK){ return; }
     taskENTER_CRITICAL(&mevent_change_mutex);
-    mclear_event_handlers();
-    minterrupt_args.mqueue_handle = Gpio_e_q;
-    minterrupt_args.mqueue_enable = true;
+    minterrupt_args.mqueue_handle = queue;
+    minterrupt_args.mqueue_enable = queue != nullptr;
     taskEXIT_CRITICAL(&mevent_change_mutex);
   }
 
   esp_err_t GpioInput::mclear_event_handlers(){
-    esp_err_t r = ESP_OK;
-
-    if(minterrupt_args.mcustom_event_handler_set){
-      esp_event_handler_unregister_with(minterrupt_args.mcustom_event_loop_handle,
-          INPUT_EVENTS, minterrupt_args.mpin, mevent_handle);
-      minterrupt_args.mcustom_event_handler_set = false;
-    }
-    else if(minterrupt_args.mevent_handler_set){
-      esp_event_handler_instance_unregister(INPUT_EVENTS, minterrupt_args.mpin, nullptr);
-      minterrupt_args.mevent_handler_set = false;
-    }
-
+    taskENTER_CRITICAL(&mevent_change_mutex);
+    const interrupt_args_t previous = minterrupt_args;
+    minterrupt_args.mcustom_event_handler_set = false;
+    minterrupt_args.mevent_handler_set = false;
     minterrupt_args.mqueue_handle = nullptr;
     minterrupt_args.mqueue_enable = false;
-
+    mevent_handler_set = false;
+    taskEXIT_CRITICAL(&mevent_change_mutex);
+    esp_err_t r = ESP_OK;
+    // Event registration may block, so keep it outside the ISR spinlock.
+    if(previous.mcustom_event_handler_set){
+      r = esp_event_handler_instance_unregister_with(previous.mcustom_event_loop_handle,
+          INPUT_EVENTS, previous.mpin, mevent_instance);
+    }
+    else if(previous.mevent_handler_set){
+      r = esp_event_handler_instance_unregister(INPUT_EVENTS, previous.mpin, mevent_instance);
+    }
+    if(r == ESP_OK){ mevent_instance = nullptr; }
+    else{
+      // Keep the still-registered instance available for the next retry.
+      taskENTER_CRITICAL(&mevent_change_mutex);
+      minterrupt_args = previous;
+      mevent_handler_set = previous.mevent_handler_set;
+      taskEXIT_CRITICAL(&mevent_change_mutex);
+    }
     return r;
   }
 } // Namespace GpioInterface

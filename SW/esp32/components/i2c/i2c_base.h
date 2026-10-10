@@ -50,7 +50,7 @@ namespace i2c_base {
       /**
        * @brief Handle to the I2C master bus.
        */
-      i2c_master_bus_handle_t mi2c_bus_handle;
+      i2c_master_bus_handle_t mi2c_bus_handle {nullptr};
 
       /**
        * @brief Configuration for the I2C master bus.

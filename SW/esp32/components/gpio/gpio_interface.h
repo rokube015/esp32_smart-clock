@@ -1,4 +1,5 @@
 #pragma once
+#include <mutex>
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -23,7 +24,9 @@ namespace GpioInterface{
       static bool minterrupt_service_installed;
 
       esp_event_handler_t mevent_handle = nullptr;
+      esp_event_handler_instance_t mevent_instance = nullptr;
       static portMUX_TYPE mevent_change_mutex;
+      std::mutex mregistration_mutex;
 
       esp_err_t mclear_event_handlers();
 

@@ -120,6 +120,7 @@ esp_err_t EPAPER4IN26::init_epaper(){
   if(r != ESP_OK){
     ESP_LOGE(EPAPER_TAG, "fail to initialization.");
   }
+  if(r == ESP_OK){ mstate = state_e::INITIALIZED; }
   return r;
 }
 
@@ -205,8 +206,14 @@ uint8_t EPAPER4IN26::is_busy(){
 
 esp_err_t EPAPER4IN26::wait_until_ready(){
   esp_err_t r = ESP_OK;
+  const TickType_t started = xTaskGetTickCount();
   while(is_busy()){
-    ESP_LOGI(EPAPER_TAG, "wait until e-paper is ready");
+    if(xTaskGetTickCount() - started >= pdMS_TO_TICKS(30000)){
+      mstate = state_e::NOT_INITIALIZED;
+      ESP_LOGE(EPAPER_TAG, "BUSY timeout; next display will reset the panel");
+      return ESP_ERR_TIMEOUT;
+    }
+    ESP_LOGD(EPAPER_TAG, "wait until e-paper is ready");
     vTaskDelay(pdMS_TO_TICKS(50));
   }
 
@@ -279,10 +286,8 @@ esp_err_t EPAPER4IN26::turn_on_display(){
     r = send_command(MASTER_ACTIVATION_COMMAND, NULL, 0);
   }
   if(r == ESP_OK){
-    while(is_busy()){
-      vTaskDelay(pdMS_TO_TICKS(500));
-    }
-    vTaskDelay(pdMS_TO_TICKS(5000));
+    r = wait_until_ready();
+    if(r == ESP_OK){ vTaskDelay(pdMS_TO_TICKS(5000)); }
   }
   return r;
 }

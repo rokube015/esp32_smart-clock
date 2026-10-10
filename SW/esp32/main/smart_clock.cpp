@@ -12,7 +12,7 @@ SMART_CLOCK::SMART_CLOCK(){
 
 void SMART_CLOCK::update_display_timer_task(){
   ESP_LOGI(SMART_CLOCK_TAG, "execute update_display_timer_task");
-  vTaskNotifyGiveFromISR(update_display_handle, NULL);
+  notify_display_update(this);
 }
 
 void SMART_CLOCK::update_display_task(){
@@ -24,6 +24,7 @@ void SMART_CLOCK::update_display_task(){
     esp_err_t r2 = ESP_OK;
     ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
     ESP_LOGI(SMART_CLOCK_TAG, "execute update_display_task");
+    const SensorData data = sensor_snapshot();
     const bool time_synchronized = sntp.is_time_synchronized();
     if(r == ESP_OK && time_synchronized){
       r = sntp.get_logtime(timestamp, sizeof(timestamp));
@@ -32,15 +33,15 @@ void SMART_CLOCK::update_display_task(){
       }
     }
     
-    if(r == ESP_OK && time_synchronized){
-      snprintf(sd_card_write_data_buffer, sizeof(sd_card_write_data_buffer), "%s, %d, %.2lf, %.2lf, %.2lf\n", timestamp, co2, temperature, humidity, pressure);
+    if(r == ESP_OK && time_synchronized && sd_ready && data.valid){
+      snprintf(sd_card_write_data_buffer, sizeof(sd_card_write_data_buffer), "%s, %d, %.2lf, %.2lf, %.2lf\n", timestamp, data.co2, data.temperature, data.humidity, data.pressure);
       r2 = sd_card.write_data(file_path, sizeof(file_path), sd_card_write_data_buffer, 'a');
       if(r2 != ESP_OK){
         ESP_LOGE(SMART_CLOCK_TAG, "fail to write sensor log to sd_card.");
       }
     }
     if(r == ESP_OK){
-      r = display_epaper();
+      r = display_epaper(data);
       if(r != ESP_OK){
         ESP_LOGE(SMART_CLOCK_TAG, "fail to display epaper.");
       }
@@ -49,34 +50,43 @@ void SMART_CLOCK::update_display_task(){
 }
 
 void SMART_CLOCK::monitor_sensor_task(){
-  BaseType_t r2 = pdTRUE;
-
+  TickType_t last_wake_time = xTaskGetTickCount();
   while(true){
+    // Discard a late result from an earlier failed request.
+    xQueueReset(co2_buffer);
+    xQueueReset(bme280_results_buffer);
     scd40.notify_measurement_start();
     bme280.notify_measurement_start();
-    r2 = xQueueReceive(co2_buffer, &co2, pdMS_TO_TICKS(300000));
-    if(r2 != pdTRUE){
-      ESP_LOGW(SMART_CLOCK_TAG, "fail to receive data from co2 buffer");
-    }
-    r2 = xQueueReceive(bme280_results_buffer, &results_data, pdMS_TO_TICKS(300000));
-    if(r2 == pdTRUE){
-      temperature = results_data.temperature;
-      pressure = results_data.pressure;
-      humidity = results_data.humidity;
+    uint16_t measured_co2 = 0;
+    BME280::results_data_t measured {};
+    const bool co2_ok = xQueueReceive(co2_buffer, &measured_co2, pdMS_TO_TICKS(15000)) == pdTRUE;
+    const bool bme_ok = xQueueReceive(bme280_results_buffer, &measured, pdMS_TO_TICKS(5000)) == pdTRUE;
+    if(co2_ok && bme_ok){
+      std::lock_guard<std::mutex> guard(sensor_mutex);
+      sensor_data = {measured_co2, measured.temperature, measured.humidity, measured.pressure, true};
+      ESP_LOGI(SMART_CLOCK_TAG, "Sensor snapshot: CO2=%u ppm, temperature=%.2f C, humidity=%.2f %%, pressure=%.2f hPa",
+               sensor_data.co2, sensor_data.temperature, sensor_data.humidity, sensor_data.pressure);
     }
     else{
-      ESP_LOGW(SMART_CLOCK_TAG, "fail to receive data from bme280 buffer.");
+      ESP_LOGW(SMART_CLOCK_TAG, "Sensor request failed (CO2=%d, BME280=%d); keeping previous snapshot", co2_ok, bme_ok);
+      std::lock_guard<std::mutex> guard(sensor_mutex);
+      sensor_data.valid = false;
     }
-    vTaskDelay(pdMS_TO_TICKS(10000));
+    vTaskDelayUntil(&last_wake_time, pdMS_TO_TICKS(UPDATE_DISPLAY_INTERVAL));
   }
-  vTaskDelete(NULL);
 }
 
-esp_err_t SMART_CLOCK::display_epaper(){
+esp_err_t SMART_CLOCK::display_epaper(const SensorData& data){
+  if(!display_ready){ return ESP_ERR_INVALID_STATE; }
+  const uint16_t co2 = data.co2;
+  const float temperature = data.temperature;
+  const double humidity = data.humidity;
+  const float pressure = data.pressure;
   esp_err_t r = ESP_OK;
   if(wifi.get_state() == WIFI::state_e::PROVISIONING){
-    const char* setup_ssid = wifi.get_setup_ssid();
-    const char* provisioning_pop = wifi.get_provisioning_pop();
+    char setup_ssid[33] {};
+    char provisioning_pop[17] {};
+    wifi.get_setup_info(setup_ssid, provisioning_pop);
     black_sprite.fillScreen(WHITE);
     black_sprite.setTextWrap(false);
     black_sprite.setTextColor(BLACK);
@@ -183,11 +193,12 @@ esp_err_t SMART_CLOCK::display_epaper(){
   }
 
   if(r == ESP_OK){
-    if(e_paper.get_state() == EPAPER4IN26::state_e::SLEEP){
+    if(e_paper.get_state() == EPAPER4IN26::state_e::SLEEP ||
+       e_paper.get_state() == EPAPER4IN26::state_e::NOT_INITIALIZED){
       r = e_paper.init_epaper();
     }
-    r |= e_paper.display((uint8_t*)black_sprite.getBuffer(), e_paper.get_display_bytes());
-    r |= e_paper.set_sleep_mode();
+    if(r == ESP_OK){ r = e_paper.display((uint8_t*)black_sprite.getBuffer(), e_paper.get_display_bytes()); }
+    if(r == ESP_OK){ r = e_paper.set_sleep_mode(); }
   }
   return r;
 }
@@ -208,7 +219,9 @@ esp_err_t SMART_CLOCK::create_update_display_task(const char* pname, uint16_t st
   esp_err_t r = ESP_OK;
   BaseType_t r2 = pdTRUE;
   if(r == ESP_OK){ 
-    r2 = xTaskCreate(get_update_display_task_entry_point, pname, stack_size, this, task_priority, &update_display_handle);
+    TaskHandle_t handle = nullptr;
+    r2 = xTaskCreate(get_update_display_task_entry_point, pname, stack_size, this, task_priority, &handle);
+    if(r2 == pdTRUE){ update_display_handle.store(handle); }
     if(r2 != pdTRUE){
       ESP_LOGE(SMART_CLOCK_TAG, "fail to create update_display_handle.");
       r = ESP_FAIL;
@@ -239,6 +252,7 @@ void SMART_CLOCK::wifi_connected_event_handler(void* arg, esp_event_base_t event
   }
 
   SMART_CLOCK* instance = static_cast<SMART_CLOCK*>(arg);
+  if(!instance->application_ready.load()){ return; }
   ESP_LOGI(SMART_CLOCK_TAG, "Wi-Fi connected; requesting immediate display update");
   if(!instance->sntp.is_running()){
     instance->sntp.init();
@@ -272,32 +286,42 @@ void SMART_CLOCK::sntp_time_sync_complete(void* arg){
 
 void SMART_CLOCK::notify_display_update(void* arg){
   SMART_CLOCK* instance = static_cast<SMART_CLOCK*>(arg);
-  if(instance->update_display_handle != NULL){
-    xTaskNotifyGive(instance->update_display_handle);
-  }
+  if(!instance->application_ready.load()){ return; }
+  const TaskHandle_t handle = instance->update_display_handle.load();
+  if(handle != nullptr){ xTaskNotifyGive(handle); }
 }
 
 esp_err_t SMART_CLOCK::init(void){
   esp_err_t r = ESP_OK;
-  esp_event_loop_create_default();
-  nvs_flash_init();
+  r = esp_event_loop_create_default();
+  if(r != ESP_OK && r != ESP_ERR_INVALID_STATE){ return r; }
+  r = nvs_flash_init();
+  if(r != ESP_OK){
+    ESP_LOGE(SMART_CLOCK_TAG, "NVS initialization failed: %s", esp_err_to_name(r));
+    return r;
+  }
 
   // initialize e-paper
   if(r == ESP_OK){
-    r = e_paper.init();
-    if(r != ESP_OK){
+    const esp_err_t panel_result = e_paper.init();
+    display_ready = panel_result == ESP_OK || panel_result == ESP_ERR_TIMEOUT;
+    r = ESP_OK;
+    if(panel_result != ESP_OK){
       ESP_LOGE(SMART_CLOCK_TAG, "fail to initialize e-paper.");
     }
   }
-  if(r == ESP_OK){
-    r = e_paper.clear_screen();
-    if(r != ESP_OK){
+  if(r == ESP_OK && display_ready){
+    const esp_err_t clear_result = e_paper.clear_screen();
+    if(clear_result != ESP_OK){
       ESP_LOGE(SMART_CLOCK_TAG, "fail to clear display.");
     }
   }
   if(r == ESP_OK){
     black_sprite.setColorDepth(1);
-    black_sprite.createSprite(e_paper.get_display_resolution_width(), e_paper.get_display_resolution_height());
+    if(black_sprite.createSprite(e_paper.get_display_resolution_width(), e_paper.get_display_resolution_height()) == nullptr){
+      ESP_LOGE(SMART_CLOCK_TAG, "Failed to allocate display buffer");
+      return ESP_ERR_NO_MEM;
+    }
     black_sprite.setTextWrap(true);
     black_sprite.fillScreen(WHITE);
     black_sprite.setCursor(0, 0);
@@ -305,12 +329,14 @@ esp_err_t SMART_CLOCK::init(void){
     black_sprite.setTextColor(BLACK);
     black_sprite.setTextSize(2);
     black_sprite.print("smart clock initializing...");
-    r = e_paper.display((uint8_t*)black_sprite.getBuffer(), e_paper.get_display_bytes());
+    if(display_ready){ r = e_paper.display((uint8_t*)black_sprite.getBuffer(), e_paper.get_display_bytes()); }
     if(r != ESP_OK){
       ESP_LOGE(SMART_CLOCK_TAG, "fail to display initializing message.");
+      r = ESP_OK;
     } 
   }
   if(r == ESP_OK){
+    sntp.set_time_sync_callback(&sntp_time_sync_complete, this);
     r = wifi.init();
     if(r != ESP_OK){
       ESP_LOGE(SMART_CLOCK_TAG, "fail to initialize wifi component.");
@@ -320,10 +346,11 @@ esp_err_t SMART_CLOCK::init(void){
     r = esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP,
                                    &wifi_connected_event_handler, this);
   }
-  if(r == ESP_OK && wifi.get_state() == WIFI::state_e::PROVISIONING){
-    r = display_epaper();
+  if(r == ESP_OK && display_ready && wifi.get_state() == WIFI::state_e::PROVISIONING){
+    r = display_epaper(sensor_snapshot());
     if(r != ESP_OK){
       ESP_LOGE(SMART_CLOCK_TAG, "fail to display Wi-Fi setup information.");
+      r = ESP_OK;
     }
   }
   // Initialize the I2C
@@ -373,10 +400,11 @@ esp_err_t SMART_CLOCK::init(void){
       ESP_LOGE(SMART_CLOCK_TAG, "fail to initialize sd_card component.");
     }
   }
-  if(r2 == ESP_OK){
+  if(r == ESP_OK && r2 == ESP_OK){
     char sd_card_write_data_buffer[400];
-    snprintf(sd_card_write_data_buffer, sizeof(sd_card_write_data_buffer), "YYYY/MM/DD, week, HH:MM:SS, CO2[rpm], Temperature[degree], Humidity[%%], Pressure[hPa]\n");
-    r2 = sd_card.write_data(file_path, sizeof(file_path), sd_card_write_data_buffer, 'w');
+    snprintf(sd_card_write_data_buffer, sizeof(sd_card_write_data_buffer), "YYYY/MM/DD, week, HH:MM:SS, CO2[ppm], Temperature[degree], Humidity[%%], Pressure[hPa]\n");
+    r2 = sd_card.write_data(file_path, sizeof(file_path), sd_card_write_data_buffer, 'h');
+    sd_ready = (r2 == ESP_OK);
     if(r2 != ESP_OK){
       ESP_LOGE(SMART_CLOCK_TAG, "fail to write data to sd_card.");
     }
@@ -388,14 +416,12 @@ esp_err_t SMART_CLOCK::init(void){
     }
   }
   if(r == ESP_OK){
-    sntp.set_time_sync_callback(&sntp_time_sync_complete, this);
-  }
-  if(r == ESP_OK){
     r = create_update_display_timer_task("update_diplay_timer");
     if(r != ESP_OK){
       ESP_LOGE(SMART_CLOCK_TAG, "fail to create update_display_timer task");
     }
   }
+  application_ready.store(r == ESP_OK);
   return r;
 }
 
@@ -439,6 +465,7 @@ void SMART_CLOCK::wifi_run(void){
       break;
     case WIFI::state_e::ERROR:
       ESP_LOGI(SMART_CLOCK_TAG, "wifi status: ERROR");
+      wifi.begin();
       break;
     case WIFI::state_e::CONNECTED:
       ESP_LOGI(SMART_CLOCK_TAG, "wifi status: CONNECTED");

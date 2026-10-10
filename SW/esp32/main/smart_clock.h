@@ -1,6 +1,7 @@
 #pragma once
 
 #include <atomic>
+#include <mutex>
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -25,11 +26,21 @@ class SMART_CLOCK final{
   
     constexpr static uint16_t UPDATE_DISPLAY_INTERVAL {60 * 1000}; //[ms]  
     DMA_ATTR static LGFX_Sprite black_sprite;
-    BME280::results_data_t results_data {0.0, 0.0, 0.0};
-    float temperature {0.0};  //[degree Celsius]
-    float pressure    {0.0};  //[hPa]
-    double humidity   {0.0};  //[%]
-    uint16_t co2      {0};    //[ppm]
+    struct SensorData{
+      uint16_t co2 {0};
+      float temperature {0};
+      double humidity {0};
+      float pressure {0};
+      bool valid {false};
+    };
+    SensorData sensor_data;
+    std::mutex sensor_mutex;
+    bool sd_ready {false};
+    bool display_ready {false};
+    SensorData sensor_snapshot(){
+      std::lock_guard<std::mutex> guard(sensor_mutex);
+      return sensor_data;
+    }
     const char file_path[50] = "/sensor_log.csv";
     constexpr static uint8_t WHITE  {255};
     constexpr static uint8_t BLACK  {0};
@@ -47,7 +58,8 @@ class SMART_CLOCK final{
 
     TimerHandle_t update_display_timer_handle {NULL}; 
     TaskHandle_t  sensor_task_handle {NULL};
-    TaskHandle_t  update_display_handle {NULL};
+    std::atomic<TaskHandle_t> update_display_handle {nullptr};
+    std::atomic<bool> application_ready {false};
 
     esp_err_t create_update_display_timer_task(const char* pname);
     esp_err_t create_update_display_task(const char* pname, uint16_t stack_size, UBaseType_t task_priority);
@@ -65,7 +77,7 @@ class SMART_CLOCK final{
     void update_display_task(); 
     void monitor_sensor_task();
 
-    esp_err_t display_epaper(); 
+    esp_err_t display_epaper(const SensorData& data);
   
   public:
     WIFI::state_e wifi_state {WIFI::state_e::NOT_INITIALIZED};

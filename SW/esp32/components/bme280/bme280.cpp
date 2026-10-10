@@ -18,7 +18,7 @@ esp_err_t BME280::init_i2c(void){
     .scl_speed_hz = CLK_SPEED_HZ,
     .scl_wait_us = 0,
    };
-   i2c_device_config.flags.disable_ack_check = true;
+   i2c_device_config.flags.disable_ack_check = false;
    r = i2c_master_bus_add_device(pmi2c->get_i2c_master_bus_handle(),
        &i2c_device_config, &mi2c_device_handle); 
    if(r != ESP_OK){
@@ -255,17 +255,25 @@ esp_err_t BME280::get_calibration_data(){
 esp_err_t BME280::get_sensor_data(sensor_raw_data_t* psensor_result_raw_data){
   esp_err_t r = ESP_OK;
 
-  std::unique_ptr<uint8_t[]> buff = std::make_unique<uint8_t[]>(8);
+  uint8_t buff[8] {};
 
   if(msensor_mode_value == sensorForcedMode){
     r = set_mode(sensorForcedMode);
-    while(check_status_measuring_busy() || check_imUpdate_busy()){
+    const TickType_t started = xTaskGetTickCount();
+    while(r == ESP_OK){
+      uint8_t status = 0;
+      r = read_byte(STATUS, &status);
+      if(r != ESP_OK || (status & 0x09) == 0){ break; }
+      if(xTaskGetTickCount() - started >= pdMS_TO_TICKS(2000)){
+        r = ESP_ERR_TIMEOUT;
+        break;
+      }
       vTaskDelay(pdMS_TO_TICKS(50));
     }
   }
   
   if(r == ESP_OK){
-    r = read_data(PRESS_MSB, buff.get(), 8);
+    r = read_data(PRESS_MSB, buff, 8);
     if(r != ESP_OK){
       ESP_LOGE(BME280_TAG, "fail to read block data");
     }
@@ -702,7 +710,7 @@ esp_err_t BME280::read_int16_t(const uint8_t command, int16_t* pread_data){
   uint8_t read_data_buffer[2] {0, 0};
 
   if(r == ESP_OK){
-    pmi2c->read_data(mi2c_device_handle, &command, 1, &read_data_buffer[0], 2);
+    r = pmi2c->read_data(mi2c_device_handle, &command, 1, &read_data_buffer[0], 2);
     if(r != ESP_OK){
       ESP_LOGE(BME280_TAG, "fail to read data.");
     }
@@ -720,7 +728,7 @@ esp_err_t BME280::read_uint16_t(const uint8_t command, uint16_t* pread_data){
   uint8_t read_data_buffer[2] {0, 0};
 
   if(r == ESP_OK){
-    pmi2c->read_data(mi2c_device_handle, &command, 1, &read_data_buffer[0], 2);
+    r = pmi2c->read_data(mi2c_device_handle, &command, 1, &read_data_buffer[0], 2);
     if(r != ESP_OK){
       ESP_LOGE(BME280_TAG, "fail to read data.");
     }
@@ -745,24 +753,21 @@ int BME280::read_data(const uint8_t command,
 }
 
 void BME280::measure_task(){
-  esp_err_t r = ESP_OK;
-  BaseType_t r2 = pdTRUE; 
   while(true){
-    ESP_LOGI(BME280_TAG, "start bme280 measure task.");
-    vTaskDelay(pdMS_TO_TICKS(1000));
-    if(r == ESP_OK){
-      r = update_sensor_data(); 
+    ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+    esp_err_t r = update_sensor_data();
+    if(r != ESP_OK){
+      ESP_LOGW(BME280_TAG, "Measurement failed; retrying: %s", esp_err_to_name(r));
+      vTaskDelay(pdMS_TO_TICKS(100));
+      r = update_sensor_data();
     }
     if(r == ESP_OK){
-      r2 = xQueueSendToBack(results_buffer, &results_data, pdMS_TO_TICKS(100000));
-      if(r2 != pdTRUE){
-        ESP_LOGE(BME280_TAG, "fail to send to bme280 results_buffer");
-        r = ESP_FAIL;
-      } 
+      xQueueOverwrite(results_buffer, &results_data);
     }
-    vTaskDelay(pdMS_TO_TICKS(5000));
+    else{
+      ESP_LOGE(BME280_TAG, "Measurement failed; will retry on next request: %s", esp_err_to_name(r));
+    }
   }
-  vTaskDelete(NULL);
 }
 
 void BME280::get_measure_task_entry_point(void* arg){

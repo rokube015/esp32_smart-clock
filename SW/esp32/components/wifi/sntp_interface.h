@@ -1,6 +1,8 @@
 #pragma once
 
 #include <ctime>
+#include <atomic>
+#include <mutex>
 #include <chrono>
 #include <iomanip>
 #include <string>
@@ -17,7 +19,9 @@ class SNTP : private WIFI{
     constexpr static const char* SNTP_TAG = "SNTP"; 
 
     static std::chrono::_V2::system_clock::time_point mlast_update;
-    static bool mis_running;
+    static std::atomic<bool> mis_running;
+    static std::mutex msync_mutex;
+    static std::mutex mcontrol_mutex;
     static void callback_on_ntp_update(timeval *tv);
 
   public:

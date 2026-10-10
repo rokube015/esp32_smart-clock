@@ -17,6 +17,7 @@ class SD_CARD{
 
     esp_err_t init();
 
+    // mode 'h': append a header only when the file is empty or new.
     esp_err_t write_data(const char* pfile_path, size_t file_path_size, char* data, char mode);
 
     esp_err_t read_data(const char* path);

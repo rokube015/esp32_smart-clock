@@ -6,16 +6,23 @@
 //Statics
 std::chrono::_V2::system_clock::time_point SNTP::mlast_update{};
 
-bool SNTP::mis_running{false};
+std::atomic<bool> SNTP::mis_running{false};
+std::mutex SNTP::msync_mutex;
+std::mutex SNTP::mcontrol_mutex;
 static void (*sntp_time_sync_callback)(void*) = nullptr;
 static void* sntp_time_sync_context = nullptr;
 
 void SNTP::callback_on_ntp_update(timeval *tv){
   std::cout << "NTP updated, current time is: " << time_now_ascii() << '\n';
-  mlast_update = std::chrono::system_clock::now();
-  if(sntp_time_sync_callback != nullptr){
-    sntp_time_sync_callback(sntp_time_sync_context);
+  void (*callback)(void*) = nullptr;
+  void* context = nullptr;
+  {
+    std::lock_guard<std::mutex> guard(msync_mutex);
+    mlast_update = std::chrono::system_clock::now();
+    callback = sntp_time_sync_callback;
+    context = sntp_time_sync_context;
   }
+  if(callback != nullptr){ callback(context); }
 }
 
 SNTP::SNTP(void){
@@ -27,6 +34,7 @@ SNTP::~SNTP(void){
 }
 
 esp_err_t SNTP::init(void){
+  std::lock_guard<std::mutex> guard(mcontrol_mutex);
   esp_err_t r = ESP_OK;
 
   if (!mis_running){
@@ -42,7 +50,9 @@ esp_err_t SNTP::init(void){
 
       esp_sntp_setoperatingmode(SNTP_OPMODE_POLL);
       esp_sntp_setservername(0, "time.google.com");
+#if CONFIG_LWIP_SNTP_MAX_SERVERS > 1
       esp_sntp_setservername(1, "pool.ntp.com");
+#endif
 
       sntp_set_time_sync_notification_cb(&callback_on_ntp_update);
       sntp_set_sync_interval(60 * 60 * 1000); // Update time every hour
@@ -64,15 +74,18 @@ esp_err_t SNTP::init(void){
 }
 
 bool SNTP::is_time_synchronized(void){
+  std::lock_guard<std::mutex> guard(msync_mutex);
   return mlast_update.time_since_epoch().count() != 0;
 }
 
 void SNTP::set_time_sync_callback(void (*callback)(void*), void* context){
+  std::lock_guard<std::mutex> guard(msync_mutex);
   sntp_time_sync_callback = callback;
   sntp_time_sync_context = context;
 }
 
 bool SNTP::set_update_interval(uint32_t ms, const bool immediate){
+  std::lock_guard<std::mutex> guard(mcontrol_mutex);
   if(mis_running){
     sntp_set_sync_interval(ms);
     if (immediate){
@@ -88,6 +101,7 @@ bool SNTP::set_update_interval(uint32_t ms, const bool immediate){
 }
 
 [[nodiscard]] const auto SNTP::time_since_last_update(void){
+  std::lock_guard<std::mutex> guard(msync_mutex);
   return time_point_now() - mlast_update;
 }
 
@@ -98,13 +112,19 @@ bool SNTP::set_update_interval(uint32_t ms, const bool immediate){
 [[nodiscard]] const char* SNTP::time_now_ascii(void){
   const std::time_t time_now{std::chrono::system_clock::to_time_t(time_point_now())};
 
-  return std::asctime(std::localtime(&time_now));
+  thread_local char buffer[32];
+  std::tm local_time {};
+  if(localtime_r(&time_now, &local_time) == nullptr){ return "invalid time"; }
+  std::strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", &local_time);
+  return buffer;
 }
 
 esp_err_t SNTP::get_daytime(char* ptime_string, size_t time_string_size){
   esp_err_t r = ESP_OK;
   const std::time_t time_now{std::chrono::system_clock::to_time_t(time_point_now())};
-  std::tm* plocal_time = std::localtime(&time_now);
+  std::tm local_time {};
+  if(localtime_r(&time_now, &local_time) == nullptr){ return ESP_FAIL; }
+  const std::tm* plocal_time = &local_time;
   
   if(std::strftime(ptime_string, time_string_size, "%A %b %d", plocal_time) == 0){
     r = ESP_FAIL;
@@ -117,7 +137,9 @@ esp_err_t SNTP::get_daytime(char* ptime_string, size_t time_string_size){
 esp_err_t SNTP::get_time(char* ptime_string, size_t time_string_size){
   esp_err_t r = ESP_OK;
   const std::time_t time_now{std::chrono::system_clock::to_time_t(time_point_now())};
-  std::tm* plocal_time = std::localtime(&time_now);
+  std::tm local_time {};
+  if(localtime_r(&time_now, &local_time) == nullptr){ return ESP_FAIL; }
+  const std::tm* plocal_time = &local_time;
   
   if(std::strftime(ptime_string, time_string_size, "%H:%M", plocal_time) == 0){
     r = ESP_FAIL;
@@ -130,7 +152,9 @@ esp_err_t SNTP::get_time(char* ptime_string, size_t time_string_size){
 esp_err_t SNTP::get_logtime(char* time_string, size_t time_string_size){
   esp_err_t r = ESP_OK;
   const std::time_t time_now{std::chrono::system_clock::to_time_t(time_point_now())};
-  std::tm* plocal_time = std::localtime(&time_now);
+  std::tm local_time {};
+  if(localtime_r(&time_now, &local_time) == nullptr){ return ESP_FAIL; }
+  const std::tm* plocal_time = &local_time;
   
   if(std::strftime(time_string, time_string_size, "%Y/%m/%d, %a, %H:%M:%S", plocal_time) == 0){
     r = ESP_FAIL;

@@ -14,6 +14,7 @@ std::mutex WIFI::mmutex {};
 WIFI::state_e WIFI::mstate{state_e::NOT_INITIALIZED};
 wifi_init_config_t WIFI::mwifi_init_cfg = WIFI_INIT_CONFIG_DEFAULT();
 bool WIFI::mprovisioning{false};
+uint8_t WIFI::mconnection_failures{0};
 char WIFI::mprovisioning_pop[17] {};
 char WIFI::mprovisioning_ssid[33] {};
 
@@ -50,7 +51,9 @@ void WIFI::wifi_event_handler(void* arg, esp_event_base_t event_base,
       case WIFI_EVENT_STA_STOP:
         {
           std::lock_guard<std::mutex> state_guard(mmutex);
-          mstate = state_e::INITIALIZED;
+          if(!mprovisioning){
+            mstate = state_e::INITIALIZED;
+          }
           break;
         }
       case WIFI_EVENT_STA_CONNECTED:
@@ -62,7 +65,20 @@ void WIFI::wifi_event_handler(void* arg, esp_event_base_t event_base,
       case WIFI_EVENT_STA_DISCONNECTED:
         {
           std::lock_guard<std::mutex> state_guard(mmutex);
-          mstate = mprovisioning ? state_e::PROVISIONING : state_e::DISCONNECTED;
+          if(mprovisioning){
+            mstate = state_e::PROVISIONING;
+          }
+          else{
+            if(mconnection_failures < WIFI_CONNECT_FAILURE_LIMIT){
+              ++mconnection_failures;
+            }
+            mstate = mconnection_failures >= WIFI_CONNECT_FAILURE_LIMIT
+                ? state_e::ERROR : state_e::DISCONNECTED;
+            if(mstate == state_e::ERROR){
+              ESP_LOGW(WIFI_TAG, "Wi-Fi connection failed %u times; provisioning fallback required",
+                       mconnection_failures);
+            }
+          }
           break;
         }
       case WIFI_EVENT_AP_START:
@@ -83,13 +99,14 @@ void WIFI::ip_event_handler(void* arg, esp_event_base_t event_base,
       case IP_EVENT_STA_GOT_IP:
         {
           std::lock_guard<std::mutex> stage_guard(mmutex);
+          mconnection_failures = 0;
           mstate = state_e::CONNECTED;
           break;
         }
       case IP_EVENT_STA_LOST_IP:
         {
           std::lock_guard<std::mutex>state_guard(mmutex);
-          if(mstate != state_e::DISCONNECTED && mstate != state_e::INITIALIZED){
+          if(mstate == state_e::CONNECTED || mstate == state_e::WAITING_FOR_IP){
             mstate = state_e::WAITING_FOR_IP;
           }
           break;
@@ -139,12 +156,33 @@ void WIFI::provisioning_event_handler(void* arg, esp_event_base_t event_base,
 }
 
 esp_err_t WIFI::begin(void){
-  std::lock_guard<std::mutex>connect_guard(mmutex);
+  std::unique_lock<std::mutex>connect_guard(mmutex);
 
   esp_err_t r = ESP_OK;
 
   if(mprovisioning){
     return ESP_OK;
+  }
+
+  if(mstate == state_e::ERROR){
+    if(mconnection_failures < WIFI_CONNECT_FAILURE_LIMIT){
+      return ESP_FAIL;
+    }
+    mprovisioning = true;
+    mstate = state_e::PROVISIONING;
+    connect_guard.unlock();
+    r = esp_wifi_stop();
+    if(r == ESP_OK){
+      r = mstart_provisioning(true);
+    }
+    connect_guard.lock();
+    if(r != ESP_OK){
+      mprovisioning = false;
+      mstate = state_e::ERROR;
+      ESP_LOGE(WIFI_TAG, "Failed to start fallback Wi-Fi provisioning: %s",
+               esp_err_to_name(r));
+    }
+    return r;
   }
 
   switch(mstate){
@@ -162,6 +200,8 @@ esp_err_t WIFI::begin(void){
       break;
     case state_e::NOT_INITIALIZED:
     case state_e::INITIALIZED:
+      r = ESP_FAIL;
+      break;
     case state_e::ERROR:
       r = ESP_FAIL;
       break;
@@ -191,6 +231,49 @@ esp_err_t WIFI::stop(void){
   }
 
   return esp_wifi_stop();
+}
+
+esp_err_t WIFI::mstart_provisioning(bool initialize_manager){
+  const network_prov_mgr_config_t config = {
+    .scheme = network_prov_scheme_softap,
+    .scheme_event_handler = NETWORK_PROV_EVENT_HANDLER_NONE,
+    .app_event_handler = NETWORK_PROV_EVENT_HANDLER_NONE,
+    .network_prov_wifi_conn_cfg = {.wifi_conn_attempts = 0},
+  };
+  bool manager_initialized = !initialize_manager;
+  esp_err_t r = ESP_OK;
+
+  if(initialize_manager){
+    r = network_prov_mgr_init(config);
+    manager_initialized = (r == ESP_OK);
+  }
+  if(r == ESP_OK){
+    char service_name[33] {};
+    uint8_t pop_random[8] {};
+    esp_fill_random(pop_random, sizeof(pop_random));
+    char pop[17] {};
+    snprintf(pop, sizeof(pop),
+        "%02x%02x%02x%02x%02x%02x%02x%02x",
+        pop_random[0], pop_random[1], pop_random[2], pop_random[3],
+        pop_random[4], pop_random[5], pop_random[6], pop_random[7]);
+    snprintf(service_name, sizeof(service_name), "SMART_CLOCK_%s", mmac_addr_cstr);
+    {
+      std::lock_guard<std::mutex> guard(mmutex);
+      snprintf(mprovisioning_ssid, sizeof(mprovisioning_ssid), "%s", service_name);
+      memcpy(mprovisioning_pop, pop, sizeof(pop));
+    }
+    r = network_prov_mgr_start_provisioning(NETWORK_PROV_SECURITY_1,
+        pop, service_name, nullptr);
+    if(r == ESP_OK){
+      ESP_LOGI(WIFI_TAG, "Connect to setup AP %s using Espressif's SoftAP Provisioning app", service_name);
+      ESP_LOGI(WIFI_TAG, "Provisioning proof of possession: %s", pop);
+    }
+  }
+
+  if(r != ESP_OK && manager_initialized){
+    network_prov_mgr_deinit();
+  }
+  return r;
 }
 
 esp_err_t WIFI::mwifi_init(){
@@ -259,24 +342,14 @@ esp_err_t WIFI::mwifi_init(){
         }
       }
       else if(r == ESP_OK){
-        char service_name[33] {};
-        uint8_t pop_random[8] {};
-        esp_fill_random(pop_random, sizeof(pop_random));
-        snprintf(mprovisioning_pop, sizeof(mprovisioning_pop),
-            "%02x%02x%02x%02x%02x%02x%02x%02x",
-            pop_random[0], pop_random[1], pop_random[2], pop_random[3],
-            pop_random[4], pop_random[5], pop_random[6], pop_random[7]);
-        snprintf(service_name, sizeof(service_name), "SMART_CLOCK_%s", mmac_addr_cstr);
-        snprintf(mprovisioning_ssid, sizeof(mprovisioning_ssid), "%s", service_name);
         mprovisioning = true;
         mstate = state_e::PROVISIONING;
         mutex_guard.unlock();
-        r = network_prov_mgr_start_provisioning(NETWORK_PROV_SECURITY_1,
-            mprovisioning_pop, service_name, nullptr);
+        r = mstart_provisioning(false);
         mutex_guard.lock();
-        if(r == ESP_OK){
-          ESP_LOGI(WIFI_TAG, "Connect to setup AP %s using Espressif's SoftAP Provisioning app", service_name);
-          ESP_LOGI(WIFI_TAG, "Provisioning proof of possession: %s", mprovisioning_pop);
+        if(r != ESP_OK){
+          mprovisioning = false;
+          mstate = state_e::ERROR;
         }
       }
     }

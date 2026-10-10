@@ -20,7 +20,7 @@ esp_err_t SCD40::init_i2c(void){
     .scl_speed_hz = CLK_SPEED_HZ,
     .scl_wait_us = 0,
    };
-   i2c_device_config.flags.disable_ack_check = true;
+   i2c_device_config.flags.disable_ack_check = false;
    r = i2c_master_bus_add_device(pmi2c->get_i2c_master_bus_handle(),
        &i2c_device_config, &mi2c_device_handle); 
   }
@@ -341,32 +341,33 @@ esp_err_t SCD40::send_command(const uint8_t* pcommand){
 }
 
 void SCD40::measure_co2_task(){
-  esp_err_t r = ESP_OK; 
-  BaseType_t r2 = pdTRUE;
-
+  bool needs_recovery = false;
   while(true){
-    ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(TIMEOUT_SETTING)); 
-    ESP_LOGI(SCD40_TAG, "start co2 measurement.");
-    if(r == ESP_OK){
-      r = start_periodic_measurement();
-      vTaskDelay(pdMS_TO_TICKS(MEASUREMENT_INTERVAL)); 
-    }
-    if(r == ESP_OK){
-      r = get_co2_data(&co2);
-      ESP_LOGI(SCD40_TAG, "get co2:%d[ppm]", co2);
-      r2 = xQueueSendToBack(co2_buffer, &co2, pdMS_TO_TICKS(TIMEOUT_SETTING));
-      if(r2 != pdTRUE){
-        ESP_LOGE(SCD40_TAG, "fail to send to co2_buffer");
-        r = ESP_FAIL; 
-      }
-      vTaskDelay(pdMS_TO_TICKS(COMMAND_INTERVAL));
-    }
-    if(r == ESP_OK){
+    ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+    esp_err_t r = ESP_OK;
+    if(needs_recovery){
       r = stop_periodic_measurement();
       vTaskDelay(pdMS_TO_TICKS(COMMAND_INTERVAL));
     }
+    if(r == ESP_OK){
+      r = start_periodic_measurement();
+    }
+    if(r == ESP_OK){
+      vTaskDelay(pdMS_TO_TICKS(MEASUREMENT_INTERVAL));
+      r = get_co2_data(&co2);
+    }
+    // Stop even after a failed read so the next request can start afresh.
+    const esp_err_t stop_result = stop_periodic_measurement();
+    vTaskDelay(pdMS_TO_TICKS(COMMAND_INTERVAL));
+    needs_recovery = (stop_result != ESP_OK);
+    if(r == ESP_OK && stop_result == ESP_OK){
+      xQueueOverwrite(co2_buffer, &co2);
+    }
+    else{
+      ESP_LOGW(SCD40_TAG, "Measurement failed; will recover on next request: %s / %s",
+               esp_err_to_name(r), esp_err_to_name(stop_result));
+    }
   }
-  vTaskDelete(NULL);
 }
 
 QueueHandle_t SCD40::get_co2_buffer_handle(){

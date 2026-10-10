@@ -35,7 +35,8 @@ namespace i2c_base{
    * Deletes the I2C master bus handle when the object is destroyed.
    */
   I2C::~I2C(){
-    i2c_del_master_bus(mi2c_bus_handle);
+    if(mi2c_bus_handle != nullptr){ i2c_del_master_bus(mi2c_bus_handle); }
+    if(i2c_port_semaphore != nullptr){ vSemaphoreDelete(i2c_port_semaphore); }
   }
   /**
    * @brief Acquires the I2C port semaphore.
@@ -47,6 +48,7 @@ namespace i2c_base{
    *   - ESP_FAIL if acquiring the semaphore failed.
    */
   esp_err_t I2C::take_i2c_port_semaphore(){
+    if(i2c_port_semaphore == nullptr){ return ESP_ERR_INVALID_STATE; }
     esp_err_t r = ESP_OK;
     if(xSemaphoreTake(i2c_port_semaphore, pdMS_TO_TICKS(I2C_TIMEOUT)) == pdTRUE){
       r = ESP_OK;
@@ -91,11 +93,12 @@ namespace i2c_base{
       i2c_port_semaphore = xSemaphoreCreateMutex();
       if(i2c_port_semaphore == NULL){
         ESP_LOGE(I2C_BASE_TAG, "fail to create i2c_port_semaphore.");
+        return ESP_ERR_NO_MEM;
       }
     }
 
     if(r == ESP_OK){
-      if(take_i2c_port_semaphore() == ESP_OK){
+      if((r = take_i2c_port_semaphore()) == ESP_OK){
         if(mmode == I2C_MODE_MASTER){
           mi2c_bus_config.i2c_port = mport;
           mi2c_bus_config.sda_io_num = SDA_PIN;
@@ -113,8 +116,10 @@ namespace i2c_base{
         }
         else{
           ESP_LOGE(I2C_BASE_TAG, "fail to set i2c port to slave mode");
+          r = ESP_ERR_NOT_SUPPORTED;
         }
-        r |= release_i2c_port_semaphore(); 
+        const esp_err_t unlock_result = release_i2c_port_semaphore();
+        if(r == ESP_OK){ r = unlock_result; }
       }
     }
     return r;
@@ -144,13 +149,14 @@ namespace i2c_base{
     esp_err_t r = ESP_OK;
 
     if(r == ESP_OK){
-      if(take_i2c_port_semaphore() == ESP_OK){ 
+      if((r = take_i2c_port_semaphore()) == ESP_OK){
         r = i2c_master_transmit_receive(dev_handle, pcommand, command_size, 
-            pread_data_buffer, 1, pdMS_TO_TICKS(1000));
+            pread_data_buffer, 1, 1000);
         if(r != ESP_OK){
           ESP_LOGE(I2C_BASE_TAG, "fail to read data.");
         }
-        r |= release_i2c_port_semaphore(); 
+        const esp_err_t unlock_result = release_i2c_port_semaphore();
+        if(r == ESP_OK){ r = unlock_result; }
       }
     }
     return r; 
@@ -168,27 +174,19 @@ namespace i2c_base{
   esp_err_t I2C::write_byte(i2c_master_dev_handle_t dev_handle, 
       const uint8_t* pcommand, size_t command_size, 
       const uint8_t write_data){
-    esp_err_t r = ESP_OK;
-
-    uint8_t* send_buffer = (uint8_t*)malloc(command_size + 1);
-    if(send_buffer == NULL){
-      r = ESP_FAIL;
-      ESP_LOGE(I2C_BASE_TAG, "fail to alloc buffer.");
+    if(pcommand == nullptr || command_size != 1){
+      return ESP_ERR_INVALID_ARG;
     }
-
-    if(r == ESP_OK){
-      memcpy(send_buffer, pcommand, command_size); 
-      memcpy(send_buffer + command_size, &write_data, 1); 
-      if(take_i2c_port_semaphore() == ESP_OK){ 
-        r = i2c_master_transmit(dev_handle, send_buffer, 2, pdMS_TO_TICKS(I2C_TIMEOUT));
-        if(r != ESP_OK){
-          ESP_LOGE(I2C_BASE_TAG, "fail to send data.");
-        }
-        r |= release_i2c_port_semaphore();
-      }
+    const uint8_t send_buffer[2] = {pcommand[0], write_data};
+    esp_err_t r = take_i2c_port_semaphore();
+    if(r != ESP_OK){
+      return r;
     }
-    return r;
+    r = i2c_master_transmit(dev_handle, send_buffer, sizeof(send_buffer), I2C_TIMEOUT);
+    const esp_err_t unlock_result = release_i2c_port_semaphore();
+    return r == ESP_OK ? unlock_result : r;
   }
+
   /**
    * @brief Reads multiple bytes of data from the I2C device.
    *
@@ -211,12 +209,13 @@ namespace i2c_base{
     esp_err_t r = ESP_OK;
 
     if(r == ESP_OK){
-      if(take_i2c_port_semaphore() == ESP_OK){ 
-        r = i2c_master_transmit_receive(dev_handle, pcommand, command_size, pread_data_buffer, read_buffer_size, pdMS_TO_TICKS(I2C_TIMEOUT));
+      if((r = take_i2c_port_semaphore()) == ESP_OK){
+        r = i2c_master_transmit_receive(dev_handle, pcommand, command_size, pread_data_buffer, read_buffer_size, I2C_TIMEOUT);
         if(r != ESP_OK){
           ESP_LOGE(I2C_BASE_TAG, "fail to read data. I2C Error:%s", esp_err_to_name(r));
         }
-        r |= release_i2c_port_semaphore();
+        const esp_err_t unlock_result = release_i2c_port_semaphore();
+        if(r == ESP_OK){ r = unlock_result; }
       }
     }
     return r;
@@ -255,12 +254,13 @@ namespace i2c_base{
       if(buffer_size != 0){
         memcpy(send_buffer + command_size, pwrite_data_buffer, buffer_size);
       } 
-      if(take_i2c_port_semaphore() == ESP_OK){ 
-        r = i2c_master_transmit(dev_handle, send_buffer, send_buffer_size, pdMS_TO_TICKS(I2C_TIMEOUT));
+      if((r = take_i2c_port_semaphore()) == ESP_OK){
+        r = i2c_master_transmit(dev_handle, send_buffer, send_buffer_size, I2C_TIMEOUT);
         if(r != ESP_OK){
           ESP_LOGE(I2C_BASE_TAG, "fail to send data.");
         }
-        r |= release_i2c_port_semaphore();
+        const esp_err_t unlock_result = release_i2c_port_semaphore();
+        if(r == ESP_OK){ r = unlock_result; }
       } 
     }
     free(send_buffer);
