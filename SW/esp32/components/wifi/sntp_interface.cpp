@@ -126,7 +126,14 @@ esp_err_t SNTP::get_daytime(char* ptime_string, size_t time_string_size){
   if(localtime_r(&time_now, &local_time) == nullptr){ return ESP_FAIL; }
   const std::tm* plocal_time = &local_time;
   
-  if(std::strftime(ptime_string, time_string_size, "%A %b %d", plocal_time) == 0){
+  char date[40] {};
+  char week[16] {};
+  static constexpr const char* weekdays[] = {"sun", "mon", "tue", "wed", "thu", "fri", "sat"};
+  // ISO week and weekday: week 01 contains January 4; Monday=1, Sunday=7.
+  if(std::strftime(date, sizeof(date), "%Y/%m/%d", plocal_time) == 0 ||
+     std::strftime(week, sizeof(week), "W%V.%u", plocal_time) == 0){ return ESP_FAIL; }
+  const int length = snprintf(ptime_string, time_string_size, "%s %s / %s", date, weekdays[local_time.tm_wday], week);
+  if(length < 0 || static_cast<size_t>(length) >= time_string_size){
     r = ESP_FAIL;
     ESP_LOGW(SNTP_TAG, "time_string buffer size is too small.");
   }

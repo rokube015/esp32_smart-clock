@@ -155,6 +155,7 @@ esp_err_t SMART_CLOCK::display_epaper(const SensorData& data){
     y = black_sprite.getCursorY() + 30;
     black_sprite.setCursor(x, y);
     black_sprite.printf("%s\n", day_info);
+    black_sprite.setFont(&fonts::FreeSans24pt7b);
     black_sprite.setTextSize(1.5);
     snprintf(display_buffer, sizeof(display_buffer), "CO2  %dppm\n", co2);
     x = black_sprite.width()/2 - black_sprite.textWidth(display_buffer)/2;
