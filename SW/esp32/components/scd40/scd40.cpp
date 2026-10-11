@@ -239,24 +239,24 @@ esp_err_t SCD40::stop_periodic_measurement(){
   return r;
 }
 
-esp_err_t SCD40::create_task(const char* pname, uint16_t stack_size, UBaseType_t task_priority){
-  esp_err_t r = ESP_OK;
-  BaseType_t r2 = pdTRUE;
-  if(r == ESP_OK){ 
-    r2 = xTaskCreate(get_measure_co2_task_entry_point, pname, stack_size, this, task_priority, &task_handle);
-    if(r2 != pdTRUE){
-      ESP_LOGE(SCD40_TAG, "fail to create measure_co2_task.");
-      r = ESP_FAIL;
-    }
-  }
-  if(r == ESP_OK){
-    co2_buffer = xQueueCreate(co2_buffer_size, sizeof(co2));
-    if(co2_buffer == NULL){
-      ESP_LOGE(SCD40_TAG, "fail to create co2_buffer");
-      r = ESP_ERR_NO_MEM; 
-    }
-  }
-  return r;
+esp_err_t SCD40::prepare_queue(){
+  if(co2_buffer != nullptr){ return ESP_OK; }
+  co2_buffer = xQueueCreate(1, sizeof(uint16_t));
+  return co2_buffer != nullptr ? ESP_OK : ESP_ERR_NO_MEM;
+}
+
+esp_err_t SCD40::create_task(const char* pname, uint16_t stack_size, UBaseType_t task_priority, EventGroupHandle_t gate){
+  if(co2_buffer == nullptr || task_handle != nullptr){ return ESP_ERR_INVALID_STATE; }
+  startup_gate = gate;
+  return xTaskCreate(get_measure_co2_task_entry_point, pname, stack_size, this, task_priority, &task_handle) == pdPASS ? ESP_OK : ESP_ERR_NO_MEM;
+}
+
+void SCD40::deinit(){
+  if(task_handle != nullptr){ vTaskDelete(task_handle); task_handle = nullptr; }
+  startup_gate = nullptr;
+  if(co2_buffer != nullptr){ vQueueDelete(co2_buffer); co2_buffer = nullptr; }
+  if(mi2c_device_handle != nullptr){ i2c_master_bus_rm_device(mi2c_device_handle); mi2c_device_handle = nullptr; }
+  pmi2c = nullptr;
 }
 
 esp_err_t SCD40::set_temperature_offset(float temperature_offset){
@@ -376,6 +376,7 @@ QueueHandle_t SCD40::get_co2_buffer_handle(){
 
 void SCD40::get_measure_co2_task_entry_point(void* arg){
   SCD40* pinstance = static_cast<SCD40*>(arg);
+  if(pinstance->startup_gate != nullptr){ xEventGroupWaitBits(pinstance->startup_gate, 1, pdFALSE, pdTRUE, portMAX_DELAY); }
   pinstance->measure_co2_task();
 }
 

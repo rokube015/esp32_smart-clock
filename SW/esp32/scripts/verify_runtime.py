@@ -74,7 +74,7 @@ report = {
     'csv_appends': text.count('sd_card: Appended sensor log data'),
     'existing_log_sizes': [int(n) for n in re.findall(r'Sensor log: (\d+) existing bytes', text)],
     'normal_boots': text.count('main: Start main'),
-    'ntp_synced': 'NTP synchronized' in text,
+    'ntp_synced': 'NTP synchronized' in text or 'NTP updated, current time is:' in text,
     'display_sleep_completions': text.count('set sleep mode.'),
     'panic': bool(re.search(r'Guru Meditation|panic\(|assert failed|Stack canary|CORRUPT HEAP', text)),
     'error_lines': [line for line in text.splitlines() if re.match(r'E \(', line)],

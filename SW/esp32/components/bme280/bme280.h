@@ -9,6 +9,7 @@
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "freertos/event_groups.h"
 
 #include "i2c_base.h"
 
@@ -28,12 +29,12 @@ class BME280{
     /**
      * @brief Pointer to the I2C communication instance.
      */
-    i2c_base::I2C* pmi2c;
+    i2c_base::I2C* pmi2c {nullptr};
 
     /**
      * @brief I2C device handle for BME280.
      */
-    i2c_master_dev_handle_t mi2c_device_handle;
+    i2c_master_dev_handle_t mi2c_device_handle {nullptr};
 
     // ==========================
     // Sensor Device Settings
@@ -300,6 +301,7 @@ class BME280{
      */
     static void get_measure_task_entry_point(void* arg);
 
+    EventGroupHandle_t startup_gate {nullptr};
   public:
     /**
      * @brief Structure to hold sensor data.
@@ -361,7 +363,9 @@ class BME280{
      * @param task_priority Task priority.
      * @return ESP_OK if successful, error code otherwise.
      */ 
-    esp_err_t create_task(const char* pname, uint16_t stack_size, UBaseType_t task_priority);
+    esp_err_t prepare_queue();
+    void deinit();
+    esp_err_t create_task(const char* pname, uint16_t stack_size, UBaseType_t task_priority, EventGroupHandle_t gate = nullptr);
 
     /**
      * @brief Starts the measurement task.

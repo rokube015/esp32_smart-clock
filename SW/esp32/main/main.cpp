@@ -28,16 +28,13 @@ extern "C" void app_main(void){
     }
   }
   if(r == ESP_OK){ 
-    smart_clock.wifi_run();
-  }
-  if(r == ESP_OK){ 
     r = smart_clock.run();
     if(r != ESP_OK){
       ESP_LOGE(MAIN_TAG, "fail to run smart_clock.");
     }
   }
   while(true){
-    if(r == ESP_OK){ smart_clock.wifi_run(); }
-    vTaskDelay(pdMS_TO_TICKS(30*1000));
+    // SMART_CLOCK owns component tasks and handles their events.
+    vTaskDelay(pdMS_TO_TICKS(30 * 1000));
   }
 }

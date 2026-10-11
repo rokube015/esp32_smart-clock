@@ -2,15 +2,16 @@
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "freertos/event_groups.h"
 
 #include "i2c_base.h"
 
 class SCD40{
   private:
     constexpr static const char* SCD40_TAG = "scd40"; 
-    i2c_base::I2C* pmi2c;
+    i2c_base::I2C* pmi2c {nullptr};
     
-    i2c_master_dev_handle_t mi2c_device_handle;
+    i2c_master_dev_handle_t mi2c_device_handle {nullptr};
     // Device settings
     constexpr static uint8_t DEVICE_ADDRS {0x62};
     constexpr static uint32_t CLK_SPEED_HZ {100000};
@@ -57,6 +58,7 @@ class SCD40{
     void measure_co2_task();
     static void get_measure_co2_task_entry_point(void* arg);
 
+    EventGroupHandle_t startup_gate {nullptr};
   public:
     SCD40();
     
@@ -72,6 +74,8 @@ class SCD40{
     esp_err_t get_co2(uint16_t* pco2);
 
     QueueHandle_t get_co2_buffer_handle();
-    esp_err_t create_task(const char* pname, uint16_t stack_size, UBaseType_t task_priority);
+    esp_err_t prepare_queue();
+    void deinit();
+    esp_err_t create_task(const char* pname, uint16_t stack_size, UBaseType_t task_priority, EventGroupHandle_t gate = nullptr);
     void notify_measurement_start();
 };

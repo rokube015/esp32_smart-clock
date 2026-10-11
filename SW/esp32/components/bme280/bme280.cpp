@@ -87,24 +87,24 @@ QueueHandle_t BME280::get_results_buffer(){
   return results_buffer;
 }
 
-esp_err_t BME280::create_task(const char* pname, uint16_t stack_size, UBaseType_t task_priority){
-  esp_err_t r = ESP_OK;
-  BaseType_t r2 = pdTRUE;
-  if(r == ESP_OK){
-    results_buffer = xQueueCreate(results_buffer_size, sizeof(results_data));
-    if(results_buffer == NULL){
-      ESP_LOGE(BME280_TAG, "fail to create bme280 results_buffer");
-      r = ESP_ERR_NO_MEM;
-    }
-  } 
-  if(r == ESP_OK){
-    r2 = xTaskCreate(get_measure_task_entry_point, pname, stack_size, this, task_priority, &task_handle);
-    if(r2 != pdTRUE){
-      ESP_LOGE(BME280_TAG, "fail to create measure_task.");
-      r = ESP_FAIL;
-    }
-  }
-  return r;
+esp_err_t BME280::prepare_queue(){
+  if(results_buffer != nullptr){ return ESP_OK; }
+  results_buffer = xQueueCreate(1, sizeof(results_data_t));
+  return results_buffer != nullptr ? ESP_OK : ESP_ERR_NO_MEM;
+}
+
+esp_err_t BME280::create_task(const char* pname, uint16_t stack_size, UBaseType_t task_priority, EventGroupHandle_t gate){
+  if(results_buffer == nullptr || task_handle != nullptr){ return ESP_ERR_INVALID_STATE; }
+  startup_gate = gate;
+  return xTaskCreate(get_measure_task_entry_point, pname, stack_size, this, task_priority, &task_handle) == pdPASS ? ESP_OK : ESP_ERR_NO_MEM;
+}
+
+void BME280::deinit(){
+  if(task_handle != nullptr){ vTaskDelete(task_handle); task_handle = nullptr; }
+  startup_gate = nullptr;
+  if(results_buffer != nullptr){ vQueueDelete(results_buffer); results_buffer = nullptr; }
+  if(mi2c_device_handle != nullptr){ i2c_master_bus_rm_device(mi2c_device_handle); mi2c_device_handle = nullptr; }
+  pmi2c = nullptr;
 }
 
 uint8_t BME280::get_status(){
@@ -772,9 +772,12 @@ void BME280::measure_task(){
 
 void BME280::get_measure_task_entry_point(void* arg){
   BME280* pinstance = static_cast<BME280*>(arg);
+  if(pinstance->startup_gate != nullptr){ xEventGroupWaitBits(pinstance->startup_gate, 1, pdFALSE, pdTRUE, portMAX_DELAY); }
   pinstance->measure_task();
 }
 
 void BME280::notify_measurement_start(){
   xTaskNotifyGive(task_handle);
 }
+
+BME280::~BME280(){ deinit(); }

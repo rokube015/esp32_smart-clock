@@ -31,6 +31,10 @@ class RuntimeVerifierTests(unittest.TestCase):
     def test_valid(self):
         self.verify(VALID, 0)
 
+    def test_ntp_callback_log(self):
+        self.verify(VALID.replace('I (61001) smart_clock: NTP synchronized',
+                                  'NTP updated, current time is: 2026-10-11 12:50:42'), 0)
+
     def test_application_error(self):
         self.verify(VALID + 'E (62000) sd_card: Write failed\n', 1)
 

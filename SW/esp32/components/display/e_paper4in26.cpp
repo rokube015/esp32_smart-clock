@@ -36,6 +36,7 @@ esp_err_t EPAPER4IN26::init_spi_bus(){
   
   if(r == ESP_OK){
     r = spi_bus_initialize(EPAPER_SPI_HOST, &bus_cfg, SPI_DMA_CH_AUTO);
+    spi_bus_owned = r == ESP_OK;
     if(r != ESP_OK){
       ESP_LOGE(EPAPER_TAG, "fail to spi bus initialize.");
     }
@@ -50,6 +51,7 @@ esp_err_t EPAPER4IN26::init_spi_bus(){
 }
 
 esp_err_t EPAPER4IN26::init_gpio(){
+  gpio_configured = true;
   esp_err_t r = ESP_OK;
   if(r == ESP_OK){
     r = dc_pin.init(EPAPER_DC_PIN); 
@@ -367,4 +369,14 @@ esp_err_t EPAPER4IN26::set_cursur(uint16_t x_position, uint16_t y_position){
     r = send_command(SET_Y_ADDRESS_COUNTER_COMMAND, send_data, sizeof(send_data));
   }
   return r;
+}
+
+void EPAPER4IN26::deinit(){
+  if(spi_handle != nullptr){ spi_bus_remove_device(spi_handle); spi_handle = nullptr; }
+  if(spi_bus_owned){ spi_bus_free(EPAPER_SPI_HOST); spi_bus_owned = false; }
+  if(gpio_configured){
+    gpio_reset_pin(EPAPER_DC_PIN); gpio_reset_pin(EPAPER_RST_PIN); gpio_reset_pin(EPAPER_BUSY_PIN);
+    gpio_configured = false;
+  }
+  mstate = state_e::NOT_INITIALIZED;
 }

@@ -21,7 +21,7 @@ esp_err_t SD_CARD::init(){
     .allocation_unit_size = 16 * 1024
   };
 
-  sdmmc_card_t* pcard;
+  sdmmc_card_t* pcard = nullptr;
   ESP_LOGI(SD_CARD_TAG, "Initializing SD card");
   ESP_LOGI(SD_CARD_TAG, "Using SPI peripheral");
 
@@ -38,6 +38,7 @@ esp_err_t SD_CARD::init(){
   };
 
   r = spi_bus_initialize((spi_host_device_t)host.slot, &bus_cfg, SDSPI_DEFAULT_DMA);
+  spi_bus_owned = r == ESP_OK;
   if(r != ESP_OK){
     ESP_LOGE(SD_CARD_TAG, "failed to initialize SPI bus.");
     r = ESP_FAIL;
@@ -54,6 +55,7 @@ esp_err_t SD_CARD::init(){
     r = esp_vfs_fat_sdspi_mount(MOUNT_POINT, &host, &slot_config, &mount_config, &pcard);
     if(r == ESP_OK){
       ESP_LOGI(SD_CARD_TAG, "mount filesystem.");
+      mounted_card = pcard;
       sdmmc_card_print_info(stdout, pcard);
     }
     else{
@@ -61,10 +63,12 @@ esp_err_t SD_CARD::init(){
     }
   }
   
+  if(r != ESP_OK){ deinit(); }
   return r;
 }
 
 esp_err_t SD_CARD::write_data(const char* pfile_path, size_t file_path_size, char* data, char mode){
+  std::lock_guard<std::mutex> guard(file_mutex);
   if(pfile_path == nullptr || data == nullptr || (mode != 'a' && mode != 'w' && mode != 'h')){
     return ESP_ERR_INVALID_ARG;
   }
@@ -103,6 +107,7 @@ esp_err_t SD_CARD::write_data(const char* pfile_path, size_t file_path_size, cha
 }
 
 esp_err_t SD_CARD::read_data(const char* pfile_path){
+  std::lock_guard<std::mutex> guard(file_mutex);
   esp_err_t r = ESP_OK;
   ESP_LOGI(SD_CARD_TAG, "read file path: %s", pfile_path);
 
@@ -125,4 +130,36 @@ esp_err_t SD_CARD::read_data(const char* pfile_path){
   }
 
   return r;
+}
+
+esp_err_t SD_CARD::open_sensor_log(FILE** file, long* size){
+  if(file == nullptr || size == nullptr){ return ESP_ERR_INVALID_ARG; }
+  std::lock_guard<std::mutex> guard(file_mutex);
+  *file = fopen("/sdcard/sensor_log.csv", "rb");
+  if(*file == nullptr){ return errno == ENOENT ? ESP_ERR_NOT_FOUND : ESP_FAIL; }
+  if(fseek(*file, 0, SEEK_END) != 0 || (*size = ftell(*file)) < 0 ||
+     fseek(*file, 0, SEEK_SET) != 0){
+    fclose(*file);
+    *file = nullptr;
+    return ESP_FAIL;
+  }
+  return ESP_OK;
+}
+
+esp_err_t SD_CARD::read_sensor_log(FILE* file, char* buffer, size_t size){
+  if(file == nullptr || buffer == nullptr){ return ESP_ERR_INVALID_ARG; }
+  std::lock_guard<std::mutex> guard(file_mutex);
+  return fread(buffer, 1, size, file) == size ? ESP_OK : ESP_FAIL;
+}
+
+void SD_CARD::close_sensor_log(FILE* file){
+  if(file == nullptr){ return; }
+  std::lock_guard<std::mutex> guard(file_mutex);
+  fclose(file);
+}
+
+void SD_CARD::deinit(){
+  std::lock_guard<std::mutex> guard(file_mutex);
+  if(mounted_card != nullptr){ esp_vfs_fat_sdcard_unmount(MOUNT_POINT, mounted_card); mounted_card = nullptr; }
+  if(spi_bus_owned){ sdmmc_host_t host = SDSPI_HOST_DEFAULT(); spi_bus_free(static_cast<spi_host_device_t>(host.slot)); spi_bus_owned = false; }
 }

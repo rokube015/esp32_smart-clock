@@ -14,15 +14,10 @@ static void* sntp_time_sync_context = nullptr;
 
 void SNTP::callback_on_ntp_update(timeval *tv){
   std::cout << "NTP updated, current time is: " << time_now_ascii() << '\n';
-  void (*callback)(void*) = nullptr;
-  void* context = nullptr;
-  {
-    std::lock_guard<std::mutex> guard(msync_mutex);
-    mlast_update = std::chrono::system_clock::now();
-    callback = sntp_time_sync_callback;
-    context = sntp_time_sync_context;
-  }
-  if(callback != nullptr){ callback(context); }
+  std::lock_guard<std::mutex> guard(msync_mutex);
+  mlast_update = std::chrono::system_clock::now();
+  // Clearing the callback waits for any in-flight notification before resource cleanup.
+  if(sntp_time_sync_callback != nullptr){ sntp_time_sync_callback(sntp_time_sync_context); }
 }
 
 SNTP::SNTP(void){
@@ -30,7 +25,7 @@ SNTP::SNTP(void){
   ESP_LOGI(SNTP_TAG, "set SNTP_TAG log level: %d", ESP_LOG_ERROR);
 } 
 SNTP::~SNTP(void){ 
-  esp_sntp_stop();
+  stop();
 }
 
 esp_err_t SNTP::init(void){
@@ -171,3 +166,8 @@ esp_err_t SNTP::get_logtime(char* time_string, size_t time_string_size){
   return r;
 }
 
+
+void SNTP::stop(){
+  std::lock_guard<std::mutex> guard(mcontrol_mutex);
+  if(mis_running.exchange(false)){ esp_sntp_stop(); }
+}

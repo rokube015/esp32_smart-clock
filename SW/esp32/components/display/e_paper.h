@@ -60,7 +60,9 @@ class EPAPER4IN26{
     constexpr static uint8_t DATA_ENTRY_MODE_SETTING                {0x01};
     // valiables
     constexpr static uint16_t MAX_SPI_TARANSFER_SIZE   {16*1000}; 
-    spi_device_handle_t spi_handle;
+    spi_device_handle_t spi_handle {nullptr};
+    bool spi_bus_owned {false};
+    bool gpio_configured {false};
     static state_e mstate; 
     //class
     GpioInterface::GpioOutput dc_pin;
@@ -85,6 +87,7 @@ class EPAPER4IN26{
     int      get_display_bytes(){return DISPLAY_DISP_BYTES;}        
     state_e  get_state(){return mstate;};
     esp_err_t init();
+    void deinit();
     esp_err_t init_epaper(); 
     esp_err_t execute_hw_reset(); 
     esp_err_t turn_on_display();

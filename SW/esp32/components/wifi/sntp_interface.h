@@ -14,7 +14,7 @@
 
 #include "wifi.h"
 
-class SNTP : private WIFI{
+class SNTP{
   private: 
     constexpr static const char* SNTP_TAG = "SNTP"; 
 
@@ -29,6 +29,7 @@ class SNTP : private WIFI{
     ~SNTP(void);
 
     static esp_err_t init(void);
+    static void stop();
     static bool is_time_synchronized(void);
     static void set_time_sync_callback(void (*callback)(void*), void* context);
 

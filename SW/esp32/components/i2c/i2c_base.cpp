@@ -34,9 +34,10 @@ namespace i2c_base{
    * 
    * Deletes the I2C master bus handle when the object is destroyed.
    */
-  I2C::~I2C(){
-    if(mi2c_bus_handle != nullptr){ i2c_del_master_bus(mi2c_bus_handle); }
-    if(i2c_port_semaphore != nullptr){ vSemaphoreDelete(i2c_port_semaphore); }
+  I2C::~I2C(){ deinit(); }
+  void I2C::deinit(){
+    if(mi2c_bus_handle != nullptr){ i2c_del_master_bus(mi2c_bus_handle); mi2c_bus_handle = nullptr; }
+    if(i2c_port_semaphore != nullptr){ vSemaphoreDelete(i2c_port_semaphore); i2c_port_semaphore = nullptr; }
   }
   /**
    * @brief Acquires the I2C port semaphore.

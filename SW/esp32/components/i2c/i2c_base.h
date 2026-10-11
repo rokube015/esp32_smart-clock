@@ -113,6 +113,7 @@ namespace i2c_base {
        * @return esp_err_t Error code.
        */
       esp_err_t init(bool pullup_enable = true);
+      void deinit();
 
       /**
        * @brief Retrieves the I2C master bus handle.

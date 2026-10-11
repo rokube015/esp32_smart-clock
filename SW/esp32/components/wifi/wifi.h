@@ -2,9 +2,11 @@
 
 #include <cstring>
 #include <mutex>
+#include <atomic>
 
 #include "esp_wifi.h"
 #include "esp_event.h"
+#include "esp_netif.h"
 
 class WIFI{
   public:
@@ -28,6 +30,13 @@ class WIFI{
     static esp_err_t mstart_provisioning(bool initialize_manager);
     static wifi_init_config_t mwifi_init_cfg;
     static bool mprovisioning;
+    static bool needs_setup;
+    static bool manager_initialized;
+    static bool driver_initialized;
+    static std::atomic<bool> manager_end_requested;
+    static esp_netif_t* sta_netif;
+    static esp_netif_t* ap_netif;
+    static esp_event_handler_instance_t wifi_handler, ip_handler, provisioning_handler;
     static uint8_t mconnection_failures;
     static char mprovisioning_pop[17];
     static char mprovisioning_ssid[33];
@@ -50,6 +59,8 @@ class WIFI{
     WIFI(void);
 
     esp_err_t init();
+    void deinit();
+    void process_events();
     esp_err_t begin(void);
     esp_err_t start(void);
     esp_err_t stop(void);

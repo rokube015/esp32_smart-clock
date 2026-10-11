@@ -14,6 +14,13 @@ std::mutex WIFI::mmutex {};
 WIFI::state_e WIFI::mstate{state_e::NOT_INITIALIZED};
 wifi_init_config_t WIFI::mwifi_init_cfg = WIFI_INIT_CONFIG_DEFAULT();
 bool WIFI::mprovisioning{false};
+bool WIFI::needs_setup {false};
+bool WIFI::manager_initialized {false};
+bool WIFI::driver_initialized {false};
+std::atomic<bool> WIFI::manager_end_requested {false};
+esp_netif_t* WIFI::sta_netif {nullptr};
+esp_netif_t* WIFI::ap_netif {nullptr};
+esp_event_handler_instance_t WIFI::wifi_handler {nullptr}, WIFI::ip_handler {nullptr}, WIFI::provisioning_handler {nullptr};
 uint8_t WIFI::mconnection_failures{0};
 char WIFI::mprovisioning_pop[17] {};
 char WIFI::mprovisioning_ssid[33] {};
@@ -147,7 +154,7 @@ void WIFI::provisioning_event_handler(void* arg, esp_event_base_t event_base,
       ESP_LOGI(WIFI_TAG, "Wi-Fi provisioning successful");
       break;
     case NETWORK_PROV_END:
-      network_prov_mgr_deinit();
+      manager_end_requested.store(true);
       ESP_LOGI(WIFI_TAG, "Wi-Fi provisioning stopped");
       break;
     default:
@@ -210,27 +217,34 @@ esp_err_t WIFI::begin(void){
   return r;
 }
 
-esp_err_t WIFI::start(void){
+esp_err_t WIFI::start(){
+  bool setup = false;
   {
-    std::lock_guard<std::mutex> state_guard(mmutex);
-    if(mprovisioning || mstate != state_e::INITIALIZED){
-      return ESP_ERR_INVALID_STATE;
-    }
+    std::lock_guard<std::mutex> guard(mmutex);
+    if(mstate != state_e::INITIALIZED){ return ESP_ERR_INVALID_STATE; }
+    setup = needs_setup;
+    mprovisioning = setup;
+    mstate = setup ? state_e::PROVISIONING : state_e::READY_TO_CONNECT;
   }
-
-  return esp_wifi_start();
+  const esp_err_t result = setup ? mstart_provisioning(!manager_initialized) : esp_wifi_start();
+  if(result != ESP_OK){
+    std::lock_guard<std::mutex> guard(mmutex);
+    mprovisioning = false; mstate = state_e::INITIALIZED;
+  }
+  return result;
 }
 
-esp_err_t WIFI::stop(void){
+esp_err_t WIFI::stop(){
   {
-    std::lock_guard<std::mutex> state_guard(mmutex);
-    if(mprovisioning){
-      return ESP_ERR_INVALID_STATE;
-    }
+    std::lock_guard<std::mutex> guard(mmutex);
+    if(mprovisioning){ return ESP_ERR_INVALID_STATE; }
+  }
+  const esp_err_t result = esp_wifi_stop();
+  if(result == ESP_OK){
+    std::lock_guard<std::mutex> guard(mmutex);
     mstate = state_e::INITIALIZED;
   }
-
-  return esp_wifi_stop();
+  return result;
 }
 
 esp_err_t WIFI::mstart_provisioning(bool initialize_manager){
@@ -246,6 +260,7 @@ esp_err_t WIFI::mstart_provisioning(bool initialize_manager){
   if(initialize_manager){
     r = network_prov_mgr_init(config);
     manager_initialized = (r == ESP_OK);
+    WIFI::manager_initialized = manager_initialized;
   }
   if(r == ESP_OK){
     char service_name[33] {};
@@ -272,92 +287,43 @@ esp_err_t WIFI::mstart_provisioning(bool initialize_manager){
 
   if(r != ESP_OK && manager_initialized){
     network_prov_mgr_deinit();
+    WIFI::manager_initialized = false;
   }
   return r;
 }
 
 esp_err_t WIFI::mwifi_init(){
-  std::unique_lock<std::mutex> mutex_guard(mmutex);
-
-  esp_err_t r = ESP_OK;
-
-  if(mstate == state_e::NOT_INITIALIZED){
-    if(r == ESP_OK){
-      r = esp_netif_init();
-    }
-    if(r == ESP_OK){
-      const esp_netif_t *const p_netif = esp_netif_create_default_wifi_sta();
-      if (p_netif == NULL){
-        r = ESP_FAIL;
-      }
-    }
-    if(r == ESP_OK){
-      const esp_netif_t *const p_ap_netif = esp_netif_create_default_wifi_ap();
-      if (p_ap_netif == NULL){
-        r = ESP_FAIL;
-      }
-    }
-    if (r == ESP_OK){
-      r = esp_wifi_init(&mwifi_init_cfg);
-    }
-    
-    if(r == ESP_OK){
-      r = esp_event_handler_instance_register(WIFI_EVENT, 
-                                              ESP_EVENT_ANY_ID,
-                                              &wifi_event_handler,
-                                              nullptr,
-                                              nullptr);
-    }
-    if(r == ESP_OK){
-      r = esp_event_handler_instance_register(IP_EVENT,
-                                              ESP_EVENT_ANY_ID,
-                                              &ip_event_handler,
-                                              nullptr,
-                                              nullptr);
-    }
-    if(r == ESP_OK){
-      const network_prov_mgr_config_t config = {
-        .scheme = network_prov_scheme_softap,
-        .scheme_event_handler = NETWORK_PROV_EVENT_HANDLER_NONE,
-        .app_event_handler = NETWORK_PROV_EVENT_HANDLER_NONE,
-        .network_prov_wifi_conn_cfg = {.wifi_conn_attempts = 0},
-      };
-      r = network_prov_mgr_init(config);
-    }
-    if(r == ESP_OK){
-      r = esp_event_handler_register(NETWORK_PROV_EVENT, ESP_EVENT_ANY_ID,
-                                     &provisioning_event_handler, nullptr);
-    }
-    if(r == ESP_OK){
-      bool provisioned = false;
-      r = network_prov_mgr_is_wifi_provisioned(&provisioned);
-      if(r == ESP_OK && provisioned){
-        network_prov_mgr_deinit();
-        r = esp_wifi_set_mode(WIFI_MODE_STA);
-        if(r == ESP_OK){
-          r = esp_wifi_start();
-        }
-        if(r == ESP_OK){
-          mstate = state_e::INITIALIZED;
-        }
-      }
-      else if(r == ESP_OK){
-        mprovisioning = true;
-        mstate = state_e::PROVISIONING;
-        mutex_guard.unlock();
-        r = mstart_provisioning(false);
-        mutex_guard.lock();
-        if(r != ESP_OK){
-          mprovisioning = false;
-          mstate = state_e::ERROR;
-        }
-      }
+  if(driver_initialized){ return ESP_ERR_INVALID_STATE; }
+  esp_err_t r = esp_netif_init();
+  if(r == ESP_OK){ sta_netif = esp_netif_create_default_wifi_sta(); if(!sta_netif){ r = ESP_ERR_NO_MEM; } }
+  if(r == ESP_OK){ ap_netif = esp_netif_create_default_wifi_ap(); if(!ap_netif){ r = ESP_ERR_NO_MEM; } }
+  if(r == ESP_OK){ r = esp_wifi_init(&mwifi_init_cfg); driver_initialized = r == ESP_OK; }
+  if(r == ESP_OK){ r = esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID, wifi_event_handler, nullptr, &wifi_handler); }
+  if(r == ESP_OK){ r = esp_event_handler_instance_register(IP_EVENT, ESP_EVENT_ANY_ID, ip_event_handler, nullptr, &ip_handler); }
+  if(r == ESP_OK){
+    const network_prov_mgr_config_t config = {
+      .scheme = network_prov_scheme_softap,
+      .scheme_event_handler = NETWORK_PROV_EVENT_HANDLER_NONE,
+      .app_event_handler = NETWORK_PROV_EVENT_HANDLER_NONE,
+      .network_prov_wifi_conn_cfg = {.wifi_conn_attempts = 0},
+    };
+    r = network_prov_mgr_init(config);
+    manager_initialized = r == ESP_OK;
+  }
+  if(r == ESP_OK){ r = esp_event_handler_instance_register(NETWORK_PROV_EVENT, ESP_EVENT_ANY_ID, provisioning_event_handler, nullptr, &provisioning_handler); }
+  if(r == ESP_OK){
+    bool provisioned = false;
+    r = network_prov_mgr_is_wifi_provisioned(&provisioned);
+    needs_setup = !provisioned;
+    if(r == ESP_OK && provisioned){
+      network_prov_mgr_deinit(); manager_initialized = false;
+      r = esp_wifi_set_mode(WIFI_MODE_STA);
     }
   }
-  else if(mstate == state_e::ERROR){
-    mstate = state_e::NOT_INITIALIZED;
+  if(r == ESP_OK){
+    std::lock_guard<std::mutex> guard(mmutex);
+    mstate = state_e::INITIALIZED;
   }
-
   return r;
 }
 
@@ -395,4 +361,23 @@ esp_err_t WIFI::mget_mac_addrs(void){
         mac_byte_buffer[5]);
   }
   return r;
+}
+
+void WIFI::process_events(){
+  if(manager_end_requested.exchange(false) && manager_initialized){
+    network_prov_mgr_deinit(); manager_initialized = false; needs_setup = false;
+  }
+}
+
+void WIFI::deinit(){
+  if(provisioning_handler){ esp_event_handler_instance_unregister(NETWORK_PROV_EVENT, ESP_EVENT_ANY_ID, provisioning_handler); provisioning_handler = nullptr; }
+  if(manager_initialized){ network_prov_mgr_deinit(); manager_initialized = false; }
+  if(wifi_handler){ esp_event_handler_instance_unregister(WIFI_EVENT, ESP_EVENT_ANY_ID, wifi_handler); wifi_handler = nullptr; }
+  if(ip_handler){ esp_event_handler_instance_unregister(IP_EVENT, ESP_EVENT_ANY_ID, ip_handler); ip_handler = nullptr; }
+  if(driver_initialized){ esp_wifi_stop(); esp_wifi_deinit(); driver_initialized = false; }
+  if(ap_netif){ esp_netif_destroy_default_wifi(ap_netif); ap_netif = nullptr; }
+  if(sta_netif){ esp_netif_destroy_default_wifi(sta_netif); sta_netif = nullptr; }
+  manager_end_requested.store(false);
+  std::lock_guard<std::mutex> guard(mmutex);
+  mprovisioning = false; needs_setup = false; mconnection_failures = 0; mstate = state_e::NOT_INITIALIZED;
 }
